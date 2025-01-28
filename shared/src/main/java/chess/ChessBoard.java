@@ -45,7 +45,91 @@ public class ChessBoard {
         // clear the old board if it exists
         board = new ChessPiece[9][9];
         // Set up WHITE
+        this.setSide(ChessGame.TeamColor.WHITE);
+        // Set up Black
+        this.setSide(ChessGame.TeamColor.BLACK);
+    }
+    public void setSide(ChessGame.TeamColor teamColor){
+        // Set up WHITE
+        //they go in rows 1 and 2
+        int row;
+        if (teamColor == ChessGame.TeamColor.WHITE){row = 2;}
+        else{row = 7;}
+        //add pawns
+        for(int col = 8; col>0; col -=1){
+            ChessPosition target = new ChessPosition(row, col);
+            addPiece(target, new ChessPiece(teamColor, ChessPiece.PieceType.PAWN));
+        }
 
+        if (teamColor == ChessGame.TeamColor.WHITE){row = 1;}
+        else{row = 8;}
+        //add the other pieces. Rook, Knight, Bishop, Queen, King
+        addPiece(new ChessPosition(row, 1), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
+        addPiece(new ChessPosition(row, 8), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
+
+        addPiece(new ChessPosition(row, 2), new ChessPiece(teamColor, ChessPiece.PieceType.KNIGHT));
+        addPiece(new ChessPosition(row, 7), new ChessPiece(teamColor, ChessPiece.PieceType.KNIGHT));
+
+        addPiece(new ChessPosition(row, 3), new ChessPiece(teamColor, ChessPiece.PieceType.BISHOP));
+        addPiece(new ChessPosition(row, 6), new ChessPiece(teamColor, ChessPiece.PieceType.BISHOP));
+
+        addPiece(new ChessPosition(row, 4), new ChessPiece(teamColor, ChessPiece.PieceType.QUEEN));
+        addPiece(new ChessPosition(row, 5), new ChessPiece(teamColor, ChessPiece.PieceType.KING));
         //Set up BLACK
+        //rows 7 and 8
+    }
+
+
+    public static void main(String[] args){
+        ChessBoard test = new ChessBoard();
+        test.resetBoard();
+        ChessBoard other = new ChessBoard();
+        other.resetBoard();
+        System.out.println(test.equals(other));
+    }
+
+    @Override
+    public String toString(){
+        String str = "";
+        for(int row=8; row > 0; row -=1){
+            str += ("|");
+            for(int col = 1; col < 9; col +=1) {
+                if (board[row][col] == null)
+                str +=(" |");
+                else{
+                    str+= board[row][col].toString();
+                }
+            }
+            str += "\n";
+        }
+        return str;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        //not same class
+        if(obj.getClass() != ChessBoard.class){
+            return false;
+        }
+        ChessBoard other = (ChessBoard) obj;
+        for(int row=8; row >= 0; row -=1){
+            for(int col = 0; col < 9; col +=1) {
+                if (other.board[row][col] == null || this.board[row][col] == null) {
+                    //null case
+                    if(! (this.board[row][col] == null && other.board[row][col] == null)){
+                        return false;
+                    }
+                }
+                else if(! this.board[row][col].equals(other.board[row][col]) ){
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+    @Override
+    public int hashCode(){
+        return 1;
     }
 }

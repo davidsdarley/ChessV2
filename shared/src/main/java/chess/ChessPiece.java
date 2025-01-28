@@ -10,7 +10,13 @@ import java.util.Collection;
  */
 public class ChessPiece {
 
+    ChessGame.TeamColor color;
+    PieceType type;
+
+
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+        this.color = pieceColor;
+        this.type = type;
     }
 
     /**
@@ -29,14 +35,14 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return this.color;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        throw new RuntimeException("Not implemented");
+        return this.type;
     }
 
     /**
@@ -48,5 +54,89 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         throw new RuntimeException("Not implemented");
+    }
+
+    @Override
+    public int hashCode(){
+        //There are 6 types of chess pieces. White adds 6 to the basic value
+        int hash = 0;
+        if(color == ChessGame.TeamColor.WHITE){
+            hash += 6;
+        }
+        if (type == PieceType.PAWN){
+            hash += 0;
+        }
+        else if (type == PieceType.KNIGHT){
+            hash += 1;
+        }
+        else if (type == PieceType.BISHOP){
+            hash += 2;
+        }
+        else if (type == PieceType.ROOK){
+            hash += 3;
+        }
+        else if (type == PieceType.QUEEN){
+            hash += 4;
+        }
+        else if (type == PieceType.KING){
+            hash += 5;
+        }
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj.getClass() != ChessPiece.class){
+            return false;
+        }
+        ChessPiece other = (ChessPiece) obj;
+        if(other.hashCode() == this.hashCode()){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public String toString(){
+        if(color == ChessGame.TeamColor.WHITE){
+            if (type == PieceType.PAWN){
+                return "P|";
+            }
+            else if (type == PieceType.KNIGHT){
+                return "N|";
+            }
+            else if (type == PieceType.BISHOP){
+                return "B|";
+            }
+            else if (type == PieceType.ROOK){
+                return "R|";
+            }
+            else if (type == PieceType.QUEEN){
+                return "Q|";
+            }
+            else{
+                return "K|";
+            }
+        }
+        else{
+            if (type == PieceType.PAWN){
+                return "p|";
+            }
+            else if (type == PieceType.KNIGHT){
+                return "n|";
+            }
+            else if (type == PieceType.BISHOP){
+                return "b|";
+            }
+            else if (type == PieceType.ROOK){
+                return "r|";
+            }
+            else if (type == PieceType.QUEEN){
+                return "q|";
+            }
+            else{
+                return "k|";
+            }
+        }
     }
 }

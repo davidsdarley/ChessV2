@@ -26,4 +26,23 @@ public class ChessPosition {
      * 1 codes for the left row
      */
     public int getColumn() {return this.col;}
+
+    @Override
+    public int hashCode(){
+        return (this.row*10 + this.col);
+    }
+    @Override
+    public boolean equals(Object other){
+        if (other.getClass() != ChessPosition.class){
+            return false;
+        }
+        ChessPosition obj = (ChessPosition)other;
+        if(obj.getRow() == row && obj.getColumn() == col){
+        return true;}
+        return false;
+    }
+    @Override
+    public String toString(){
+        return row+""+col;
+    }
 }
