@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Collection;
 
+
 /**
  * Represents a single chess piece
  * <p>
@@ -53,7 +54,8 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        MoveCalculator calculator = new MoveCalculator(this, myPosition, board.board);
+        return calculator.findMoves();
     }
 
     @Override

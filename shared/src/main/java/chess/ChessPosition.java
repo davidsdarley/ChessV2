@@ -14,6 +14,10 @@ public class ChessPosition {
         this.row = row;
         this.col = col;
     }
+    public ChessPosition(ChessPosition other){
+        this.row = other.getRow();
+        this.col = other.getColumn();
+    }
 
     /**
      * @return which row this position is in

@@ -59,5 +59,9 @@ public class ChessMove {
             return true;}
         return false;
     }
+    @Override
+    public String toString(){
+        return start + " to " + end;
+    }
 
 }

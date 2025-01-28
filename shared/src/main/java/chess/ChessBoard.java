@@ -83,9 +83,12 @@ public class ChessBoard {
     public static void main(String[] args){
         ChessBoard test = new ChessBoard();
         test.resetBoard();
-        ChessBoard other = new ChessBoard();
-        other.resetBoard();
-        System.out.println(test.equals(other));
+        ChessPosition pos = new ChessPosition(5,5);
+        ChessPiece piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
+        test.addPiece(pos, piece);
+
+        System.out.println(piece.pieceMoves(test, pos));
+        System.out.println(test);
     }
 
     @Override
