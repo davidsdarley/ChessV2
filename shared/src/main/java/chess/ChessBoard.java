@@ -12,6 +12,14 @@ public class ChessBoard {
         board = new ChessPiece[9][9];
     }
 
+    public ChessBoard(ChessBoard other){
+        board = new ChessPiece[9][9];
+        for (int row = 1; row < 9; row +=1){
+            for (int col = 1; col < 9; col +=1 ){
+                this.board[row][col] = other.board[row][col];
+            }
+        }
+    }
     /**
      * Adds a chess piece to the chessboard
      *
