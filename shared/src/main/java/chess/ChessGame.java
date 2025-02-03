@@ -88,6 +88,8 @@ public class ChessGame {
 
     public boolean testMove(ChessMove move){
         ChessGame test =  new ChessGame(this);
+
+
         try {
             test.makeMove(move);
         }
@@ -113,6 +115,10 @@ public class ChessGame {
         ChessPiece piece = board.getPiece(start);
         Collection<ChessMove> potentialMoves = piece.pieceMoves(board, start);
 
+        if(piece.getTeamColor() != getTeamTurn()){
+            throw new InvalidMoveException("Not your turn");
+        }
+
         boolean exists = false;
         for(ChessMove option: potentialMoves){
             if(move.equals(option)){
@@ -124,12 +130,18 @@ public class ChessGame {
             throw new InvalidMoveException("impossible move");
         }
 
-
-        board.addPiece(end, piece);
+        if( move.getPromotionPiece() != null){
+            board.addPiece(end, new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()));
+        }
+        else{
+            board.addPiece(end, piece);
+        }
         board.addPiece(start, null);
 
-        if(isInCheck(getTeamTurn())){
-        throw new InvalidMoveException("Move results in check");
+        if(isInCheck(turn)){
+            board.addPiece(start, piece);
+            board.addPiece(end, null);
+            throw new InvalidMoveException("Move results in check");
         }
         else{
             changeTurn();
@@ -146,14 +158,15 @@ public class ChessGame {
     public boolean isInCheck(TeamColor teamColor) {
         //you are in check if your king is under attack. So, find where the teamColor king is
         ChessPosition kingPosition = null;
-        for(int row = 1; row <9; row+=1){
+        for(int row = 1; row <9 && (kingPosition == null); row+=1){
             for(int col = 1; col < 9; col +=1){
-                if (board.getPiece(new ChessPosition(row, col)) == new ChessPiece(teamColor, ChessPiece.PieceType.KING)){
+                ChessPiece piece = board.getPiece(new ChessPosition(row, col));
+                if (piece != null && piece.equals(new ChessPiece(teamColor, ChessPiece.PieceType.KING))){
                     kingPosition = new ChessPosition(row, col);
+                    break;
                 }
             }
         }
-
         //see if any of your opponents pieces have any moves that end in the position of your king
         //go through board and find the pieces that aren't yours
         for(int row = 1; row <9; row+=1){
@@ -164,7 +177,7 @@ public class ChessGame {
                     Collection<ChessMove> potentialMoves = piece.pieceMoves(board, new ChessPosition(row, col));
                     //see if any of them end in kingPosition
                     for(ChessMove move: potentialMoves){
-                        if (move.getEndPosition() == kingPosition){
+                        if (move.getEndPosition().equals(kingPosition)){
                             return true;
                         }
                     }

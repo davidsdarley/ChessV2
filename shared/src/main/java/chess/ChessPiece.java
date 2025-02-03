@@ -88,7 +88,7 @@ public class ChessPiece {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj.getClass() != ChessPiece.class){
+        if(obj == null || obj.getClass() != ChessPiece.class){
             return false;
         }
         ChessPiece other = (ChessPiece) obj;

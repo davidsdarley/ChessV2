@@ -319,6 +319,8 @@ public class MakeMoveTests {
                 | |N|B|Q|K| |R| |
                 """));
         //try to make an otherwise valid move that doesn't remove check
+        System.out.println(game.getBoard());
+        System.out.println(game.isInCheck(ChessGame.TeamColor.WHITE));
         Assertions.assertThrows(InvalidMoveException.class,
                 () -> game.makeMove(new ChessMove(new ChessPosition(1, 7), new ChessPosition(1, 8), null)));
     }
