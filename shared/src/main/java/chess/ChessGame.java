@@ -83,18 +83,18 @@ public class ChessGame {
                 valid.add(move);
             }
         }
+        System.out.println(valid);
         return valid;
     }
 
     public boolean testMove(ChessMove move){
         ChessGame test =  new ChessGame(this);
-
-
+        test.setTeamTurn(board.getPiece(move.getStartPosition()).getTeamColor());
         try {
             test.makeMove(move);
         }
-        catch(Exception InvalidMoveException){
-            return false;
+        catch(InvalidMoveException e){
+                return false;
         }
         return true;
     }
@@ -115,9 +115,7 @@ public class ChessGame {
         ChessPiece piece = board.getPiece(start);
         Collection<ChessMove> potentialMoves = piece.pieceMoves(board, start);
 
-        if(piece.getTeamColor() != getTeamTurn()){
-            throw new InvalidMoveException("Not your turn");
-        }
+
 
         boolean exists = false;
         for(ChessMove option: potentialMoves){
@@ -143,8 +141,14 @@ public class ChessGame {
             board.addPiece(end, null);
             throw new InvalidMoveException("Move results in check");
         }
+
         else{
-            changeTurn();
+            if(piece.getTeamColor() != getTeamTurn()){
+                throw new InvalidMoveException("Not your turn");
+            }
+            else {
+                changeTurn();
+            }
         }
     }
 
