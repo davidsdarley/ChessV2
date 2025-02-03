@@ -4,11 +4,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
+ * useful searching function for going through the board
+ * for(int row = 1; row <9; row+=1){
+ *             for(int col = 1; col < 9; col +=1){
+ *
+ *             }
+ *         }
+ */
+
+/**
  * For a class that can manage a chess game, making moves on a board
  * <p>
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
+
 public class ChessGame {
     ChessBoard board;
     TeamColor turn;
@@ -93,11 +103,37 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
-        board.addPiece(move.getStartPosition(), null);
 
-//        if(isInCheck(getTeamTurn())){
-//        }
+        //Check if it's a real move
+        ChessPosition start = move.getStartPosition();
+        if( this.board.board[start.getRow()][start.getColumn()] == null){
+            throw new InvalidMoveException("no piece in starting space");
+        }
+        ChessPosition end = move.getEndPosition();
+        ChessPiece piece = board.getPiece(start);
+        Collection<ChessMove> potentialMoves = piece.pieceMoves(board, start);
+
+        boolean exists = false;
+        for(ChessMove option: potentialMoves){
+            if(move.equals(option)){
+                exists = true;
+                break;
+            }
+        }
+        if (!exists){
+            throw new InvalidMoveException("impossible move");
+        }
+
+
+        board.addPiece(end, piece);
+        board.addPiece(start, null);
+
+        if(isInCheck(getTeamTurn())){
+        throw new InvalidMoveException("Move results in check");
+        }
+        else{
+            changeTurn();
+        }
     }
 
     /**
@@ -108,7 +144,35 @@ public class ChessGame {
      */
 
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        //you are in check if your king is under attack. So, find where the teamColor king is
+        ChessPosition kingPosition = null;
+        for(int row = 1; row <9; row+=1){
+            for(int col = 1; col < 9; col +=1){
+                if (board.getPiece(new ChessPosition(row, col)) == new ChessPiece(teamColor, ChessPiece.PieceType.KING)){
+                    kingPosition = new ChessPosition(row, col);
+                }
+            }
+        }
+
+        //see if any of your opponents pieces have any moves that end in the position of your king
+        //go through board and find the pieces that aren't yours
+        for(int row = 1; row <9; row+=1){
+            for(int col = 1; col < 9; col +=1){
+                ChessPiece piece = board.getPiece(new ChessPosition(row, col));
+                if(piece != null && piece.getTeamColor() != teamColor){
+                    // see what moves it can make
+                    Collection<ChessMove> potentialMoves = piece.pieceMoves(board, new ChessPosition(row, col));
+                    //see if any of them end in kingPosition
+                    for(ChessMove move: potentialMoves){
+                        if (move.getEndPosition() == kingPosition){
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
