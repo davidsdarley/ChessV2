@@ -4,6 +4,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 
+
+
 /**
  * useful searching function for going through the board
  * for(int row = 1; row <9; row+=1){
