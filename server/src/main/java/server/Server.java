@@ -4,8 +4,13 @@ import spark.*;
 import com.google.gson.Gson;
 
 public class Server {
-
-
+    private final ChessService service;
+    public Server(ChessService service){
+        this.service = service;
+    }
+    public Server(){
+        this.service = new ChessService();
+    }
     public static void main(String[] args) {
         Server chessServer = new Server();
         int port = chessServer.run(8080);
