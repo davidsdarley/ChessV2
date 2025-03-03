@@ -32,10 +32,12 @@ public class Server {
         Spark.awaitStop();
     }
 
-    private static Object handleHello(RegisterRequest req, Response res) {
+    private static Object handleHello(Request req, Response res) {
         return "Hello chess players!";}
-    private static Object handleRegister(RegisterRequest req, Response res) {
+    private static Object handleRegister(Request req, Response res) {
         //to register, I receive a JSON dictionary with username, password, and email. I return JSON username and authtoken.
-        var details = new Gson().fromJson(req.body(), )
-        return "Hello chess players!";}
+        var details = new Gson().fromJson(req.body(), RegisterRequest.class);
+        System.out.println(details.getClass());
+        return details;
+    }
 }
