@@ -1,4 +1,4 @@
-package server;
+package server.carriers;
 
 public class RegisterRequest {
     //RegisterRequests have username, password, and email.
@@ -11,7 +11,9 @@ public class RegisterRequest {
         this.password = password;
         this.email = email;
     }
-
+    public String getUsername(){
+        return username;
+    }
     @Override
     public String toString(){
         String str = "username: ";
