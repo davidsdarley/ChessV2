@@ -42,10 +42,15 @@ public class Server {
     private static Object handleHello(Request req, Response res) {
         return "Hello chess players!";}
     private static Object handleRegister(Request req, Response res) {
-        System.out.println("handleRegister");
         //to register, I receive a JSON dictionary with username, password, and email. I return JSON username and authtoken.
         var registration = new Gson().fromJson(req.body(), RegisterRequest.class);
         Object result = service.register(registration);
+        System.out.println(result);
+        return new Gson().toJson(result);
+    }
+    private static Object handleLogin(Request req, Response res) {
+        var log = new Gson().fromJson(req.body(), RegisterRequest.class);
+        Object result = service.login(log);
         System.out.println(result);
         return new Gson().toJson(result);
     }

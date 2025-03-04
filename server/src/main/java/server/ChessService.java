@@ -24,13 +24,16 @@ public class ChessService {
                 data.add(auth);
                 return new RegisterResult(user.getUsername(), auth.getToken());
             }
-
-
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
         return false;
     }
+    public Object login(LoginRequest login){
+
+        return false;
+    }
+
 
 
 
