@@ -22,7 +22,7 @@ public class ChessService {
                 data.add(user);
                 AuthData auth = new AuthData(registration.getUsername());
                 data.add(auth);
-                return new RegisterResult(user.getUsername(), auth.getToken());
+                return new LoginResult(user.getUsername(), auth.getToken());
             }
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
@@ -30,7 +30,17 @@ public class ChessService {
         return false;
     }
     public Object login(LoginRequest login){
-
+        try{
+            UserData user = data.getUser(login.getUsername());
+            if (user != null){
+                //make a new userData object and add it
+                AuthData auth = new AuthData(login.getUsername());
+                data.add(auth);
+                return new LoginResult(user.getUsername(), auth.getToken());
+            }
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         return false;
     }
 

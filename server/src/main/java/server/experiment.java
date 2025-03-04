@@ -13,7 +13,7 @@ public class experiment {
 public static void main(String[] args) {
     try {
         // Create a URL object from the URL string
-        URL url = new URL("http://localhost:8080/user");
+        URL url = new URL("http://localhost:8080/session");
 
         // Open a connection to the server
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -28,7 +28,8 @@ public static void main(String[] args) {
         connection.setDoOutput(true);
 
         // Create the JSON data to send in the request body
-        String jsonInputString = "{\"username\": \"davidsdarley\", \"password\": \"goliathsux123\", \"email\": \"dsd2001@byu.edu\"}";
+        String jsonInputString = "{\"username\": \"daviddarley\", \"password\": \"goliathsux123\"}";
+        //String jsonInputString = "{\"username\": \"davidsdarley\", \"password\": \"goliathsux123\", \"email\": \"dsd2001@byu.edu\"}";
 
         // Write the JSON string to the output stream
         try (OutputStream os = connection.getOutputStream()) {

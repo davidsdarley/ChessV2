@@ -1,6 +1,7 @@
 package dataaccess;
 
 import server.carriers.AuthData;
+import server.carriers.RegisterRequest;
 import server.carriers.UserData;
 
 public class DataAccess {
@@ -14,7 +15,6 @@ public class DataAccess {
         this.users = "ChessUsers123.json"; //
     }
     public UserData getUser(String username) throws DataAccessException{
-        System.out.println("DataAccess.getUser");
 //        try {
 //            Gson gson = new Gson();
 //            BufferedReader reader = new BufferedReader(new FileReader(users));
@@ -30,7 +30,8 @@ public class DataAccess {
 //        catch(IOException e){
 //            throw new DataAccessException("JSON reading error");
 //        }
-
+        if (username.equals( "davidsdarley")){
+            return new UserData(new RegisterRequest(username, "goliathsux123", "email@place.com"));}
         return null;
     }
     public boolean add(UserData user){

@@ -1,6 +1,6 @@
 package server;
 
-import server.carriers.RegisterRequest;
+import server.carriers.*;
 import spark.*;
 import com.google.gson.Gson;
 
@@ -29,6 +29,8 @@ public class Server {
         // Register your endpoints and handle exceptions here.
         Spark.get("/hello", Server::handleHello);
         Spark.post("/user", Server::handleRegister);
+        Spark.post("/session", Server::handleLogin);
+        Spark.delete("/session", Server::handleLogout);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -49,9 +51,24 @@ public class Server {
         return new Gson().toJson(result);
     }
     private static Object handleLogin(Request req, Response res) {
-        var log = new Gson().fromJson(req.body(), RegisterRequest.class);
+        var log = new Gson().fromJson(req.body(), LoginRequest.class);
         Object result = service.login(log);
+        if (result.getClass() != LoginResult.class){
+            res.status(409);
+            return new Gson().toJson(result);
+        }
         System.out.println(result);
         return new Gson().toJson(result);
     }
+    private static Object handleLogout(Request req, Response res) {
+        var log = new Gson().fromJson(req.body(), LogoutRequest.class);
+        Object result = service.login(log);
+        if (result.getClass() != LoginResult.class){
+            res.status(409);
+            return new Gson().toJson(result);
+        }
+        System.out.println(result);
+        return new Gson().toJson(result);
+    }
+
 }
