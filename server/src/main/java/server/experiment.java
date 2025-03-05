@@ -12,17 +12,23 @@ public class experiment {
 //    Spark.get(“/hello”, (req, res) -> “Hello BYU!”);
 public static void main(String[] args) {
     try {
+        //controls
+        String endpoint = "/game";
+        String reqType = "GET";
+
+
         // Create a URL object from the URL string
-        URL url = new URL("http://localhost:8080/session");
+        URL url = new URL("http://localhost:8080"+endpoint);
 
         // Open a connection to the server
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         // Set the request method to POST
-        connection.setRequestMethod("DELETE");
+        connection.setRequestMethod(reqType);
 
-        // Set the request header to indicate we're sending JSON
-        connection.setRequestProperty("Content-Type", "application/json");
+        // Set the request header
+        //connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestProperty("Authorization", "sfjdkslafj;dskfkds;aljfds");
 
         // Enable input/output streams
         connection.setDoOutput(true);

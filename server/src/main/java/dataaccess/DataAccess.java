@@ -2,9 +2,9 @@
 //test stuff, and I'll need to write them later.
 package dataaccess;
 
-import server.carriers.AuthData;
-import server.carriers.RegisterRequest;
-import server.carriers.UserData;
+import server.carriers.*;
+import java.util.ArrayList;
+
 
 public class DataAccess {
     private String users = "ChessUsers123.json";
@@ -53,6 +53,16 @@ public class DataAccess {
             throw new DataAccessException("no authtoken provided");
         }
         return null;
+    }
+    public ArrayList<GameData> getGames(){
+        ArrayList<GameData> games = new ArrayList<GameData>();
+
+        int[] ids =  {1234, 2345,3456,4567,5678,6789,7890};
+        for (int i: ids){
+            games.add(new GameData(i));
+        }
+
+        return games;
     }
 
 }

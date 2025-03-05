@@ -2,6 +2,7 @@ package server;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import server.carriers.*;
+import java.util.Collection;
 
 public class ChessService {
     private final DataAccess data;
@@ -55,7 +56,18 @@ public class ChessService {
         }
         return false;
     }
-
+    public Object listGames(AuthorizationRequest authorization){
+        try{
+            AuthData auth = data.getAuth(authorization.getToken());
+            if (auth == null){ //if (auth != null){     //<--Actually use this. It's flipped now for dev purposes
+                return data.getGames();
+            }
+        }
+        catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
 
 
 

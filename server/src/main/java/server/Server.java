@@ -3,6 +3,7 @@ package server;
 import server.carriers.*;
 import spark.*;
 import com.google.gson.Gson;
+import java.util.ArrayList;
 
 
 public class Server {
@@ -25,13 +26,12 @@ public class Server {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
-
         // Register your endpoints and handle exceptions here.
         Spark.get("/hello", Server::handleHello);
         Spark.post("/user", Server::handleRegister);
         Spark.post("/session", Server::handleLogin);
         Spark.delete("/session", Server::handleLogout);
-
+        Spark.get("/game", Server::handleListGames);
         Spark.awaitInitialization();
         return Spark.port();
     }
@@ -61,11 +61,10 @@ public class Server {
     }
     private static Object handleLogout(Request req, Response res) {
         var log = new Gson().fromJson(req.body(), LogoutRequest.class);
-        System.out.println(log);
         Object result = service.logout(log);
-        System.out.println(result);
         if (result.getClass() != LogoutResult.class){
             res.status(409);
+            return "{}";
         }
         LogoutResult logout = (LogoutResult)result;
         if (logout.getResult()){
@@ -76,6 +75,19 @@ public class Server {
             res.status(404);
         }
         return "{}";
+    }
+    private static Object handleListGames(Request req, Response res){
+        String auth = req.headers("authToken");
+        System.out.println(auth);
+        Object result = service.listGames(new AuthorizationRequest(auth));
+        System.out.println(result);
+
+        if (!(result instanceof ArrayList)){
+            res.status(409);
+            return "{}";
+        }
+        res.status(200);
+        return new Gson().toJson(result);
     }
 
 }
