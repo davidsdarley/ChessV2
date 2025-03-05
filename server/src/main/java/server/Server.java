@@ -99,8 +99,15 @@ public class Server {
         var gameRequest = new Gson().fromJson(req.body(), GameRequest.class);
         gameRequest.setAuthToken(auth);
         Object result = service.createGame(gameRequest);
-        System.out.println(result);
+        if (!(result instanceof GameData)){
+            res.status(409);
+            return "{}";
+        }
+        GameData game = ((GameData) result);
+        res.status(200);
 
-        return new Gson().toJson(result);
+        Map<String, String> message = new HashMap<>();
+        message.put("gameID", String.valueOf(game.getGameID()));
+        return new Gson().toJson(message);
     }
 }

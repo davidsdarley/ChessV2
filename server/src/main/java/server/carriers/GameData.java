@@ -24,6 +24,9 @@ public class GameData {
         this.blackUsername = null;
         this.name = "game"+String.valueOf(gameID);
     }
+    public int getGameID(){
+        return this.gameID;
+    }
     @Override
     public String toString(){
         String str = "gameID: "+ gameID+" whiteUsername: ";
