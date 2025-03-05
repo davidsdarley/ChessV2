@@ -46,7 +46,7 @@ public class ChessService {
     public Object logout(LogoutRequest logout){
         try{
             AuthData auth = data.getAuth(logout.getToken());
-            if (auth != null){
+            if (auth == null){ //if (auth != null){     //<--Actually use this. It's flipped now for dev purposes
                 return new LogoutResult(data.delete(auth));
             }
         }
