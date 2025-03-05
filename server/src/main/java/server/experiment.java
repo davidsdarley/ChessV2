@@ -14,7 +14,7 @@ public static void main(String[] args) {
     try {
         //controls
         String endpoint = "/game";
-        String reqType = "GET";
+        String reqType = "POST";
 
 
         // Create a URL object from the URL string
@@ -26,16 +26,16 @@ public static void main(String[] args) {
         // Set the request method to POST
         connection.setRequestMethod(reqType);
 
-        // Set the request header
-        //connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestProperty("Authorization", "sfjdkslafj;dskfkds;aljfds");
+        // Set the request headers
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestProperty("authToken", "lookatthiscoolcrab");
 
         // Enable input/output streams
         connection.setDoOutput(true);
 
         // Create the JSON data to send in the request body
 
-        String jsonInputString = "{\"authToken\": \"sfjdkslafj;dskfkds;aljfds\"}";
+        String jsonInputString = "{Des de Mar}";
         //String jsonInputString = "{\"username\": \"daviddarley\", \"password\": \"goliathsux123\"}";
         //String jsonInputString = "{\"username\": \"davidsdarley\", \"password\": \"goliathsux123\", \"email\": \"dsd2001@byu.edu\"}";
 

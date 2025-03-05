@@ -34,6 +34,8 @@ public class Server {
         Spark.post("/session", Server::handleLogin);
         Spark.delete("/session", Server::handleLogout);
         Spark.get("/game", Server::handleListGames);
+        Spark.post("/game",Server::handleCreateGame);
+
         Spark.awaitInitialization();
         return Spark.port();
     }
@@ -62,8 +64,8 @@ public class Server {
         return new Gson().toJson(result);
     }
     private static Object handleLogout(Request req, Response res) {
-        var log = new Gson().fromJson(req.body(), LogoutRequest.class);
-        Object result = service.logout(log);
+        String auth = req.headers("authToken");
+        Object result = service.logout(new LogoutRequest(auth));
         if (result.getClass() != LogoutResult.class){
             res.status(409);
             return "{}";
@@ -80,9 +82,7 @@ public class Server {
     }
     private static Object handleListGames(Request req, Response res){
         String auth = req.headers("authToken");
-        System.out.println(auth);
         Object result = service.listGames(new AuthorizationRequest(auth));
-        System.out.println(result);
 
         if (!(result instanceof ArrayList)){
             res.status(409);
@@ -94,5 +94,11 @@ public class Server {
         message.put("games", (ArrayList)result);
         return new Gson().toJson(message);
     }
+    private static Object handleCreateGame(Request req, Response res){
+        String auth = req.headers("authToken");
+        Object result = service.createGame(new AuthorizationRequest(auth));
+        System.out.println(req.body());
 
+        return true;
+    }
 }
