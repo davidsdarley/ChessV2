@@ -19,7 +19,7 @@ public static void main(String[] args) {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         // Set the request method to POST
-        connection.setRequestMethod("POST");
+        connection.setRequestMethod("DELETE");
 
         // Set the request header to indicate we're sending JSON
         connection.setRequestProperty("Content-Type", "application/json");
@@ -28,7 +28,9 @@ public static void main(String[] args) {
         connection.setDoOutput(true);
 
         // Create the JSON data to send in the request body
-        String jsonInputString = "{\"username\": \"daviddarley\", \"password\": \"goliathsux123\"}";
+
+        String jsonInputString = "{\"authToken\": \"sfjdkslafj;dskfkds;aljfds\"}";
+        //String jsonInputString = "{\"username\": \"daviddarley\", \"password\": \"goliathsux123\"}";
         //String jsonInputString = "{\"username\": \"davidsdarley\", \"password\": \"goliathsux123\", \"email\": \"dsd2001@byu.edu\"}";
 
         // Write the JSON string to the output stream

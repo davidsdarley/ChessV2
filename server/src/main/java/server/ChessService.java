@@ -43,6 +43,18 @@ public class ChessService {
         }
         return false;
     }
+    public Object logout(LogoutRequest logout){
+        try{
+            AuthData auth = data.getAuth(logout.getToken());
+            if (auth != null){
+                return new LogoutResult(data.delete(auth));
+            }
+        }
+        catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
 
 
 

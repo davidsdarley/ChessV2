@@ -1,3 +1,5 @@
+//This needs to be written later. For now I'm just making all of them return affirmative results so that I can
+//test stuff, and I'll need to write them later.
 package dataaccess;
 
 import server.carriers.AuthData;
@@ -41,6 +43,16 @@ public class DataAccess {
     public boolean add(AuthData auth){
         System.out.println(auth);
         return true;
+    }
+    public boolean delete(AuthData auth){
+        System.out.println(auth);
+        return true;
+    }
+    public AuthData getAuth(String authToken) throws DataAccessException{
+        if (authToken == null){
+            throw new DataAccessException("no authtoken provided");
+        }
+        return null;
     }
 
 }

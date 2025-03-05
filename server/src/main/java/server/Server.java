@@ -55,20 +55,27 @@ public class Server {
         Object result = service.login(log);
         if (result.getClass() != LoginResult.class){
             res.status(409);
-            return new Gson().toJson(result);
         }
         System.out.println(result);
         return new Gson().toJson(result);
     }
     private static Object handleLogout(Request req, Response res) {
         var log = new Gson().fromJson(req.body(), LogoutRequest.class);
-        Object result = service.login(log);
-        if (result.getClass() != LoginResult.class){
-            res.status(409);
-            return new Gson().toJson(result);
-        }
+        System.out.println(log);
+        Object result = service.logout(log);
         System.out.println(result);
-        return new Gson().toJson(result);
+        if (result.getClass() != LogoutResult.class){
+            res.status(409);
+        }
+        LogoutResult logout = (LogoutResult)result;
+        if (logout.getResult()){
+            res.status(200);
+
+        }
+        else{
+            res.status(404);
+        }
+        return "{}";
     }
 
 }
