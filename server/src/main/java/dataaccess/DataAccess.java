@@ -36,6 +36,10 @@ public class DataAccess {
             return new UserData(new RegisterRequest(username, "goliathsux123", "email@place.com"));}
         return null;
     }
+    public boolean add(GameData game){
+        System.out.println(game);
+        return true;
+    }
     public boolean add(UserData user){
         System.out.println(user);
         return true;
@@ -63,6 +67,9 @@ public class DataAccess {
         }
 
         return games;
+    }
+    public int getGameID(){//eventually figure out what the next available game ID is and return that so no repeats
+        return 1111;
     }
 
 }

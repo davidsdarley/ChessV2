@@ -9,6 +9,12 @@ public class GameRequest {
     public void setAuthToken(String authToken){
         this.authToken = authToken;
     }
+    public String getGameName(){
+        return gameName;
+    }
+    public String getAuthToken(){
+        return authToken;
+    }
 
     @Override
     public String toString(){

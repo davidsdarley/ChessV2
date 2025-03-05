@@ -68,6 +68,20 @@ public class ChessService {
         }
         return false;
     }
+    public Object createGame(GameRequest gameRequest){
+        try {
+            AuthData auth = data.getAuth(gameRequest.getAuthToken());
+            if (auth == null){ //if (auth != null){     //<--Actually use this. It's flipped now for dev purposes
+                GameData game = new GameData(gameRequest.getGameName(), data.getGameID());
+                if (data.add(game)){
+                    return game;
+                }
+            }
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    return false;
+    }
 
 
 

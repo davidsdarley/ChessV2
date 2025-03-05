@@ -97,9 +97,10 @@ public class Server {
     private static Object handleCreateGame(Request req, Response res){
         String auth = req.headers("authToken");
         var gameRequest = new Gson().fromJson(req.body(), GameRequest.class);
-        Object result = service.createGame(gameRequest.setAuthToken(auth));
+        gameRequest.setAuthToken(auth);
+        Object result = service.createGame(gameRequest);
         System.out.println(result);
 
-        return true;
+        return new Gson().toJson(result);
     }
 }
