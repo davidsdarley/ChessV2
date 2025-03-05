@@ -1,5 +1,6 @@
 package server.carriers;
-import java.util.Random;
+import chess.ChessGame.TeamColor;
+
 
 public class GameData {
     int gameID;

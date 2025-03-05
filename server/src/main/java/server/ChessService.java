@@ -72,7 +72,7 @@ public class ChessService {
         try {
             AuthData auth = data.getAuth(gameRequest.getAuthToken());
             if (auth == null){ //if (auth != null){     //<--Actually use this. It's flipped now for dev purposes
-                GameData game = new GameData(gameRequest.getGameName(), data.getGameID());
+                GameData game = new GameData(gameRequest.getGameName(), data.makeGameID());
                 if (data.add(game)){
                     return game;
                 }
@@ -82,7 +82,20 @@ public class ChessService {
         }
     return false;
     }
-
+    public boolean joinGame(JoinRequest joinRequest){
+        try {
+            AuthData auth = data.getAuth(joinRequest.getAuthToken());
+            if (auth == null){ //if (auth != null){     //<--Actually use this. It's flipped now for dev purposes
+                GameData game = data.getGame(joinRequest.getGameID());
+                if (game != null){
+                    String username = "davidsdarley";//auth.getUsername();
+                    return data.update(game, joinRequest, username);
+                }
+            }
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+        return false;    }
 
 
 }

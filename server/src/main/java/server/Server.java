@@ -35,6 +35,7 @@ public class Server {
         Spark.delete("/session", Server::handleLogout);
         Spark.get("/game", Server::handleListGames);
         Spark.post("/game",Server::handleCreateGame);
+        Spark.put("/game", Server::handleJoinGame);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -109,5 +110,20 @@ public class Server {
         Map<String, String> message = new HashMap<>();
         message.put("gameID", String.valueOf(game.getGameID()));
         return new Gson().toJson(message);
+    }
+    private static Object handleJoinGame(Request req, Response res){
+        String auth = req.headers("authToken");
+        var joinRequest = new Gson().fromJson(req.body(), JoinRequest.class);
+        joinRequest.setAuthToken(auth);
+        boolean result = service.joinGame(joinRequest);
+        System.out.println("FLAG");
+
+        if (result){
+            res.status(200);
+        }
+        else{
+            res.status(409);
+        }
+        return "{}";
     }
 }

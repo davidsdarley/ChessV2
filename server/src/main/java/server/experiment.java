@@ -14,7 +14,7 @@ public static void main(String[] args) {
     try {
         //controls
         String endpoint = "/game";
-        String reqType = "POST";
+        String reqType = "PUT";
 
 
         // Create a URL object from the URL string
@@ -35,7 +35,7 @@ public static void main(String[] args) {
 
         // Create the JSON data to send in the request body
 
-        String jsonInputString = "{\"gameName\": \"Des de Mar\"}";
+        String jsonInputString = "{\"playerColor\": \"White\",\"gameID\": \"1111\"}";
         //String jsonInputString = "{\"username\": \"davidsdarley\", \"password\": \"goliathsux123\", \"email\": \"dsd2001@byu.edu\"}";
 
         // Write the JSON string to the output stream

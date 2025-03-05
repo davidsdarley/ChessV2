@@ -11,4 +11,7 @@ public class AuthData {
     public String getToken(){
         return authToken;
     }
+    public String getUsername(){
+        return username;
+    }
 }

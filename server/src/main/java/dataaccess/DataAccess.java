@@ -68,8 +68,18 @@ public class DataAccess {
 
         return games;
     }
-    public int getGameID(){//eventually figure out what the next available game ID is and return that so no repeats
+    public int makeGameID(){//eventually figure out what the next available game ID is and return that so no repeats
         return 1111;
+    }
+    public GameData getGame(int gameID){
+        System.out.println(gameID);
+        return new GameData(1111);
+    }
+    public boolean update(GameData game, JoinRequest join, String username){
+        System.out.println(game);
+        System.out.println(join);
+        System.out.println(username);
+        return true;
     }
 
 }
