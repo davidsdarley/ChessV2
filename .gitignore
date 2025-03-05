@@ -11,4 +11,4 @@ out/
 
 ### Chess project ###
 server/**/db.properties
-**experiment.java
+server/src/main/java/sever/experiment
