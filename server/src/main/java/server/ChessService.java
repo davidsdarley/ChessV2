@@ -96,6 +96,8 @@ public class ChessService {
             throw new RuntimeException(e);
         }
         return false;    }
-
+    public boolean clearDatabase(){
+        return data.clearDatabase();
+    }
 
 }

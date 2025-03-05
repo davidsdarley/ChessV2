@@ -36,6 +36,7 @@ public class Server {
         Spark.get("/game", Server::handleListGames);
         Spark.post("/game",Server::handleCreateGame);
         Spark.put("/game", Server::handleJoinGame);
+        Spark.delete("/db", Server::handleDatabaseDoomsday);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -123,6 +124,16 @@ public class Server {
         }
         else{
             res.status(409);
+        }
+        return "{}";
+    }
+    private static Object handleDatabaseDoomsday(Request req, Response res){
+        boolean result = service.clearDatabase();
+        if (result){
+            res.status(200);
+        }
+        else{
+            res.status(500);
         }
         return "{}";
     }

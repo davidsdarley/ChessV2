@@ -13,8 +13,8 @@ public class experiment {
 public static void main(String[] args) {
     try {
         //controls
-        String endpoint = "/game";
-        String reqType = "PUT";
+        String endpoint = "/db";
+        String reqType = "DELETE";
 
 
         // Create a URL object from the URL string

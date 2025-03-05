@@ -81,5 +81,8 @@ public class DataAccess {
         System.out.println(username);
         return true;
     }
+    public boolean clearDatabase(){
+        return true;
+    }
 
 }
