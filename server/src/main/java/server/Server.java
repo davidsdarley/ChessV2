@@ -4,6 +4,8 @@ import server.carriers.*;
 import spark.*;
 import com.google.gson.Gson;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class Server {
@@ -86,8 +88,11 @@ public class Server {
             res.status(409);
             return "{}";
         }
+
         res.status(200);
-        return new Gson().toJson(result);
+        Map<String, ArrayList> message = new HashMap<>();
+        message.put("games", (ArrayList)result);
+        return new Gson().toJson(message);
     }
 
 }
