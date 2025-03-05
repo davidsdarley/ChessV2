@@ -35,8 +35,7 @@ public static void main(String[] args) {
 
         // Create the JSON data to send in the request body
 
-        String jsonInputString = "{Des de Mar}";
-        //String jsonInputString = "{\"username\": \"daviddarley\", \"password\": \"goliathsux123\"}";
+        String jsonInputString = "{\"gameName\": \"Des de Mar\"}";
         //String jsonInputString = "{\"username\": \"davidsdarley\", \"password\": \"goliathsux123\", \"email\": \"dsd2001@byu.edu\"}";
 
         // Write the JSON string to the output stream
