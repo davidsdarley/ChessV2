@@ -46,4 +46,23 @@ public class GameData {
         }
         return str;
     }
+    @Override
+    public boolean equals(Object obj){
+        if (obj.getClass() != GameData.class){
+            return false;
+        }
+        GameData other = (GameData)obj;
+        if (gameID == other.gameID){
+            //if any of them are null, check this.
+
+            if ((whiteUsername == null || other.whiteUsername == null) && (whiteUsername == null ^ other.whiteUsername == null)){
+                return false;
+            }
+            if ((blackUsername == null || other.blackUsername == null) && (blackUsername == null ^ other.blackUsername == null)){
+                return false;
+            }
+            return true;
+        }
+    return false;
+    }
 }

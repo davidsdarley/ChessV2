@@ -14,4 +14,14 @@ public class AuthData {
     public String getUsername(){
         return username;
     }
+
+    @Override
+    public boolean equals(Object obj){
+        if (obj.getClass() != AuthData.class){
+            return false;
+        }
+        AuthData other = (AuthData)obj;
+        return (authToken == other.authToken && username == other.username);
+    }
+
 }

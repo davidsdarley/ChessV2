@@ -1,4 +1,6 @@
 package server;
+import dataaccess.InMemoryDatabase;
+import server.carriers.GameData;
 import spark.Spark;
 import spark.Request;
 import spark.Response;
@@ -10,12 +12,23 @@ import java.net.URL;
 public class experiment {
 
 //    Spark.get(“/hello”, (req, res) -> “Hello BYU!”);
-public static void main(String[] args) {
+public static void main(String[] args){
+    GameData game1 = new GameData(1111, null, null);
+    GameData game2 = new GameData(1111, null, null);
+    InMemoryDatabase db = new InMemoryDatabase();
+    System.out.println(db.add(game1));
+    System.out.println(db.add(game2));
+}
+
+
+public static void mainX(String[] args) {
+
+
     try {
         //controls
         String endpoint = "/db";
         String reqType = "DELETE";
-
+        //ifdkslsd
 
         // Create a URL object from the URL string
         URL url = new URL("http://localhost:8080"+endpoint);
