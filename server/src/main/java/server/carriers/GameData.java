@@ -65,4 +65,25 @@ public class GameData {
         }
     return false;
     }
+
+    public String getWhiteUsername(){
+        return whiteUsername;
+    }
+    public String getBlackUsername() {
+        return blackUsername;
+    }
+    public boolean setWhiteUsername(String username){
+        if (whiteUsername == null){
+            whiteUsername = username;
+            return true;
+        }
+        return false;
+    }
+    public boolean setBlackUsername(String username){
+        if (blackUsername == null){
+            blackUsername = username;
+            return true;
+        }
+        return false;
+    }
 }

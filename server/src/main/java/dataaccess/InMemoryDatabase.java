@@ -13,9 +13,35 @@ public class InMemoryDatabase {
         authdb = new ArrayList<>();
         userdb = new ArrayList<>();
     }
+    public GameData getGame(GameData target){
+        for(GameData game: gamesdb){
+            if (target.getGameID() == game.getGameID()){
+                return game;
+            }
+        }
+        return null;
+    }
+    public UserData getUser(String username){
+        for(UserData user: userdb){
+            if (username == user.getUsername()){
+                return user;
+            }
+        }
+        return null;
+    }
+    public AuthData getAuth(String authToken){
+        for(AuthData auth: authdb){
+            if (authToken == auth.getToken()){
+                return auth;
+            }
+        }
+        return null;
+    }
+
+
     public boolean add(GameData newGame){
         for(GameData game: gamesdb){
-            if(newGame.equals(game)){
+            if(newGame.getGameID() == game.getGameID()){
                 return false;
             }
         }
@@ -23,8 +49,8 @@ public class InMemoryDatabase {
         return true;
     }
     public boolean add(AuthData newAuth){
-        for(GameData auth: gamesdb){
-            if(newAuth.equals(auth)){
+        for(AuthData auth: authdb){
+            if(newAuth.usernameConflict(auth)){
                 return false;
             }
         }
@@ -32,7 +58,7 @@ public class InMemoryDatabase {
         return true;
     }
     public boolean add(UserData newUser){
-        for(GameData user: gamesdb){
+        for(UserData user: userdb){
             if(newUser.equals(user)){
                 return false;
             }
@@ -41,4 +67,23 @@ public class InMemoryDatabase {
         return true;
     }
 
+    public boolean delete(AuthData target){
+        for(AuthData auth: authdb){
+            if(target.getToken() == auth.getToken()){
+                authdb.remove(target);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public ArrayList<AuthData> getAuthdb(){
+        return authdb;
+    }
+    public ArrayList<UserData> getUserdb(){
+        return userdb;
+    }
+    public ArrayList<GameData> getGamesdb(){
+        return gamesdb;
+    }
 }

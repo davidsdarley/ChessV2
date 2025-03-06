@@ -1,5 +1,6 @@
 package server;
 import dataaccess.InMemoryDatabase;
+import server.carriers.AuthData;
 import server.carriers.GameData;
 import spark.Spark;
 import spark.Request;
@@ -13,11 +14,14 @@ public class experiment {
 
 //    Spark.get(“/hello”, (req, res) -> “Hello BYU!”);
 public static void main(String[] args){
-    GameData game1 = new GameData(1111, null, null);
-    GameData game2 = new GameData(1111, null, null);
+    AuthData auth1 = new AuthData("davo");
+    AuthData auth2 = new AuthData("ajd");
     InMemoryDatabase db = new InMemoryDatabase();
-    System.out.println(db.add(game1));
-    System.out.println(db.add(game2));
+    System.out.println(db.add(auth1));
+    System.out.println(db.add(auth2));
+    //System.out.println(db.delete(auth1));
+    //System.out.println(db.delete(auth1));
+    System.out.println(db.getAuthdb());
 }
 
 

@@ -5,6 +5,7 @@ public class JoinRequest {
     int gameID;
     TeamColor color;
     String authToken;
+
     public JoinRequest(int id, String color){
         if (color.toLowerCase() == "white"){
             this.color = TeamColor.WHITE;
