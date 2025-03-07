@@ -11,7 +11,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 
-public class myAPITests {
+public class MyAPITests {
     static Server server;
 
     @AfterAll
