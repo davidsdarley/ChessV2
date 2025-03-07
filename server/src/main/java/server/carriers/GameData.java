@@ -1,18 +1,20 @@
 package server.carriers;
-import chess.ChessGame.TeamColor;
 
 
 public class GameData {
     int gameID;
-    String name;
+    String gameName = "hi";
     String whiteUsername;
     String blackUsername;
 
     public GameData(String name, int gameID){
-        this.gameID =gameID;
+        if (name != null){
+
+        this.gameID = gameID;
         this.whiteUsername = null;
         this.blackUsername = null;
-        this.name = name;
+        this.gameName = name;
+    }
     }
     public int getGameID(){
         return this.gameID;
@@ -74,5 +76,8 @@ public class GameData {
             return true;
         }
         return false;
+    }
+    public String getName(){
+        return gameName;
     }
 }

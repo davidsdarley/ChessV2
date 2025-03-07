@@ -55,6 +55,7 @@ public class DataAccess {
     public GameData getGame(int gameID){
         for(GameData game: db.getGamesdb()){
             if (game.getGameID() == gameID){
+                System.out.println("Flag 1"+game.getName());
                 return game;
             }
         }

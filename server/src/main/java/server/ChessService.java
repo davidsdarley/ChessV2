@@ -34,11 +34,7 @@ public class ChessService {
             UserData user = data.getUser(login.getUsername());
             if (user != null){
                 if (user.getPassword().equals(login.getPassword())){
-                    AuthData auth = data.alreadyLoggedIn(login.getUsername());
-                    if(auth != null){
-                        return new LoginResult(user.getUsername(), auth.getToken());
-                    }
-                    auth = new AuthData(login.getUsername());
+                    AuthData auth = new AuthData(login.getUsername());
                     data.add(auth);
                     return new LoginResult(user.getUsername(), auth.getToken());
                 }
