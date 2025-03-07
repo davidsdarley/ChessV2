@@ -34,14 +34,6 @@ public class DataAccess {
         }
         return db.getAuth(authToken);
     }
-    public AuthData alreadyLoggedIn(String username){
-        for(AuthData auth: db.getAuthdb()){
-            if (auth.getUsername().equals(username)){
-                return auth;
-            }
-        }
-        return null;
-    }
     public ArrayList<GameData> getGames(){
         return db.getGamesdb();
     }

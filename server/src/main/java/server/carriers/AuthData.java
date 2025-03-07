@@ -14,10 +14,6 @@ public class AuthData {
     public String getUsername(){
         return username;
     }
-
-    public boolean usernameConflict(AuthData other){
-        return username == other.getUsername();
-    }
     @Override
     public boolean equals(Object obj){
         if (obj.getClass() != AuthData.class){

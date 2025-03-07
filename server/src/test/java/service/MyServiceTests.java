@@ -110,7 +110,8 @@ public class MyServiceTests {
         service.createGame(new GameRequest("the true desolation", user.authToken));
         service.createGame(new GameRequest("Battle of Thaylen Field", user.authToken));
         Object result = service.listGames(new AuthorizationRequest(user.authToken));
-        Assertions.assertTrue(result.toString().equals("[gameID: 1000 whiteUsername: None blackUsername: None, gameID: 1001 whiteUsername: None blackUsername: None]"));
+        Assertions.assertTrue(result.toString().equals("[gameID: 1000 whiteUsername: None blackUsername: " +
+                "None, gameID: 1001 whiteUsername: None blackUsername: None]"));
     }
     @Test
     @Order(8)
@@ -120,7 +121,8 @@ public class MyServiceTests {
         service.createGame(new GameRequest("the true desolation", "unauthorized fools"));
         service.createGame(new GameRequest("Battle of Thaylen Field", "unauthorized fools"));
         Object result = service.listGames(new AuthorizationRequest("unauthorized fools"));
-        Assertions.assertFalse(result.toString().equals("[gameID: 1000 whiteUsername: None blackUsername: None, gameID: 1001 whiteUsername: None blackUsername: None]"));
+        Assertions.assertFalse(result.toString().equals("[gameID: 1000 whiteUsername: None " +
+                "blackUsername: None, gameID: 1001 whiteUsername: None blackUsername: None]"));
     }
     @Test
     @Order(9)

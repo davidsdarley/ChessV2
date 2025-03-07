@@ -95,8 +95,6 @@ public class ChessGame {
         ChessPiece piece = board.getPiece(start);
         Collection<ChessMove> potentialMoves = piece.pieceMoves(board, start);
 
-
-
         boolean exists = false;
         for(ChessMove option: potentialMoves){
             if(move.equals(option)){
@@ -150,15 +148,15 @@ public class ChessGame {
                 }
             }
         }
+        final ChessPosition king = kingPosition;
         for(int row = 1; row <9; row+=1){
             for(int col = 1; col < 9; col +=1){
                 ChessPiece piece = board.getPiece(new ChessPosition(row, col));
                 if(piece != null && piece.getTeamColor() != teamColor){
                     Collection<ChessMove> potentialMoves = piece.pieceMoves(board, new ChessPosition(row, col));
-                    for(ChessMove move: potentialMoves){
-                        if (move.getEndPosition().equals(kingPosition)){
-                            return true;
-                        }
+                    if (potentialMoves.stream()
+                            .anyMatch(move -> move.getEndPosition().equals(king))){
+                        return true;
                     }
                 }
             }
@@ -190,8 +188,9 @@ public class ChessGame {
     }
 
     public boolean isInCheckmate(TeamColor teamColor) {
-        if(! isInCheck(teamColor) || anyValidMoves(teamColor))
+        if(! isInCheck(teamColor) || anyValidMoves(teamColor)) {
             return false;
+        }
         return true;
     }
 
