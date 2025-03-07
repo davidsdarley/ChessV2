@@ -2,6 +2,8 @@ package server;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import server.carriers.*;
+
+import javax.xml.crypto.Data;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +14,7 @@ public class ChessService {
         data = new DataAccess();
     }
     public Object register(RegisterRequest registration){
-        System.out.println("ChessService.register");
+
         try{
             UserData user = data.getUser(registration.getUsername());
             if (user == null){
@@ -73,9 +75,6 @@ public class ChessService {
     }
     public Object createGame(GameRequest gameRequest){
         try {
-            if (gameRequest.getGameName() == null){
-
-            }
             AuthData auth = data.getAuth(gameRequest.getAuthToken());
             if (auth != null){
                 GameData game = new GameData(gameRequest.getGameName(), data.makeGameID());
@@ -109,11 +108,14 @@ public class ChessService {
     public boolean clearDatabase(){
         return data.clearDatabase();
     }
-
     public Map<String, String> makeMessage(String message){
         Map<String, String> messageMap = new HashMap<>();
         String fullMessage = "Error: " + message;
         messageMap.put("message", fullMessage);
         return messageMap;
+    }
+
+    public DataAccess getData(){
+        return data;
     }
 }

@@ -49,11 +49,6 @@ public class InMemoryDatabase {
         return true;
     }
     public boolean add(AuthData newAuth){
-        for(AuthData auth: authdb){
-            if(newAuth.usernameConflict(auth)){
-                return false;
-            }
-        }
         authdb.add(newAuth);
         return true;
     }

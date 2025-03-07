@@ -21,4 +21,15 @@ public class LoginResult {
     public String toString(){
         return "username: "+ username +" authToken: " + authToken;
     }
+    @Override
+    public boolean equals(Object obj){
+        if (! (obj instanceof LoginResult)){
+            return false;
+        }
+        LoginResult other = (LoginResult) obj;
+        return(other.getAuthToken().equals(authToken) && other.getUsername().equals(username));
+    }
+    public boolean loginSuccessful(){
+        return authToken != null;
+    }
 }

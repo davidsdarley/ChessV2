@@ -26,5 +26,8 @@ public class AuthData {
         AuthData other = (AuthData)obj;
         return (authToken == other.authToken && username == other.username);
     }
-
+    @Override
+    public String toString(){
+        return "username: "+username+ " authToken: "+authToken;
+    }
 }

@@ -169,8 +169,4 @@ public class Server {
         }
         return "{}";
     }
-
-    public static void reset(){
-        service.clearDatabase();
-    }
 }

@@ -6,6 +6,10 @@ public class GameRequest {
     public GameRequest(String gameName){
         this.gameName = gameName;
     }
+    public GameRequest(String gameName, String authToken){
+        this.gameName = gameName;
+        this.authToken = authToken;
+    }
     public void setAuthToken(String authToken){
         this.authToken = authToken;
     }

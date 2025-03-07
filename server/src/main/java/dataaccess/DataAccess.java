@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class DataAccess {
 
-    InMemoryDatabase db;
+    public InMemoryDatabase db;
 
     public DataAccess(){
         this.db = new InMemoryDatabase();
