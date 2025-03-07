@@ -2,7 +2,6 @@
 //test stuff, and I'll need to write them later.
 package dataaccess;
 
-import chess.ChessGame;
 import server.carriers.*;
 import java.util.ArrayList;
 

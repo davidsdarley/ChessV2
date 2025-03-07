@@ -1,5 +1,4 @@
 package server.carriers;
-import chess.ChessGame.TeamColor;
 
 public class JoinRequest {
     int gameID;
