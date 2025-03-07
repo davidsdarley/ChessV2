@@ -3,6 +3,8 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import server.carriers.*;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ChessService {
     private final DataAccess data;
@@ -79,6 +81,9 @@ public class ChessService {
     }
     public Object createGame(GameRequest gameRequest){
         try {
+            if (gameRequest.getGameName() == null){
+
+            }
             AuthData auth = data.getAuth(gameRequest.getAuthToken());
             if (auth != null){     //<--Actually use this. It's flipped now for dev purposes
                 GameData game = new GameData(gameRequest.getGameName(), data.makeGameID());
@@ -91,22 +96,32 @@ public class ChessService {
         }
     return false;
     }
-    public boolean joinGame(JoinRequest joinRequest){
+    public JoinResult joinGame(JoinRequest joinRequest){
         try {
             AuthData auth = data.getAuth(joinRequest.getAuthToken());
-            if (auth != null){     //<--Actually use this. It's flipped now for dev purposes
+            if (auth != null){
                 GameData game = data.getGame(joinRequest.getGameID());
                 if (game != null){
-                    String username = "davidsdarley";//auth.getUsername();
+                    String username = auth.getUsername();
                     return data.update(game, joinRequest, username);
                 }
+            }
+            else{
+                return new JoinResult(false, 401);
             }
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
-        return false;    }
+        return new JoinResult(false,500);
+    }
     public boolean clearDatabase(){
         return data.clearDatabase();
     }
 
+    public Map<String, String> makeMessage(String message){
+        Map<String, String> messageMap = new HashMap<>();
+        String fullMessage = "Error: " + message;
+        messageMap.put("message", fullMessage);
+        return messageMap;
+    }
 }

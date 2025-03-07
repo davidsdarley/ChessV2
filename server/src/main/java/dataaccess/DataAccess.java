@@ -49,7 +49,7 @@ public class DataAccess {
     public int makeGameID(){//eventually figure out what the next available game ID is and return that so no repeats
         int gamebdSize = db.getGamesdb().size();
         if (gamebdSize < 1){
-            return 0;
+            return 1000;
         }
         return db.getGamesdb().get(gamebdSize-1).getGameID() + 1;
     }
@@ -61,18 +61,24 @@ public class DataAccess {
         }
         return null;
     }
-    public boolean update(GameData target, JoinRequest join, String username){
+    public JoinResult update(GameData target, JoinRequest join, String username){
         for(GameData game: db.getGamesdb()){
             if (game.getGameID() == target.getGameID()){
-                if (join.getColor() == ChessGame.TeamColor.WHITE){
-                    return game.setWhiteUsername(username);
+                if (!(join.getColor() == null) && join.getColor().equals("WHITE")){
+                    if (game.setWhiteUsername(username)){
+                        return new JoinResult(true, 200);
+                    }
+                    return new JoinResult(false, 403);
                 }
-                if (join.getColor() == ChessGame.TeamColor.BLACK){
-                    return game.setBlackUsername(username);
+                if (!(join.getColor() == null) && join.getColor().equals("BLACK")){
+                    if (game.setBlackUsername(username)){
+                        return new JoinResult(true, 200);
+                    }
+                    return new JoinResult(false, 403);
                 }
             }
         }
-        return false;
+        return new JoinResult(false, 400);
     }
     public boolean clearDatabase(){
         db = new InMemoryDatabase();

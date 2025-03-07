@@ -54,18 +54,13 @@ public class Server {
         var registration = new Gson().fromJson(req.body(), RegisterRequest.class);
         if (!registration.filledOut()){
             res.status(400);
-            Map<String, String> message = new HashMap<>();
-            message.put("message", "Error: bad request");
-            return new Gson().toJson(message);
-        }
+            return new Gson().toJson(service.makeMessage("bad request"));        }
         Object result = service.register(registration);
         if (result instanceof LoginResult){
             return new Gson().toJson(result);
         }
         res.status(403);
-        Map<String, String> message = new HashMap<>();
-        message.put("message", "Error: already taken");
-        return new Gson().toJson(message);
+        return new Gson().toJson(service.makeMessage("already taken"));
     }
     private static Object handleLogin(Request req, Response res){
         try {
@@ -73,20 +68,14 @@ public class Server {
             LoginResult result = service.login(log);
             if (result.isEmpty()) {
                 res.status(401);
-                Map<String, String> message = new HashMap<>();
-                message.put("message", "Error: unauthorized");
-                return new Gson().toJson(message);
+                return new Gson().toJson(service.makeMessage("unauthorized"));
             }
             res.status(200);
             return new Gson().toJson(result);
         }
         catch(RuntimeException e){
             res.status(500);
-            Map<String, String> message = new HashMap<>();
-            String error = "Error: " + e.toString();
-            message.put("message", error);
-            return new Gson().toJson(message);
-        }
+            return new Gson().toJson(service.makeMessage("unauthorized"));        }
     }
     private static Object handleLogout(Request req, Response res) {
         try{
@@ -100,22 +89,15 @@ public class Server {
             }
             else{
                 res.status(401);
-                Map<String, String> message = new HashMap<>();
-                message.put("message", "Error: unauthorized");
-                return new Gson().toJson(message);
+                return new Gson().toJson(service.makeMessage("unauthorized"));
             }
         }
         catch(RuntimeException e){
             res.status(500);
-            Map<String, String> message = new HashMap<>();
-            String error = "Error: " + e.toString();
-            message.put("message", error);
-            return new Gson().toJson(message);
-        }
-
+            return new Gson().toJson(service.makeMessage(e.toString()));        }
     }
     private static Object handleListGames(Request req, Response res){
-        String auth = req.headers("authToken");
+        String auth = req.headers("authorization");
         Object result = service.listGames(new AuthorizationRequest(auth));
 
         if (!(result instanceof ArrayList)){
@@ -129,13 +111,17 @@ public class Server {
         return new Gson().toJson(message);
     }
     private static Object handleCreateGame(Request req, Response res){
-        String auth = req.headers("authToken");
+        String auth = req.headers("authorization");
         var gameRequest = new Gson().fromJson(req.body(), GameRequest.class);
         gameRequest.setAuthToken(auth);
+        if (gameRequest.getGameName() == null){
+            res.status(400);
+            return new Gson().toJson(service.makeMessage("bad request"));
+        }
         Object result = service.createGame(gameRequest);
         if (!(result instanceof GameData)){
-            res.status(409);
-            return "{}";
+            res.status(401);
+            return new Gson().toJson(service.makeMessage("unauthorized"));
         }
         GameData game = ((GameData) result);
         res.status(200);
@@ -145,19 +131,35 @@ public class Server {
         return new Gson().toJson(message);
     }
     private static Object handleJoinGame(Request req, Response res){
-        String auth = req.headers("authToken");
+        String auth = req.headers("authorization");
         var joinRequest = new Gson().fromJson(req.body(), JoinRequest.class);
+        if (joinRequest.getGameID() == 0){
+            res.status(400);
+            return new Gson().toJson( service.makeMessage("bad request"));
+        }
         joinRequest.setAuthToken(auth);
-        boolean result = service.joinGame(joinRequest);
-        System.out.println("FLAG");
+        JoinResult result = service.joinGame(joinRequest);
 
-        if (result){
+        if (result.getResult()){
             res.status(200);
+            return "{}";
         }
         else{
-            res.status(409);
+            res.status(result.getCode());
+            if (result.getCode() == 400){
+                return new Gson().toJson( service.makeMessage("bad request"));
+            }
+            if (result.getCode() == 401){
+                return new Gson().toJson( service.makeMessage("unauthorized"));
+            }
+            if (result.getCode() == 403){
+                return new Gson().toJson( service.makeMessage("unauthorized"));
+            }
+            res.status(500);
+
+                return new Gson().toJson(service.makeMessage("Dunno. It broke real good"));
+
         }
-        return "{}";
     }
     private static Object handleDatabaseDoomsday(Request req, Response res){
         boolean result = service.clearDatabase();
