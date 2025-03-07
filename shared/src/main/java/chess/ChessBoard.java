@@ -96,8 +96,9 @@ public class ChessBoard {
         for(int row=8; row > 0; row -=1){
             str += ("|");
             for(int col = 1; col < 9; col +=1) {
-                if (board[row][col] == null)
+                if (board[row][col] == null){
                 str +=(" |");
+                }
                 else{
                     str+= board[row][col].toString();
                 }
