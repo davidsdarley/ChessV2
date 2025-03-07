@@ -16,4 +16,9 @@ public class LoginResult {
     public boolean isEmpty(){
         return (username == null || authToken == null);
     }
+
+    @Override
+    public String toString(){
+        return "username: "+ username +" authToken: " + authToken;
+    }
 }

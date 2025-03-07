@@ -12,34 +12,15 @@ public class experiment {
 
 //    Spark.get(“/hello”, (req, res) -> “Hello BYU!”);
 public static void main(String[] args){
-//    runTest("/user", "POST");
-//    AuthData auth1 = new AuthData("davo");
-//    AuthData auth2 = new AuthData("ajd");
     InMemoryDatabase db = new InMemoryDatabase();
-//    System.out.println(db.add(auth1));
-//    System.out.println(db.add(auth2));
-//    //System.out.println(db.delete(auth1));
-//    //System.out.println(db.delete(auth1));
     System.out.println(db.getUserdb());
 }
 
 
 public static void runTest(String endpoint, String reqType) {
-
-
     try {
-        //controls
-//        String endpoint = "/db";
-//        String reqType = "DELETE";
-        //ifdkslsd
-
-        // Create a URL object from the URL string
         URL url = new URL("http://localhost:8080"+endpoint);
-
-        // Open a connection to the server
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-        // Set the request method to POST
         connection.setRequestMethod(reqType);
 
         // Set the request headers

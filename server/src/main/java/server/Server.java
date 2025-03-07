@@ -20,9 +20,6 @@ public class Server {
         Server chessServer = new Server();
         int port = chessServer.run(8080);
         System.out.println(port);
-        //chessServer.stop();
-        //System.out.println("Stopped");
-
     }
         public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -111,6 +108,7 @@ public class Server {
         return new Gson().toJson(message);
     }
     private static Object handleCreateGame(Request req, Response res){
+        System.out.println("Running");
         String auth = req.headers("authorization");
         var gameRequest = new Gson().fromJson(req.body(), GameRequest.class);
         gameRequest.setAuthToken(auth);
@@ -170,5 +168,9 @@ public class Server {
             res.status(500);
         }
         return "{}";
+    }
+
+    public static void reset(){
+        service.clearDatabase();
     }
 }
