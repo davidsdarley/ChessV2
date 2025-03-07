@@ -11,9 +11,6 @@ public class ChessService {
     public ChessService(){
         data = new DataAccess();
     }
-    public ChessService(DataAccess dataAccess){
-        data = dataAccess;
-    }
     public Object register(RegisterRequest registration){
         System.out.println("ChessService.register");
         try{
