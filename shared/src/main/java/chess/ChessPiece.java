@@ -60,7 +60,6 @@ public class ChessPiece {
 
     @Override
     public int hashCode(){
-        //There are 6 types of chess pieces. White adds 6 to the basic value
         int hash = 0;
         if(color == ChessGame.TeamColor.WHITE){
             hash += 6;

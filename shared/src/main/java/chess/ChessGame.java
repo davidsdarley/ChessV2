@@ -1,26 +1,7 @@
 package chess;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
-
-
-
-/**
- * useful searching function for going through the board
- * for(int row = 1; row <9; row+=1){
- *             for(int col = 1; col < 9; col +=1){
- *
- *             }
- *         }
- */
-
-/**
- * For a class that can manage a chess game, making moves on a board
- * <p>
- * Note: You can add to this class, but you may not alter
- * signature of the existing methods.
- */
 
 public class ChessGame {
     ChessBoard board;
@@ -79,7 +60,6 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
         Collection<ChessMove> potentialMoves = piece.pieceMoves(board, startPosition);
-        //of the moves in potentialMoves, see which of them don't result in the king getting in check. return those.
         ArrayList<ChessMove> valid =  new ArrayList<>();
         for(ChessMove move: potentialMoves){
             if (testMove(move)){
@@ -107,8 +87,6 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-
-        //Check if it's a real move
         ChessPosition start = move.getStartPosition();
         if( this.board.board[start.getRow()][start.getColumn()] == null){
             throw new InvalidMoveException("no piece in starting space");
@@ -162,7 +140,6 @@ public class ChessGame {
      */
 
     public boolean isInCheck(TeamColor teamColor) {
-        //you are in check if your king is under attack. So, find where the teamColor king is
         ChessPosition kingPosition = null;
         for(int row = 1; row <9 && (kingPosition == null); row+=1){
             for(int col = 1; col < 9; col +=1){
@@ -173,15 +150,11 @@ public class ChessGame {
                 }
             }
         }
-        //see if any of your opponents pieces have any moves that end in the position of your king
-        //go through board and find the pieces that aren't yours
         for(int row = 1; row <9; row+=1){
             for(int col = 1; col < 9; col +=1){
                 ChessPiece piece = board.getPiece(new ChessPosition(row, col));
                 if(piece != null && piece.getTeamColor() != teamColor){
-                    // see what moves it can make
                     Collection<ChessMove> potentialMoves = piece.pieceMoves(board, new ChessPosition(row, col));
-                    //see if any of them end in kingPosition
                     for(ChessMove move: potentialMoves){
                         if (move.getEndPosition().equals(kingPosition)){
                             return true;

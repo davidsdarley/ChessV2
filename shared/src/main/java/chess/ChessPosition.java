@@ -18,11 +18,6 @@ public class ChessPosition {
         this.row = other.getRow();
         this.col = other.getColumn();
     }
-
-    /**
-     * @return which row this position is in
-     * 1 codes for the bottom row
-     */
     public int getRow() {return this.row;}
 
     /**

@@ -50,20 +50,14 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        // clear the old board if it exists
         board = new ChessPiece[9][9];
-        // Set up WHITE
         this.setSide(ChessGame.TeamColor.WHITE);
-        // Set up Black
         this.setSide(ChessGame.TeamColor.BLACK);
     }
     public void setSide(ChessGame.TeamColor teamColor){
-        // Set up WHITE
-        //they go in rows 1 and 2
         int row;
         if (teamColor == ChessGame.TeamColor.WHITE){row = 2;}
         else{row = 7;}
-        //add pawns
         for(int col = 8; col>0; col -=1){
             ChessPosition target = new ChessPosition(row, col);
             addPiece(target, new ChessPiece(teamColor, ChessPiece.PieceType.PAWN));
@@ -71,7 +65,6 @@ public class ChessBoard {
 
         if (teamColor == ChessGame.TeamColor.WHITE){row = 1;}
         else{row = 8;}
-        //add the other pieces. Rook, Knight, Bishop, Queen, King
         addPiece(new ChessPosition(row, 1), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
         addPiece(new ChessPosition(row, 8), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
 
@@ -83,8 +76,6 @@ public class ChessBoard {
 
         addPiece(new ChessPosition(row, 4), new ChessPiece(teamColor, ChessPiece.PieceType.QUEEN));
         addPiece(new ChessPosition(row, 5), new ChessPiece(teamColor, ChessPiece.PieceType.KING));
-        //Set up BLACK
-        //rows 7 and 8
     }
 
 
@@ -118,7 +109,6 @@ public class ChessBoard {
 
     @Override
     public boolean equals(Object obj){
-        //not same class
         if(obj.getClass() != ChessBoard.class){
             return false;
         }
@@ -126,7 +116,6 @@ public class ChessBoard {
         for(int row=8; row >= 0; row -=1){
             for(int col = 0; col < 9; col +=1) {
                 if (other.board[row][col] == null || this.board[row][col] == null) {
-                    //null case
                     if(! (this.board[row][col] == null && other.board[row][col] == null)){
                         return false;
                     }
