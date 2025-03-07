@@ -24,40 +24,51 @@ public class ChessService {
                 data.add(auth);
                 return new LoginResult(user.getUsername(), auth.getToken());
             }
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
-        }
-        return false;
-    }
-    public Object login(LoginRequest login){
-        try{
-            UserData user = data.getUser(login.getUsername());
-            if (user != null){
-                AuthData auth = new AuthData(login.getUsername());
-                data.add(auth);
-                return new LoginResult(user.getUsername(), auth.getToken());
+            else{
+                return false;
             }
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
-        return false;
     }
-    public Object logout(LogoutRequest logout){
+    public LoginResult login(LoginRequest login){
+        try{
+            UserData user = data.getUser(login.getUsername());
+            if (user != null){
+                if (user.getPassword().equals(login.getPassword())){
+                    AuthData auth = data.alreadyLoggedIn(login.getUsername());
+                    if(auth != null){
+                        return new LoginResult(user.getUsername(), auth.getToken());
+                    }
+                    auth = new AuthData(login.getUsername());
+                    data.add(auth);
+                    return new LoginResult(user.getUsername(), auth.getToken());
+                }
+                else{
+                    return new LoginResult(null, null);
+                }
+            }
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+        return new LoginResult(null, null);
+    }
+    public LogoutResult logout(LogoutRequest logout){
         try{
             AuthData auth = data.getAuth(logout.getToken());
-            if (auth != null){     //<--Actually use this. It's flipped now for dev purposes
+            if (auth != null){
                 return new LogoutResult(data.delete(auth));
             }
         }
         catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
-        return false;
+        return new LogoutResult(false);
     }
     public Object listGames(AuthorizationRequest authorization){
         try{
             AuthData auth = data.getAuth(authorization.getToken());
-            if (auth == null){ //if (auth != null){     //<--Actually use this. It's flipped now for dev purposes
+            if (auth != null){     //<--Actually use this. It's flipped now for dev purposes
                 return data.getGames();
             }
         }
@@ -69,7 +80,7 @@ public class ChessService {
     public Object createGame(GameRequest gameRequest){
         try {
             AuthData auth = data.getAuth(gameRequest.getAuthToken());
-            if (auth == null){ //if (auth != null){     //<--Actually use this. It's flipped now for dev purposes
+            if (auth != null){     //<--Actually use this. It's flipped now for dev purposes
                 GameData game = new GameData(gameRequest.getGameName(), data.makeGameID());
                 if (data.add(game)){
                     return game;
@@ -83,7 +94,7 @@ public class ChessService {
     public boolean joinGame(JoinRequest joinRequest){
         try {
             AuthData auth = data.getAuth(joinRequest.getAuthToken());
-            if (auth == null){ //if (auth != null){     //<--Actually use this. It's flipped now for dev purposes
+            if (auth != null){     //<--Actually use this. It's flipped now for dev purposes
                 GameData game = data.getGame(joinRequest.getGameID());
                 if (game != null){
                     String username = "davidsdarley";//auth.getUsername();

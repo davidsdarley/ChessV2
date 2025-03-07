@@ -14,6 +14,12 @@ public class RegisterRequest {
     public String getUsername(){
         return username;
     }
+    public boolean filledOut(){
+        if (username == null || password == null || email == null){
+            return false;
+        }
+        return true;
+    }
     @Override
     public String toString(){
         String str = "username: ";

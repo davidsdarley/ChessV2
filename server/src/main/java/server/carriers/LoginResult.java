@@ -7,4 +7,13 @@ public class LoginResult {
         this.username = username;
         this.authToken = authToken;
     }
+    public String getUsername(){
+        return username;
+    }
+    public String getAuthToken(){
+        return authToken;
+    }
+    public boolean isEmpty(){
+        return (username == null || authToken == null);
+    }
 }

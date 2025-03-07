@@ -8,4 +8,8 @@ public class LogoutResult {
     public boolean getResult(){
         return result;
     }
+    @Override
+    public String toString(){
+        return "Logout result: " + result;
+    }
 }

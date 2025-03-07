@@ -52,35 +52,67 @@ public class Server {
     private static Object handleRegister(Request req, Response res) {
         //to register, I receive a JSON dictionary with username, password, and email. I return JSON username and authtoken.
         var registration = new Gson().fromJson(req.body(), RegisterRequest.class);
-        Object result = service.register(registration);
-        System.out.println(result);
-        return new Gson().toJson(result);
-    }
-    private static Object handleLogin(Request req, Response res) {
-        var log = new Gson().fromJson(req.body(), LoginRequest.class);
-        Object result = service.login(log);
-        if (result.getClass() != LoginResult.class){
-            res.status(409);
+        if (!registration.filledOut()){
+            res.status(400);
+            Map<String, String> message = new HashMap<>();
+            message.put("message", "Error: bad request");
+            return new Gson().toJson(message);
         }
-        System.out.println(result);
-        return new Gson().toJson(result);
+        Object result = service.register(registration);
+        if (result instanceof LoginResult){
+            return new Gson().toJson(result);
+        }
+        res.status(403);
+        Map<String, String> message = new HashMap<>();
+        message.put("message", "Error: already taken");
+        return new Gson().toJson(message);
+    }
+    private static Object handleLogin(Request req, Response res){
+        try {
+            var log = new Gson().fromJson(req.body(), LoginRequest.class);
+            LoginResult result = service.login(log);
+            if (result.isEmpty()) {
+                res.status(401);
+                Map<String, String> message = new HashMap<>();
+                message.put("message", "Error: unauthorized");
+                return new Gson().toJson(message);
+            }
+            res.status(200);
+            return new Gson().toJson(result);
+        }
+        catch(RuntimeException e){
+            res.status(500);
+            Map<String, String> message = new HashMap<>();
+            String error = "Error: " + e.toString();
+            message.put("message", error);
+            return new Gson().toJson(message);
+        }
     }
     private static Object handleLogout(Request req, Response res) {
-        String auth = req.headers("authToken");
-        Object result = service.logout(new LogoutRequest(auth));
-        if (result.getClass() != LogoutResult.class){
-            res.status(409);
-            return "{}";
-        }
-        LogoutResult logout = (LogoutResult)result;
-        if (logout.getResult()){
-            res.status(200);
+        try{
+            String auth = req.headers("authorization");
+            LogoutResult result = service.logout(new LogoutRequest(auth));
+            System.out.println(result);
 
+            if (result.getResult()){
+                res.status(200);
+                return "{}";
+            }
+            else{
+                res.status(401);
+                Map<String, String> message = new HashMap<>();
+                message.put("message", "Error: unauthorized");
+                return new Gson().toJson(message);
+            }
         }
-        else{
-            res.status(404);
+        catch(RuntimeException e){
+            res.status(500);
+            Map<String, String> message = new HashMap<>();
+            String error = "Error: " + e.toString();
+            message.put("message", error);
+            return new Gson().toJson(message);
         }
-        return "{}";
+
     }
     private static Object handleListGames(Request req, Response res){
         String auth = req.headers("authToken");

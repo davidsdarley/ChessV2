@@ -23,7 +23,7 @@ public class InMemoryDatabase {
     }
     public UserData getUser(String username){
         for(UserData user: userdb){
-            if (username == user.getUsername()){
+            if (username.equals(user.getUsername())){
                 return user;
             }
         }
@@ -31,7 +31,7 @@ public class InMemoryDatabase {
     }
     public AuthData getAuth(String authToken){
         for(AuthData auth: authdb){
-            if (authToken == auth.getToken()){
+            if (authToken.equals(auth.getToken())){
                 return auth;
             }
         }
@@ -69,7 +69,7 @@ public class InMemoryDatabase {
 
     public boolean delete(AuthData target){
         for(AuthData auth: authdb){
-            if(target.getToken() == auth.getToken()){
+            if(target.getToken().equals(auth.getToken())){
                 authdb.remove(target);
                 return true;
             }

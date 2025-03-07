@@ -1,8 +1,6 @@
 package server;
 import dataaccess.InMemoryDatabase;
 import server.carriers.AuthData;
-import server.carriers.GameData;
-import spark.Spark;
 import spark.Request;
 import spark.Response;
 import java.io.OutputStream;
@@ -14,24 +12,25 @@ public class experiment {
 
 //    Spark.get(“/hello”, (req, res) -> “Hello BYU!”);
 public static void main(String[] args){
-    AuthData auth1 = new AuthData("davo");
-    AuthData auth2 = new AuthData("ajd");
+//    runTest("/user", "POST");
+//    AuthData auth1 = new AuthData("davo");
+//    AuthData auth2 = new AuthData("ajd");
     InMemoryDatabase db = new InMemoryDatabase();
-    System.out.println(db.add(auth1));
-    System.out.println(db.add(auth2));
-    //System.out.println(db.delete(auth1));
-    //System.out.println(db.delete(auth1));
-    System.out.println(db.getAuthdb());
+//    System.out.println(db.add(auth1));
+//    System.out.println(db.add(auth2));
+//    //System.out.println(db.delete(auth1));
+//    //System.out.println(db.delete(auth1));
+    System.out.println(db.getUserdb());
 }
 
 
-public static void mainX(String[] args) {
+public static void runTest(String endpoint, String reqType) {
 
 
     try {
         //controls
-        String endpoint = "/db";
-        String reqType = "DELETE";
+//        String endpoint = "/db";
+//        String reqType = "DELETE";
         //ifdkslsd
 
         // Create a URL object from the URL string

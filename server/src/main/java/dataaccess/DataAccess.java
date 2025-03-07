@@ -35,11 +35,23 @@ public class DataAccess {
         }
         return db.getAuth(authToken);
     }
+    public AuthData alreadyLoggedIn(String username){
+        for(AuthData auth: db.getAuthdb()){
+            if (auth.getUsername().equals(username)){
+                return auth;
+            }
+        }
+        return null;
+    }
     public ArrayList<GameData> getGames(){
         return db.getGamesdb();
     }
     public int makeGameID(){//eventually figure out what the next available game ID is and return that so no repeats
-        return db.getGamesdb().size();
+        int gamebdSize = db.getGamesdb().size();
+        if (gamebdSize < 1){
+            return 0;
+        }
+        return db.getGamesdb().get(gamebdSize-1).getGameID() + 1;
     }
     public GameData getGame(int gameID){
         for(GameData game: db.getGamesdb()){
