@@ -7,23 +7,12 @@ public class GameData {
     String name;
     String whiteUsername;
     String blackUsername;
-    public GameData(int gameID, String whiteUsername , String blackUsername){
-        this.gameID =gameID;
-        this.whiteUsername = whiteUsername;
-        this.blackUsername = blackUsername;
-        this.name = "game"+String.valueOf(gameID);
-    }
+
     public GameData(String name, int gameID){
         this.gameID =gameID;
         this.whiteUsername = null;
         this.blackUsername = null;
         this.name = name;
-    }
-    public GameData(int gameID){
-        this.gameID = gameID;
-        this.whiteUsername = null;
-        this.blackUsername = null;
-        this.name = "game"+String.valueOf(gameID);
     }
     public int getGameID(){
         return this.gameID;

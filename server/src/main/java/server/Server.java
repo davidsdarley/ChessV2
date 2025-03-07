@@ -101,8 +101,8 @@ public class Server {
         Object result = service.listGames(new AuthorizationRequest(auth));
 
         if (!(result instanceof ArrayList)){
-            res.status(409);
-            return "{}";
+            res.status(401);
+            return new Gson().toJson(service.makeMessage("unauthorized"));
         }
 
         res.status(200);

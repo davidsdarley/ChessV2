@@ -85,7 +85,7 @@ public class ChessService {
 
             }
             AuthData auth = data.getAuth(gameRequest.getAuthToken());
-            if (auth != null){     //<--Actually use this. It's flipped now for dev purposes
+            if (auth != null){
                 GameData game = new GameData(gameRequest.getGameName(), data.makeGameID());
                 if (data.add(game)){
                     return game;
