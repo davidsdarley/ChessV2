@@ -45,7 +45,7 @@ public class SQLDataAccess {
     public SQLDataAccess() throws DataAccessException{
         configureDatabase();
     }
-    //adders done
+    //done
     public boolean add(GameData game){
         try(var conn = getConnection()){
             if (getGame(game.getGameID()) != null){
@@ -114,7 +114,6 @@ public class SQLDataAccess {
             return false;
         }
     }
-    //delete done
     public boolean delete(AuthData auth){
         try(var conn = getConnection()){
             var query = "DELETE FROM authData WHERE authToken = ?";
@@ -132,7 +131,6 @@ public class SQLDataAccess {
             return false;
         }
     }
-    //getters done
     public UserData getUser(String username) throws DataAccessException{
         try(var conn = getConnection()){
             var query = "SELECT json FROM userData WHERE username = ?";
@@ -225,7 +223,6 @@ public class SQLDataAccess {
             return games;
         }
     }
-
     public int makeGameID() throws DataAccessException{
 
         try(var conn = getConnection()){
@@ -246,14 +243,30 @@ public class SQLDataAccess {
             throw new DataAccessException(e.getMessage());
         }
     }
-
-
+    //in progress
     public JoinResult update(GameData target, JoinRequest join, String username){
         assert false;
         return null;
     }
+    private boolean deleteTable(String table){
+        try(var conn = getConnection()){
+            var query = "DELETE FROM "+table;
+            try (PreparedStatement command = conn.prepareStatement(query)){
+                int result = command.executeUpdate();
+                return result > 0;
+            }
+
+        }
+        catch(DataAccessException | SQLException e){
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
     public boolean clearDatabase(){
-        assert false;
+        String[] tables = {"authData", "userData", "gameData"};
+        for(String table: tables){
+            deleteTable(table);
+        }
         return true;
     }
 
@@ -333,7 +346,7 @@ public class SQLDataAccess {
         try{
             SQLDataAccess tester = new SQLDataAccess();
 
-            System.out.println(tester.getGames());
+            System.out.println(tester.clearDatabase());
         }
         catch(DataAccessException e){
             System.out.println(e.getMessage());
