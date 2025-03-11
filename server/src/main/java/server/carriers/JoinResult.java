@@ -13,5 +13,9 @@ public class JoinResult {
     public int getCode(){
         return code;
     }
+    @Override
+    public String toString(){
+        return "JoinResult: "+result+", "+code;
+    }
 }
 

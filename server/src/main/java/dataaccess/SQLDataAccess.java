@@ -265,9 +265,41 @@ public class SQLDataAccess {
         return true;
     }
     //in progress
+    private boolean updateGame(GameData game){
+        try(var conn = getConnection()){
+                var query = "UPDATE gameData SET json = ? WHERE gameID = ?";
+
+            try (PreparedStatement command = conn.prepareStatement(query)){
+                command.setString(1, new Gson().toJson(game));
+                command.setInt(2, game.getGameID());
+
+                int result = command.executeUpdate();
+                return result > 0;
+                }
+            }
+        catch(DataAccessException | SQLException e){
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
     public JoinResult update(GameData target, JoinRequest join, String username){
-        assert false;
-        return null;
+        GameData game = getGame(target.getGameID());
+        if (game != null){
+            if(join.getColor() == "WHITE" && game.setWhiteUsername(username)){
+                if(updateGame(game)){
+                    return new JoinResult(true, 200);
+                }
+                return new JoinResult(false, 403);
+            }
+
+            else if(join.getColor() == "BLACK" && game.setBlackUsername(username)){
+                if(updateGame(game)){
+                    return new JoinResult(true, 200);
+                }
+                return new JoinResult(false, 403);
+            }
+        }
+        return new JoinResult(false, 400);
     }
 
 
@@ -347,7 +379,21 @@ public class SQLDataAccess {
         try{
             SQLDataAccess tester = new SQLDataAccess();
 
-            System.out.println(tester.clearDatabase());
+            System.out.println(tester.add(new GameData("Star Wars", 1111)));
+            System.out.println(tester.add(new UserData("Obi-Wan", "HelloThere", "general_kenobi@jedi.org")));
+            //System.out.println(tester.add(new AuthData("Obi-Wan")));
+
+            GameData game = tester.getGame(1111);
+            System.out.println(game);
+            AuthData auth = new AuthData("Obi-Wan");
+            System.out.println(tester.add(auth));
+
+            JoinRequest join = new JoinRequest(1111, "BLACK", auth.getToken());
+            System.out.println(join);
+            System.out.println(tester.update(game, join, "Anakin"));
+
+
+
         }
         catch(DataAccessException e){
             System.out.println(e.getMessage());
