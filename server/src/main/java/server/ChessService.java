@@ -1,6 +1,7 @@
 package server;
-import dataaccess.DataAccess;
+import dataaccess.*;
 import dataaccess.DataAccessException;
+import dataaccess.SQLDataAccess;
 import server.carriers.*;
 
 import javax.xml.crypto.Data;
@@ -8,10 +9,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ChessService {
-    private final DataAccess data;
+    private final SQLDataAccess data;
 
     public ChessService(){
-        data = new DataAccess();
+        try{
+            data = new SQLDataAccess();
+        }
+        catch(DataAccessException e){
+            throw new RuntimeException(e.getMessage());
+        }
     }
     public Object register(RegisterRequest registration){
 
@@ -115,7 +121,5 @@ public class ChessService {
         return messageMap;
     }
 
-    public DataAccess getData(){
-        return data;
-    }
+
 }
