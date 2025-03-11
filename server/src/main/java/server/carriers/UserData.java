@@ -30,10 +30,7 @@ public class UserData {
             return false;
         }
         UserData otherUser = (UserData)other;
-        if (otherUser.username == username && otherUser.password == password && otherUser.email == email){
-            return true;
-        }
-        return false;
+        return (otherUser.username.equals(username) && otherUser.password.equals(password) && otherUser.email.equals(email));
     }
     @Override
     public String toString(){

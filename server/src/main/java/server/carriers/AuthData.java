@@ -20,7 +20,7 @@ public class AuthData {
             return false;
         }
         AuthData other = (AuthData)obj;
-        return (authToken == other.authToken && username == other.username);
+        return (authToken.equals(other.authToken) && username.equals(other.username));
     }
     @Override
     public String toString(){

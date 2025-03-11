@@ -260,14 +260,27 @@ public class SQLDataAccess implements AutoCloseable{
     private boolean deleteTable(String table){
         var conn = getConn();
         var query = "DELETE FROM "+table;
+        int result = 0;
         try (PreparedStatement command = conn.prepareStatement(query)){
-            int result = command.executeUpdate();
-            return result > 0;
+            result = command.executeUpdate();
         }
         catch(SQLException e){
             System.out.println(e.getMessage());
             return false;
         }
+        if (result > 0){
+            query = "ALTER TABLE "+ table+ " AUTO_INCREMENT = 1";
+            try (PreparedStatement command = conn.prepareStatement(query)){
+                result = command.executeUpdate();
+            }
+            catch(SQLException e){
+                System.out.println(e.getMessage());
+                return false;
+            }
+        }
+
+
+        return result > 0;
     }
     public boolean clearDatabase(){
         String[] tables = {"authData", "userData", "gameData"};
@@ -399,6 +412,7 @@ public class SQLDataAccess implements AutoCloseable{
     public static void main(String[] args) {
         try{
             SQLDataAccess tester = new SQLDataAccess();
+            tester.clearDatabase();
             tester.add(new GameData("Star Wars", tester.makeGameID()));
         }
         catch(DataAccessException e){
