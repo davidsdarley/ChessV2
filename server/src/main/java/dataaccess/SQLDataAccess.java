@@ -243,11 +243,6 @@ public class SQLDataAccess {
             throw new DataAccessException(e.getMessage());
         }
     }
-    //in progress
-    public JoinResult update(GameData target, JoinRequest join, String username){
-        assert false;
-        return null;
-    }
     private boolean deleteTable(String table){
         try(var conn = getConnection()){
             var query = "DELETE FROM "+table;
@@ -269,6 +264,12 @@ public class SQLDataAccess {
         }
         return true;
     }
+    //in progress
+    public JoinResult update(GameData target, JoinRequest join, String username){
+        assert false;
+        return null;
+    }
+
 
 
     //Initial creation and configuration details
