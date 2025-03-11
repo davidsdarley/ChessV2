@@ -45,13 +45,16 @@ public class SQLDataAccess {
     public SQLDataAccess() throws DataAccessException{
         configureDatabase();
     }
-    //DEBUG all adders need to have a way to check if it already exist
+    //adders done
     public boolean add(GameData game){
         try(var conn = getConnection()){
-            var statement = "INSERT INTO gameData (gameID, gameName, json) VALUES (?, ?, ?)";
+            if (getGame(game.getGameID()) != null){
+                return false;
+            }
+            var query = "INSERT INTO gameData (gameID, gameName, json) VALUES (?, ?, ?)";
             var json = new Gson().toJson(game);
 
-            try (PreparedStatement command = conn.prepareStatement(statement)){
+            try (PreparedStatement command = conn.prepareStatement(query)){
                 command.setInt(1, game.getGameID());
                 command.setString(2, game.getName());
                 command.setString(3, json);
@@ -69,10 +72,13 @@ public class SQLDataAccess {
     public boolean add(UserData user){
 
         try(var conn = getConnection()){
-            var statement = "INSERT INTO userData (username, password, email, json) VALUES (?, ?, ?, ?)";
+            if(getUser(user.getUsername()) != null){
+                return false;
+            }
+            var query = "INSERT INTO userData (username, password, email, json) VALUES (?, ?, ?, ?)";
             var json = new Gson().toJson(user);
 
-            try (PreparedStatement command = conn.prepareStatement(statement)){
+            try (PreparedStatement command = conn.prepareStatement(query)){
                 command.setString(1, user.getUsername());
                 command.setString(2, user.getPassword());
                 command.setString(3, user.getEmail());
@@ -89,12 +95,11 @@ public class SQLDataAccess {
         }
     }
     public boolean add(AuthData auth){
-
         try(var conn = getConnection()){
-            var statement = "INSERT INTO authData (username, authToken, json) VALUES (?, ?, ?)";
+            var query = "INSERT INTO authData (username, authToken, json) VALUES (?, ?, ?)";
             var json = new Gson().toJson(auth);
 
-            try (PreparedStatement command = conn.prepareStatement(statement)){
+            try (PreparedStatement command = conn.prepareStatement(query)){
                 command.setString(1, auth.getUsername());
                 command.setString(2, auth.getToken());
                 command.setString(3, json);
@@ -110,23 +115,78 @@ public class SQLDataAccess {
         }
     }
     public boolean delete(AuthData auth){
-        assert false;
         return false;
     }
+    //getters done
     public UserData getUser(String username) throws DataAccessException{
-        assert false;
-        return null;
+        try(var conn = getConnection()){
+            var query = "SELECT json FROM userData WHERE username = ?";
+
+            try (PreparedStatement command = conn.prepareStatement(query)){
+                command.setString(1, username);
+
+                try(var result = command.executeQuery()){
+                    if (result.next()){
+                        String json = result.getString("json");
+                        return new Gson().fromJson(json, UserData.class);
+                    }
+                    return null;
+                }
+
+            }
+
+        }
+        catch(DataAccessException | SQLException e){
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
     public AuthData getAuth(String authToken) throws DataAccessException{
-        if (authToken == null){
-            throw new DataAccessException("no authtoken provided");
+        try(var conn = getConnection()){
+            var query = "SELECT json FROM authData WHERE authToken = ?";
+
+            try (PreparedStatement command = conn.prepareStatement(query)){
+                command.setString(1, authToken);
+
+                try(var result = command.executeQuery()){
+                    if (result.next()){
+                        String json = result.getString("json");
+                        return new Gson().fromJson(json, AuthData.class);
+                    }
+                    return null;
+                }
+
+            }
+
         }
-        assert false;
-        return null;
+        catch(DataAccessException | SQLException e){
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
     public GameData getGame(int gameID){
-        assert false;
-        return null;
+
+        try(var conn = getConnection()){
+            var query = "SELECT json FROM gameData WHERE gameID = ?";
+
+            try (PreparedStatement command = conn.prepareStatement(query)){
+                command.setInt(1, gameID);
+
+                try(var result = command.executeQuery()){
+                    if (result.next()){
+                        String json = result.getString("json");
+                        return new Gson().fromJson(json, GameData.class);
+                    }
+                    return null;
+                }
+
+            }
+
+        }
+        catch(DataAccessException | SQLException e){
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
     public ArrayList<GameData> getGames(){
         assert false;
@@ -222,8 +282,9 @@ public class SQLDataAccess {
         try{
             SQLDataAccess tester = new SQLDataAccess();
 
-            System.out.println(tester.add(new AuthData("username1")));
-
+            AuthData auth = new AuthData("Obi-Wan");
+            System.out.println(tester.add(auth));
+            System.out.println(tester.getAuth(auth.getToken()));
 
         }
         catch(DataAccessException e){
