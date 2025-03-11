@@ -1,0 +1,236 @@
+package dataaccess;
+
+import com.google.gson.Gson;
+import server.carriers.*;
+
+import javax.xml.crypto.Data;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Properties;
+
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
+import static java.sql.Types.NULL;
+
+public class SQLDataAccess {
+    //initial setup
+    private static final String DATABASE_NAME;
+    private static final String USER;
+    private static final String PASSWORD;
+    private static final String CONNECTION_URL;
+    //assign the values from db.properties
+    static {
+        try {
+            try (var propStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties")) {
+                if (propStream == null) {
+                    throw new Exception("Unable to load db.properties");
+                }
+                Properties props = new Properties();
+                props.load(propStream);
+                DATABASE_NAME = props.getProperty("db.name");
+                USER = props.getProperty("db.user");
+                PASSWORD = props.getProperty("db.password");
+
+                var host = props.getProperty("db.host");
+                var port = Integer.parseInt(props.getProperty("db.port"));
+                CONNECTION_URL = String.format("jdbc:mysql://%s:%d", host, port);
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("unable to process db.properties. " + ex.getMessage());
+        }
+    }
+
+    public SQLDataAccess() throws DataAccessException{
+        configureDatabase();
+    }
+    //DEBUG all adders need to have a way to check if it already exist
+    public boolean add(GameData game){
+        try(var conn = getConnection()){
+            var statement = "INSERT INTO gameData (gameID, gameName, json) VALUES (?, ?, ?)";
+            var json = new Gson().toJson(game);
+
+            try (PreparedStatement command = conn.prepareStatement(statement)){
+                command.setInt(1, game.getGameID());
+                command.setString(2, game.getName());
+                command.setString(3, json);
+
+                int result = command.executeUpdate();
+                return result > 0;
+            }
+
+        }
+        catch(DataAccessException | SQLException e){
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+    public boolean add(UserData user){
+
+        try(var conn = getConnection()){
+            var statement = "INSERT INTO userData (username, password, email, json) VALUES (?, ?, ?, ?)";
+            var json = new Gson().toJson(user);
+
+            try (PreparedStatement command = conn.prepareStatement(statement)){
+                command.setString(1, user.getUsername());
+                command.setString(2, user.getPassword());
+                command.setString(3, user.getEmail());
+                command.setString(4, json);
+
+                int result = command.executeUpdate();
+                return result > 0;
+            }
+
+        }
+        catch(DataAccessException | SQLException e){
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+    public boolean add(AuthData auth){
+
+        try(var conn = getConnection()){
+            var statement = "INSERT INTO authData (username, authToken, json) VALUES (?, ?, ?)";
+            var json = new Gson().toJson(auth);
+
+            try (PreparedStatement command = conn.prepareStatement(statement)){
+                command.setString(1, auth.getUsername());
+                command.setString(2, auth.getToken());
+                command.setString(3, json);
+
+                int result = command.executeUpdate();
+                return result > 0;
+            }
+
+        }
+        catch(DataAccessException | SQLException e){
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+    public boolean delete(AuthData auth){
+        assert false;
+        return false;
+    }
+    public UserData getUser(String username) throws DataAccessException{
+        assert false;
+        return null;
+    }
+    public AuthData getAuth(String authToken) throws DataAccessException{
+        if (authToken == null){
+            throw new DataAccessException("no authtoken provided");
+        }
+        assert false;
+        return null;
+    }
+    public GameData getGame(int gameID){
+        assert false;
+        return null;
+    }
+    public ArrayList<GameData> getGames(){
+        assert false;
+        return null;
+    }
+    public int makeGameID(){//eventually figure out what the next available game ID is and return that so no repeats
+        assert false;
+        return 0;
+    }
+
+    public JoinResult update(GameData target, JoinRequest join, String username){
+        assert false;
+        return null;
+    }
+    public boolean clearDatabase(){
+        assert false;
+        return true;
+    }
+
+
+    //Initial creation and configuration details
+    private final String[] createStatements = {
+            """
+            CREATE TABLE IF NOT EXISTS  authData (
+              `id` int NOT NULL AUTO_INCREMENT,
+              `username` varchar(256) NOT NULL,
+              `authToken` varchar(50) NOT NULL,
+              `json` TEXT DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              INDEX(username),
+              INDEX(authToken)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS gameData (
+                `id` int NOT NULL AUTO_INCREMENT,
+                `gameID` INT NOT NULL,
+                `gameName` varchar(256) NOT NULL,
+                `json` TEXT DEFAULT NULL,
+                PRIMARY KEY (`id`),
+                INDEX(gameID),
+                INDEX(gameName)
+            )
+            ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS userData (
+                `id` int NOT NULL AUTO_INCREMENT,
+                `username` varchar(256) NOT NULL,
+                `password` varchar(256) NOT NULL,
+                `email` varchar(256) NOT NULL,
+                `json` TEXT DEFAULT NULL,
+                PRIMARY KEY (`id`),
+                INDEX(username)
+            )
+            ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            """
+    };
+    static void createDatabase() throws DataAccessException {
+        try {
+            var statement = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
+            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+    static Connection getConnection() throws DataAccessException {
+        try {
+            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            conn.setCatalog(DATABASE_NAME);
+            return conn;
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+    private void configureDatabase() throws DataAccessException {
+        createDatabase();
+        try (var conn = getConnection()) {
+            for (var statement : createStatements) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
+        }
+    }
+
+    public static void main(String[] args) {
+        try{
+            SQLDataAccess tester = new SQLDataAccess();
+
+            System.out.println(tester.add(new AuthData("username1")));
+
+
+        }
+        catch(DataAccessException e){
+            System.out.println(e.getMessage());
+            throw new RuntimeException();
+        }
+
+    }
+
+}
