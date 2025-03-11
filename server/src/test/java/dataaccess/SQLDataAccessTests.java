@@ -82,7 +82,7 @@ public class SQLDataAccessTests {
     @Test
     @Order(3)
     @DisplayName("pass add user")
-    public void AddUser() {
+    public void addUser() {
         setup();
         UserData user = new UserData("Anakin Skywalker", "nowThisIsPodracing", "thechosenone@jedi.org");
         Assertions.assertTrue(data.add(user));
@@ -97,7 +97,7 @@ public class SQLDataAccessTests {
     @Test
     @Order(5)
     @DisplayName("add auth")
-    public void AddAuth() {
+    public void addAuth() {
         setup();
         AuthData auth = new AuthData(testUser.getUsername());
         Assertions.assertTrue(data.add(auth));
