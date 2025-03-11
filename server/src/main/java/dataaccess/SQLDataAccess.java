@@ -204,9 +204,26 @@ public class SQLDataAccess {
         }
     }
     public ArrayList<GameData> getGames(){
+        ArrayList<GameData> games = new ArrayList<>();
+        try(var conn = getConnection()){
+            var query = "SELECT json FROM gameData";
 
-        assert false;
-        return null;
+            try (PreparedStatement command = conn.prepareStatement(query)){
+                try(var result = command.executeQuery()){
+                    while (result.next()){
+                        games.add(new Gson().fromJson(result.getString("json"), GameData.class));
+                    }
+                }
+
+            }
+
+        }
+        catch(DataAccessException | SQLException e){
+            System.out.println(e.getMessage());
+        }
+        finally{
+            return games;
+        }
     }
 
     public int makeGameID() throws DataAccessException{
@@ -316,10 +333,7 @@ public class SQLDataAccess {
         try{
             SQLDataAccess tester = new SQLDataAccess();
 
-            tester.add(new GameData("newGame", 10024));
-            int gameID = tester.makeGameID();
-            System.out.println(gameID);
-
+            System.out.println(tester.getGames());
         }
         catch(DataAccessException e){
             System.out.println(e.getMessage());
