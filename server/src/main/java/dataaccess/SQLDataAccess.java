@@ -114,6 +114,7 @@ public class SQLDataAccess {
             return false;
         }
     }
+    //delete done
     public boolean delete(AuthData auth){
         try(var conn = getConnection()){
             var query = "DELETE FROM authData WHERE authToken = ?";
@@ -203,13 +204,32 @@ public class SQLDataAccess {
         }
     }
     public ArrayList<GameData> getGames(){
+
         assert false;
         return null;
     }
-    public int makeGameID(){//eventually figure out what the next available game ID is and return that so no repeats
-        assert false;
-        return 0;
+
+    public int makeGameID() throws DataAccessException{
+
+        try(var conn = getConnection()){
+            var query = "SELECT gameID FROM gameData ORDER BY gameID DESC LIMIT 1";
+
+            try (PreparedStatement command = conn.prepareStatement(query)){
+                try(var result = command.executeQuery()){
+                    if (result.next()){
+                        return result.getInt("gameID")+1;
+                    }
+                    return 1000;
+                }
+            }
+
+        }
+        catch(DataAccessException | SQLException e){
+            System.out.println(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
+
 
     public JoinResult update(GameData target, JoinRequest join, String username){
         assert false;
@@ -296,10 +316,9 @@ public class SQLDataAccess {
         try{
             SQLDataAccess tester = new SQLDataAccess();
 
-            AuthData auth = new AuthData("Obi-Wan");
-            System.out.println(tester.add(auth));
-            System.out.println(tester.getAuth(auth.getToken()));
-            System.out.println(tester.delete(auth));
+            tester.add(new GameData("newGame", 10024));
+            int gameID = tester.makeGameID();
+            System.out.println(gameID);
 
         }
         catch(DataAccessException e){
