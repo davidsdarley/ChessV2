@@ -115,7 +115,21 @@ public class SQLDataAccess {
         }
     }
     public boolean delete(AuthData auth){
-        return false;
+        try(var conn = getConnection()){
+            var query = "DELETE FROM authData WHERE authToken = ?";
+
+            try (PreparedStatement command = conn.prepareStatement(query)){
+                command.setString(1, auth.getToken());
+
+                int result = command.executeUpdate();
+                return result > 0;
+            }
+
+        }
+        catch(DataAccessException | SQLException e){
+            System.out.println(e.getMessage());
+            return false;
+        }
     }
     //getters done
     public UserData getUser(String username) throws DataAccessException{
@@ -285,6 +299,7 @@ public class SQLDataAccess {
             AuthData auth = new AuthData("Obi-Wan");
             System.out.println(tester.add(auth));
             System.out.println(tester.getAuth(auth.getToken()));
+            System.out.println(tester.delete(auth));
 
         }
         catch(DataAccessException e){
