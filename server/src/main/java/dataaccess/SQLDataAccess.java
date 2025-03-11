@@ -10,12 +10,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
 
-public class SQLDataAccess {
+public class SQLDataAccess implements AutoCloseable{
     //initial setup
     private static final String DATABASE_NAME;
     private static final String USER;
     private static final String PASSWORD;
     private static final String CONNECTION_URL;
+    private Connection conn;
     //assign the values from db.properties
     static {
         try {
@@ -40,33 +41,62 @@ public class SQLDataAccess {
 
     public SQLDataAccess() throws DataAccessException{
         configureDatabase();
+        conn = getConnection();
     }
-    public boolean add(GameData game){
-        try(var conn = getConnection()){
-            if (getGame(game.getGameID()) != null){
-                return false;
-            }
-            var query = "INSERT INTO gameData (gameID, gameName, json) VALUES (?, ?, ?)";
-            var json = new Gson().toJson(game);
-
-            try (PreparedStatement command = conn.prepareStatement(query)){
-                command.setInt(1, game.getGameID());
-                command.setString(2, game.getName());
-                command.setString(3, json);
-
-                int result = command.executeUpdate();
-                return result > 0;
-            }
-
+    private Connection getConn(){
+        return this.conn;
+    }
+    public boolean setCommit(boolean state){
+        try{
+            conn.setAutoCommit(state);
+            return true;
         }
-        catch(DataAccessException | SQLException e){
+        catch(SQLException e){
+            return false;
+        }
+    }
+    public void rollback() throws SQLException {
+        try{
+            conn.rollback();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            assert false;
+        }
+    }
+    @Override
+    public void close() throws SQLException {
+        if (conn != null && !conn.isClosed()) {
+            conn.close();
+            System.out.println("Database connection closed.");
+        }
+    }
+
+    //public methods
+    public boolean add(GameData game){
+        var conn = getConn();
+        if (getGame(game.getGameID()) != null){
+            return false;
+        }
+        var query = "INSERT INTO gameData (gameID, gameName, json) VALUES (?, ?, ?)";
+        var json = new Gson().toJson(game);
+
+        try (PreparedStatement command = conn.prepareStatement(query)){
+            command.setInt(1, game.getGameID());
+            command.setString(2, game.getName());
+            command.setString(3, json);
+
+            int result = command.executeUpdate();
+            return result > 0;
+        }
+        catch(SQLException e){
             System.out.println(e.getMessage());
             return false;
         }
     }
     public boolean add(UserData user){
 
-        try(var conn = getConnection()){
+        try{
+            var conn = getConn();
             if(getUser(user.getUsername()) != null){
                 return false;
             }
@@ -90,128 +120,119 @@ public class SQLDataAccess {
         }
     }
     public boolean add(AuthData auth){
-        try(var conn = getConnection()){
-            var query = "INSERT INTO authData (username, authToken, json) VALUES (?, ?, ?)";
-            var json = new Gson().toJson(auth);
-
-            try (PreparedStatement command = conn.prepareStatement(query)){
-                command.setString(1, auth.getUsername());
-                command.setString(2, auth.getToken());
-                command.setString(3, json);
-
-                int result = command.executeUpdate();
-                return result > 0;
-            }
-
+        if (auth == null){
+            return false;
         }
-        catch(DataAccessException | SQLException e){
+        var conn = getConn();
+        var query = "INSERT INTO authData (username, authToken, json) VALUES (?, ?, ?)";
+        var json = new Gson().toJson(auth);
+
+        try (PreparedStatement command = conn.prepareStatement(query)){
+            command.setString(1, auth.getUsername());
+            command.setString(2, auth.getToken());
+            command.setString(3, json);
+
+            int result = command.executeUpdate();
+            return result > 0;
+        }
+        catch(SQLException e){
             System.out.println(e.getMessage());
             return false;
         }
     }
     public boolean delete(AuthData auth){
-        try(var conn = getConnection()){
-            var query = "DELETE FROM authData WHERE authToken = ?";
+        var conn = getConn();
+        var query = "DELETE FROM authData WHERE authToken = ?";
 
-            try (PreparedStatement command = conn.prepareStatement(query)){
-                command.setString(1, auth.getToken());
+        try (PreparedStatement command = conn.prepareStatement(query)){
+            command.setString(1, auth.getToken());
 
-                int result = command.executeUpdate();
-                return result > 0;
-            }
-
+            int result = command.executeUpdate();
+            return result > 0;
         }
-        catch(DataAccessException | SQLException e){
+        catch(SQLException e){
             System.out.println(e.getMessage());
             return false;
         }
     }
     public UserData getUser(String username) throws DataAccessException{
-        try(var conn = getConnection()){
-            var query = "SELECT json FROM userData WHERE username = ?";
+        var conn = getConn();
+        var query = "SELECT json FROM userData WHERE username = ?";
 
-            try (PreparedStatement command = conn.prepareStatement(query)){
-                command.setString(1, username);
+        try (PreparedStatement command = conn.prepareStatement(query)){
+            command.setString(1, username);
 
-                try(var result = command.executeQuery()){
-                    if (result.next()){
-                        String json = result.getString("json");
-                        return new Gson().fromJson(json, UserData.class);
-                    }
-                    return null;
+            try(var result = command.executeQuery()){
+                if (result.next()){
+                    String json = result.getString("json");
+                    return new Gson().fromJson(json, UserData.class);
                 }
-
+                return null;
             }
 
         }
-        catch(DataAccessException | SQLException e){
+        catch(SQLException e){
             System.out.println(e.getMessage());
             return null;
         }
     }
     public AuthData getAuth(String authToken) throws DataAccessException{
-        try(var conn = getConnection()){
-            var query = "SELECT json FROM authData WHERE authToken = ?";
+        var conn = getConn();
+        var query = "SELECT json FROM authData WHERE authToken = ?";
 
-            try (PreparedStatement command = conn.prepareStatement(query)){
-                command.setString(1, authToken);
+        try (PreparedStatement command = conn.prepareStatement(query)){
+            command.setString(1, authToken);
 
-                try(var result = command.executeQuery()){
-                    if (result.next()){
-                        String json = result.getString("json");
-                        return new Gson().fromJson(json, AuthData.class);
-                    }
-                    return null;
+            try(var result = command.executeQuery()){
+                if (result.next()){
+                    String json = result.getString("json");
+                    return new Gson().fromJson(json, AuthData.class);
                 }
-
+                return null;
             }
 
         }
-        catch(DataAccessException | SQLException e){
+
+        catch(SQLException e){
             System.out.println(e.getMessage());
             return null;
         }
     }
     public GameData getGame(int gameID){
 
-        try(var conn = getConnection()){
-            var query = "SELECT json FROM gameData WHERE gameID = ?";
+        var conn = getConn();
+        var query = "SELECT json FROM gameData WHERE gameID = ?";
 
-            try (PreparedStatement command = conn.prepareStatement(query)){
-                command.setInt(1, gameID);
+        try (PreparedStatement command = conn.prepareStatement(query)){
+            command.setInt(1, gameID);
 
-                try(var result = command.executeQuery()){
-                    if (result.next()){
-                        String json = result.getString("json");
-                        return new Gson().fromJson(json, GameData.class);
-                    }
-                    return null;
+            try(var result = command.executeQuery()){
+                if (result.next()){
+                    String json = result.getString("json");
+                    return new Gson().fromJson(json, GameData.class);
                 }
-
+                return null;
             }
 
         }
-        catch(DataAccessException | SQLException e){
+        catch(SQLException e){
             System.out.println(e.getMessage());
             return null;
         }
     }
     public ArrayList<GameData> getGames(){
         ArrayList<GameData> games = new ArrayList<>();
-        try(var conn = getConnection()){
-            var query = "SELECT json FROM gameData";
+        var conn = getConn();
+        var query = "SELECT json FROM gameData";
 
-            try (PreparedStatement command = conn.prepareStatement(query)){
-                try(var result = command.executeQuery()){
-                    while (result.next()){
-                        games.add(new Gson().fromJson(result.getString("json"), GameData.class));
-                    }
+        try (PreparedStatement command = conn.prepareStatement(query)){
+            try(var result = command.executeQuery()){
+                while (result.next()){
+                    games.add(new Gson().fromJson(result.getString("json"), GameData.class));
                 }
-
             }
-
         }
-        catch(DataAccessException | SQLException e){
+        catch(SQLException e){
             System.out.println(e.getMessage());
         }
         finally{
@@ -220,34 +241,30 @@ public class SQLDataAccess {
     }
     public int makeGameID() throws DataAccessException{
 
-        try(var conn = getConnection()){
-            var query = "SELECT gameID FROM gameData ORDER BY gameID DESC LIMIT 1";
+        var conn = getConn();
+        var query = "SELECT gameID FROM gameData ORDER BY gameID DESC LIMIT 1";
 
-            try (PreparedStatement command = conn.prepareStatement(query)){
-                try(var result = command.executeQuery()){
-                    if (result.next()){
-                        return result.getInt("gameID")+1;
-                    }
-                    return 1000;
+        try (PreparedStatement command = conn.prepareStatement(query)){
+            try(var result = command.executeQuery()){
+                if (result.next()){
+                    return result.getInt("gameID")+1;
                 }
+                return 1000;
             }
-
         }
-        catch(DataAccessException | SQLException e){
+        catch(SQLException e){
             System.out.println(e.getMessage());
             throw new DataAccessException(e.getMessage());
         }
     }
     private boolean deleteTable(String table){
-        try(var conn = getConnection()){
-            var query = "DELETE FROM "+table;
-            try (PreparedStatement command = conn.prepareStatement(query)){
-                int result = command.executeUpdate();
-                return result > 0;
-            }
-
+        var conn = getConn();
+        var query = "DELETE FROM "+table;
+        try (PreparedStatement command = conn.prepareStatement(query)){
+            int result = command.executeUpdate();
+            return result > 0;
         }
-        catch(DataAccessException | SQLException e){
+        catch(SQLException e){
             System.out.println(e.getMessage());
             return false;
         }
@@ -260,18 +277,17 @@ public class SQLDataAccess {
         return true;
     }
     private boolean updateGame(GameData game){
-        try(var conn = getConnection()){
-                var query = "UPDATE gameData SET json = ? WHERE gameID = ?";
+        var conn = getConn();
+        var query = "UPDATE gameData SET json = ? WHERE gameID = ?";
 
-            try (PreparedStatement command = conn.prepareStatement(query)){
-                command.setString(1, new Gson().toJson(game));
-                command.setInt(2, game.getGameID());
+        try (PreparedStatement command = conn.prepareStatement(query)){
+            command.setString(1, new Gson().toJson(game));
+            command.setInt(2, game.getGameID());
 
-                int result = command.executeUpdate();
-                return result > 0;
-                }
+            int result = command.executeUpdate();
+            return result > 0;
             }
-        catch(DataAccessException | SQLException e){
+        catch(SQLException e){
             System.out.println(e.getMessage());
             return false;
         }
@@ -353,6 +369,7 @@ public class SQLDataAccess {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
+            conn.close();
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
@@ -382,7 +399,7 @@ public class SQLDataAccess {
     public static void main(String[] args) {
         try{
             SQLDataAccess tester = new SQLDataAccess();
-            tester.clearDatabase();
+            tester.add(new GameData("Star Wars", tester.makeGameID()));
         }
         catch(DataAccessException e){
             System.out.println(e.getMessage());
