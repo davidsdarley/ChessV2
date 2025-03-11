@@ -3,16 +3,12 @@ package dataaccess;
 import com.google.gson.Gson;
 import server.carriers.*;
 
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
-
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
 
 public class SQLDataAccess {
     //initial setup
@@ -282,21 +278,31 @@ public class SQLDataAccess {
     }
     public JoinResult update(GameData target, JoinRequest join, String username){
         GameData game = getGame(target.getGameID());
+        if (join.getColor() == null || !(join.getColor().equals("WHITE") || join.getColor().equals("BLACK")) ){
+            return new JoinResult(false, 400);
+        }
         if (game != null){
-            if(join.getColor() == "WHITE" && game.setWhiteUsername(username)){
+
+            if(join.getColor().equals("WHITE") && game.setWhiteUsername(username)){
                 if(updateGame(game)){
                     return new JoinResult(true, 200);
                 }
-                return new JoinResult(false, 403);
             }
 
-            else if(join.getColor() == "BLACK" && game.setBlackUsername(username)){
+            else if(join.getColor().equals("BLACK") && game.setBlackUsername(username)){
+                System.out.println("FLAG1");
+
                 if(updateGame(game)){
                     return new JoinResult(true, 200);
                 }
+            }
+            else{
                 return new JoinResult(false, 403);
+
             }
         }
+        System.out.println(getGames());
+        System.out.println(game + " not found");
         return new JoinResult(false, 400);
     }
 
@@ -373,31 +379,14 @@ public class SQLDataAccess {
         }
     }
 
-//    public static void main(String[] args) {
-//        try{
-//            SQLDataAccess tester = new SQLDataAccess();
-//
-//            System.out.println(tester.add(new GameData("Star Wars", 1111)));
-//            System.out.println(tester.add(new UserData("Obi-Wan", "HelloThere", "general_kenobi@jedi.org")));
-//            //System.out.println(tester.add(new AuthData("Obi-Wan")));
-//
-//            GameData game = tester.getGame(1111);
-//            System.out.println(game);
-//            AuthData auth = new AuthData("Obi-Wan");
-//            System.out.println(tester.add(auth));
-//
-//            JoinRequest join = new JoinRequest(1111, "BLACK", auth.getToken());
-//            System.out.println(join);
-//            System.out.println(tester.update(game, join, "Anakin"));
-//
-//
-//
-//        }
-//        catch(DataAccessException e){
-//            System.out.println(e.getMessage());
-//            throw new RuntimeException();
-//        }
-//
-//    }
-
+    public static void main(String[] args) {
+        try{
+            SQLDataAccess tester = new SQLDataAccess();
+            tester.clearDatabase();
+        }
+        catch(DataAccessException e){
+            System.out.println(e.getMessage());
+            throw new RuntimeException();
+        }
+    }
 }

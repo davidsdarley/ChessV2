@@ -196,12 +196,13 @@ public class StandardAPITests {
 
         //try join
         TestResult joinResult = serverFacade.joinPlayer(joinRequest, existingAuth);
+        System.out.println("DEBUG: FLAG");
 
         //check
         assertHttpOk(joinResult);
+        System.out.println("DEBUG: FLAG");
 
         TestListResult listResult = serverFacade.listGames(existingAuth);
-
         Assertions.assertNotNull(listResult.getGames(), "List result did not contain games");
         Assertions.assertEquals(1, listResult.getGames().length, "List result is incorrect size");
         Assertions.assertEquals(existingUser.getUsername(), listResult.getGames()[0].getWhiteUsername(),
@@ -351,7 +352,6 @@ public class StandardAPITests {
         TestAuthResult loginOne = serverFacade.login(existingUser);
         assertHttpOk(loginOne);
         Assertions.assertNotNull(loginOne.getAuthToken(), "Login result did not contain an authToken");
-
         TestAuthResult loginTwo = serverFacade.login(existingUser);
         assertHttpOk(loginTwo);
         Assertions.assertNotNull(loginTwo.getAuthToken(), "Login result did not contain an authToken");
@@ -363,7 +363,6 @@ public class StandardAPITests {
         Assertions.assertNotEquals(loginOne.getAuthToken(), loginTwo.getAuthToken(),
                 "Authtoken returned by login matched authtoken from prior login");
 
-
         TestCreateResult createResult = serverFacade.createGame(createRequest, existingAuth);
         assertHttpOk(createResult);
 
@@ -371,11 +370,10 @@ public class StandardAPITests {
         TestResult logoutResult = serverFacade.logout(existingAuth);
         assertHttpOk(logoutResult);
 
-
+        //Problem is here, with Join function
         TestJoinRequest joinRequest = new TestJoinRequest(ChessGame.TeamColor.WHITE, createResult.getGameID());
         TestResult joinResult = serverFacade.joinPlayer(joinRequest, loginOne.getAuthToken());
         assertHttpOk(joinResult);
-
 
         TestListResult listResult = serverFacade.listGames(loginTwo.getAuthToken());
         assertHttpOk(listResult);
