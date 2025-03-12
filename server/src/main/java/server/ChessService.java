@@ -1,19 +1,17 @@
 package server;
-import dataaccess.*;
 import dataaccess.DataAccessException;
-import dataaccess.SQLDataAccess;
+import dataaccess.DatabaseManager;
 import server.carriers.*;
 
-import javax.xml.crypto.Data;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ChessService {
-    private final SQLDataAccess data;
+    private final DatabaseManager data;
 
     public ChessService(){
         try{
-            data = new SQLDataAccess();
+            data = new DatabaseManager();
         }
         catch(DataAccessException e){
             throw new RuntimeException(e.getMessage());
@@ -41,7 +39,7 @@ public class ChessService {
         try{
             UserData user = data.getUser(login.getUsername());
             if (user != null){
-                if (user.getPassword().equals(login.getPassword())){
+                if(data.checkPassword(login.getPassword(), user.getPassword())){
                     AuthData auth = new AuthData(login.getUsername());
                     data.add(auth);
                     return new LoginResult(user.getUsername(), auth.getToken());

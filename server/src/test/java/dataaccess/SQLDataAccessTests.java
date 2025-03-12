@@ -1,25 +1,14 @@
 package dataaccess;
 
 import org.junit.jupiter.api.*;
-import server.ChessService;
 import server.carriers.*;
 
 
-import com.google.gson.Gson;
-
-import javax.xml.crypto.Data;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Properties;
-
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
 
 public class SQLDataAccessTests {
-    static SQLDataAccess data;
+    static DatabaseManager data;
     static UserData testUser;
     static AuthData testAuth;
     static GameData testGame;
@@ -40,7 +29,7 @@ public class SQLDataAccessTests {
     @BeforeAll
     public static void init(){
         try{//setup
-            data = new SQLDataAccess();
+            data = new DatabaseManager();
             data.setCommit(false);
             setup();
         }
@@ -132,7 +121,7 @@ public class SQLDataAccessTests {
         setup();
         try{
             UserData actual = data.getUser(testUser.getUsername());
-            Assertions.assertTrue(actual.equals(testUser));
+            Assertions.assertTrue(actual.getUsername().equals(testUser.getUsername()));
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }

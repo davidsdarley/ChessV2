@@ -1,6 +1,7 @@
 package dataaccess;
 
 import com.google.gson.Gson;
+import org.mindrot.jbcrypt.BCrypt;
 import server.carriers.*;
 
 import java.sql.Connection;
@@ -10,7 +11,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
 
-public class SQLDataAccess implements AutoCloseable{
+
+public class DatabaseManager implements AutoCloseable{
     //initial setup
     private static final String DATABASE_NAME;
     private static final String USER;
@@ -39,7 +41,7 @@ public class SQLDataAccess implements AutoCloseable{
         }
     }
 
-    public SQLDataAccess() throws DataAccessException{
+    public DatabaseManager() throws DataAccessException{
         configureDatabase();
         conn = getConnection();
     }
@@ -71,6 +73,15 @@ public class SQLDataAccess implements AutoCloseable{
         }
     }
 
+    private UserData encrypt(UserData user){
+        UserData encrypted = new UserData(user.getUsername(),
+                BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()), user.getEmail());
+        return encrypted;
+    }
+    public boolean checkPassword(String password, String encrypted){
+        return BCrypt.checkpw(password, encrypted);
+    }
+
     //public methods
     public boolean add(GameData game){
         var conn = getConn();
@@ -93,13 +104,16 @@ public class SQLDataAccess implements AutoCloseable{
             return false;
         }
     }
-    public boolean add(UserData user){
+    public boolean add(UserData newUser){
 
         try{
             var conn = getConn();
-            if(getUser(user.getUsername()) != null){
+            if(getUser(newUser.getUsername()) != null){
                 return false;
             }
+
+            UserData user = encrypt(newUser);
+
             var query = "INSERT INTO userData (username, password, email, json) VALUES (?, ?, ?, ?)";
             var json = new Gson().toJson(user);
 
@@ -411,9 +425,12 @@ public class SQLDataAccess implements AutoCloseable{
 
     public static void main(String[] args) {
         try{
-            SQLDataAccess tester = new SQLDataAccess();
-            tester.clearDatabase();
-            tester.add(new GameData("Star Wars", tester.makeGameID()));
+            DatabaseManager tester = new DatabaseManager();
+            UserData user = new UserData("Obi-Wan", "password123","hi");
+            UserData newuser = tester.encrypt(user);
+            System.out.println(newuser);
+            System.out.println(tester.checkPassword("password123", newuser.getPassword()));
+
         }
         catch(DataAccessException e){
             System.out.println(e.getMessage());
