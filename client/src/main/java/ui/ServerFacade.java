@@ -100,21 +100,21 @@ public class ServerFacade {
             throw new RuntimeException("Error! We're so sorry your creation has failed") ;
         }
     }
-    public HttpResponse<String> join(int id, String authToken){
+    public HttpResponse<String> join(int id, String color, String authToken){
         Gson gson = new Gson();
-        JoinRequest game = new JoinRequest(id, authToken);
+        JoinRequest join = new JoinRequest(id, color, authToken);
 
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(site+"/game"))
                 .header("Content-Type", "application/json")
                 .header("authorization", authToken)
-                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(game)))
+                .PUT(HttpRequest.BodyPublishers.ofString(gson.toJson(join)))
                 .build();
         try{
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             return response;
         }
         catch (IOException | InterruptedException e) {
-            throw new RuntimeException("Error! We're so sorry your creation has failed") ;
+            throw new RuntimeException("Error! We're so sorry your join game has failed") ;
         }
     }
 }

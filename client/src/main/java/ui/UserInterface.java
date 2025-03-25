@@ -87,8 +87,24 @@ public class UserInterface {
     }
     private void join(){
         System.out.print("GameID: ");
-        int id = scanner.nextInt();
-        HttpResponse<String> response = client.join(id, auth);
+        int id = Integer.parseInt(scanner.nextLine());
+        System.out.println(id);
+        System.out.print("Choose WHITE or BLACK: ");
+        String color = scanner.nextLine().toUpperCase();
+        HttpResponse<String> response = client.join(id, color, auth);
+
+        if (response.statusCode() == 200){
+            System.out.println("Joined game as "+ color);
+        }
+        else if(response.statusCode() == 400){
+            System.out.println("Join failed. Bad request");
+        }
+        else if(response.statusCode() == 500) {
+            System.out.println("Join failed. Internal error, we apologize for the inconvenience");
+        }
+        else{
+            System.out.println(("Join failed. Unauthorized"));
+        }
     }
     private void performOperation(String input){
         if (input.equals("QUIT")){
