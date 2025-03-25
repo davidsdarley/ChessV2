@@ -66,7 +66,7 @@ public class UserInterface {
         else{
             LoginResult login = new Gson().fromJson(response, LoginResult.class);
             auth = login.getAuthToken();
-            System.out.println(auth);
+            System.out.println("Logged in as "+username);
             state = "LOGGED_IN";
         }
     }
@@ -94,8 +94,14 @@ public class UserInterface {
         }
 
         else if(state == "LOGGED_IN"){
-            if(true){
-                System.out.println("Good job logging in!");
+            if(input.equals("HELP")){
+                System.out.println("create <NAME>");
+                System.out.println("list");
+                System.out.println("join <ID> [WHITE/BLACK}");
+                System.out.println("observe <ID>");
+                System.out.println("logout");
+                System.out.println("quit");
+                System.out.println("help");
             }
             else{
                 System.out.println("Invalid input. Type Help to see available commands");
