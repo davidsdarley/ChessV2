@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import server.Server;
 import server.carriers.*;
 
+import java.net.http.HttpResponse;
 import java.util.Scanner;
 
 public class UserInterface {
@@ -71,6 +72,24 @@ public class UserInterface {
         }
     }
 
+    private void create(){
+        System.out.print("Game name: ");
+        String name = scanner.nextLine();
+        HttpResponse<String> response = client.create(name, auth);
+
+        if (response.statusCode() == 200){
+            GameData game = new Gson().fromJson(response.body(), GameData.class);
+            System.out.println("Game " + name + " has been created. GameID is " + game.getGameID());
+        }
+        else{
+            System.out.println(response.body());
+        }
+    }
+    private void join(){
+        System.out.print("GameID: ");
+        int id = scanner.nextInt();
+        HttpResponse<String> response = client.join(id, auth);
+    }
     private void performOperation(String input){
         if (input.equals("QUIT")){
             state = input;
@@ -102,6 +121,18 @@ public class UserInterface {
                 System.out.println("logout");
                 System.out.println("quit");
                 System.out.println("help");
+            }
+            else if (input.equals("CREATE")){
+                create();
+            }
+            else if (input.equals("JOIN")){
+                join();
+            }
+            else if (input.equals("OBSERVE")){
+
+            }
+            else if (input.equals("LOGOUT")){
+
             }
             else{
                 System.out.println("Invalid input. Type Help to see available commands");

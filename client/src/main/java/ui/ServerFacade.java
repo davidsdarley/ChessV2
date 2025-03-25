@@ -83,4 +83,38 @@ public class ServerFacade {
             return "Error! We're so sorry your registration has failed";
         }
     }
+    public HttpResponse<String> create(String name, String authToken){
+        Gson gson = new Gson();
+        GameRequest game = new GameRequest(name, authToken);
+
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(site+"/game"))
+                .header("Content-Type", "application/json")
+                .header("authorization", authToken)
+                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(game)))
+                .build();
+        try{
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                return response;
+        }
+        catch (IOException | InterruptedException e) {
+            throw new RuntimeException("Error! We're so sorry your creation has failed") ;
+        }
+    }
+    public HttpResponse<String> join(int id, String authToken){
+        Gson gson = new Gson();
+        JoinRequest game = new JoinRequest(id, authToken);
+
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(site+"/game"))
+                .header("Content-Type", "application/json")
+                .header("authorization", authToken)
+                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(game)))
+                .build();
+        try{
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            return response;
+        }
+        catch (IOException | InterruptedException e) {
+            throw new RuntimeException("Error! We're so sorry your creation has failed") ;
+        }
+    }
 }
