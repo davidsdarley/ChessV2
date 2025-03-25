@@ -117,4 +117,18 @@ public class ServerFacade {
             throw new RuntimeException("Error! We're so sorry your join game has failed") ;
         }
     }
+    public HttpResponse<String> list(String authToken){
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(site+"/game"))
+                .header("Content-Type", "application/json")
+                .header("authorization", authToken)
+                .GET()
+                .build();
+        try{
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            return response;
+        }
+        catch (IOException | InterruptedException e) {
+            throw new RuntimeException("Error! We're so sorry your list games request has failed") ;
+        }
+    }
 }

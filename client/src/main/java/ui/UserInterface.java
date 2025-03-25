@@ -106,6 +106,12 @@ public class UserInterface {
             System.out.println(("Join failed. Unauthorized"));
         }
     }
+    private void list(){
+        HttpResponse<String> response = client.list(auth);
+        if (response.statusCode() == 200){
+            System.out.println(response.body());
+        }
+    }
     private void performOperation(String input){
         if (input.equals("QUIT")){
             state = input;
@@ -143,6 +149,9 @@ public class UserInterface {
             }
             else if (input.equals("JOIN")){
                 join();
+            }
+            else if (input.equals("LIST")){
+                list();
             }
             else if (input.equals("OBSERVE")){
 
