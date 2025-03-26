@@ -24,19 +24,6 @@ public class ServerFacade {
         client = HttpClient.newHttpClient();
         this. site = "http://localhost:"+port;
     }
-    public Object hello(){ //testing purposes
-        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(site+"/hello"))
-                .GET()
-                .build();
-        try{
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            return response.body();
-        }
-
-        catch (IOException | InterruptedException e) {
-            return false;
-        }
-    }
     public HttpResponse<String> logout(String authToken){
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(site+"/session"))
                 .header("authorization", authToken)
