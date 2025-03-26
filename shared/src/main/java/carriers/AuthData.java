@@ -1,4 +1,4 @@
-package server.carriers;
+package carriers;
 import java.util.UUID;
 
 public class AuthData {

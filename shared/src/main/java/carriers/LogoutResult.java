@@ -1,4 +1,4 @@
-package server.carriers;
+package carriers;
 
 public class LogoutResult {
     boolean result;

@@ -1,5 +1,8 @@
 package dataaccess;
-import server.carriers.*;
+import carriers.AuthData;
+import carriers.GameData;
+import carriers.UserData;
+
 import java.util.ArrayList;
 
 public class InMemoryDatabase {

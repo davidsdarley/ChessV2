@@ -1,8 +1,8 @@
 package dataaccess;
 
+import carriers.*;
 import com.google.gson.Gson;
 import org.mindrot.jbcrypt.BCrypt;
-import server.carriers.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -1,7 +1,7 @@
 package dataaccess;
 
+import carriers.*;
 import org.junit.jupiter.api.*;
-import server.carriers.*;
 
 
 import java.sql.SQLException;

@@ -1,7 +1,7 @@
 package server;
+import carriers.*;
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
-import server.carriers.*;
 
 import java.sql.SQLException;
 import java.util.HashMap;

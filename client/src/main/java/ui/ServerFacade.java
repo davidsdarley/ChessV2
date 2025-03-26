@@ -1,6 +1,6 @@
 package ui;
 
-import ui.carriers.*;
+import carriers.*;
 import java.io.IOException;
 import java.net.http.*;
 import java.net.URI;

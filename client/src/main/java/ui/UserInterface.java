@@ -2,7 +2,7 @@ package ui;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import ui.carriers.*;
+import carriers.*;
 import java.lang.reflect.Type;
 import java.net.http.HttpResponse;
 import java.util.*;

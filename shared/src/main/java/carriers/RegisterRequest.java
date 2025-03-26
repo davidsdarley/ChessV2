@@ -1,4 +1,4 @@
-package server.carriers;
+package carriers;
 
 public class RegisterRequest {
     //RegisterRequests have username, password, and email.

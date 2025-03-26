@@ -1,7 +1,7 @@
 package service;
+import carriers.*;
 import org.junit.jupiter.api.*;
 import server.ChessService;
-import server.carriers.*;
 
 public class MyServiceTests {
     static ChessService service;

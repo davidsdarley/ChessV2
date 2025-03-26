@@ -1,4 +1,4 @@
-package ui.carriers;
+package carriers;
 
 public class GameRequest {
     String gameName;
