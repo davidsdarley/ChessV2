@@ -4,21 +4,44 @@ import chess.ChessPiece;
 import chess.ChessPosition;
 import static ui.EscapeSequences.*;
 
-import java.util.Locale;
-
-
 public class Printer {
     public Printer(){
 
     }
 
+    public void printBoard(ChessGame game, String color){
+        System.out.println();
+
+        if (color.toUpperCase() == "BLACK"){
+            printBlackBoard(game);
+        }
+        else{
+            printWhiteBoard(game);
+        }
+        System.out.println();
+
+    }
+    public void printBoard(ChessGame game){
+        System.out.println();
+        printWhiteBoard(game);
+        System.out.println();
+    }
     public void printWhiteBoard(ChessGame game){
         if (game == null){
             game = new ChessGame();
         }
 
         String squareColor = "WHITE";
+        String[] letters = {"   "," a ", " b ", " c ", " d ", " e ", " f " , " g ", " h ", "   "};
+        String[] numbers = {"   ", " 8 ", " 7 ", " 6 ", " 5 ", " 4 " ," 3 ", " 2 ", " 1 ", "   "};
+        for (int i = 0; i <=9; i += 1){
+            printSquare(letters[i]);
+        }
+        printSquare(null, "NONE");
+
+        System.out.println();
         for (int row = 1; row < 9; row +=1){
+            printSquare(numbers[row]);
             for (int col = 1; col < 9; col +=1){
                 ChessPiece piece = game.getBoard().getPiece(new ChessPosition(row, col));
                 printSquare(piece, squareColor);
@@ -29,6 +52,7 @@ public class Printer {
                     squareColor = "WHITE";
                 }
             }
+            printSquare(numbers[row]);
             printSquare(null, "NONE");
             System.out.println();
             if (squareColor.equals("WHITE")){
@@ -38,7 +62,54 @@ public class Printer {
                 squareColor = "WHITE";
             }
         }
+        for (int i = 0; i <=9; i += 1){
+            printSquare(letters[i]);
+        }
+        printSquare(null, "NONE");
     }
+
+    public void printBlackBoard(ChessGame game){
+        if (game == null){
+            game = new ChessGame();
+        }
+
+        String squareColor = "WHITE";
+        String[] letters = {"   "," a ", " b ", " c ", " d ", " e ", " f " , " g ", " h ", "   "};
+        String[] numbers = {"   ", " 1 ", " 2 ", " 3 ", " 4 ", " 5 " ," 6 ", " 7 ", " 8 ", "   "};
+        for (int i = 0; i <=9; i += 1){
+            printSquare(letters[i]);
+        }
+        printSquare(null, "NONE");
+
+        System.out.println();
+        for (int row = 8; row > 0; row -=1){
+            printSquare(numbers[row]);
+            for (int col = 1; col < 9; col +=1){
+                ChessPiece piece = game.getBoard().getPiece(new ChessPosition(row, col));
+                printSquare(piece, squareColor);
+                if (squareColor.equals("WHITE")){
+                    squareColor = "BLACK";
+                }
+                else{
+                    squareColor = "WHITE";
+                }
+            }
+            printSquare(numbers[row]);
+            printSquare(null, "NONE");
+            System.out.println();
+            if (squareColor.equals("WHITE")){
+                squareColor = "BLACK";
+            }
+            else{
+                squareColor = "WHITE";
+            }
+        }
+        for (int i = 0; i <=9; i += 1){
+            printSquare(letters[i]);
+        }
+        printSquare(null, "NONE");
+    }
+
     public void printSquare(ChessPiece piece, String color){
         String item;
         if (piece == null){
@@ -96,13 +167,18 @@ public class Printer {
         }
         print(item);
     }
-
+    public void printSquare(String item){
+        print(SET_BG_COLOR_DARK_GREY);
+        print(item);
+    }
     public void print(String item){
         System.out.print(item);
     }
 
     public static void main(String[] args) {
         Printer printer = new Printer();
-        printer.printWhiteBoard(null);
+        ChessGame game = new ChessGame();
+        printer.printBoard(game);
+        printer.printBoard(game, "BLACK");
     }
 }
