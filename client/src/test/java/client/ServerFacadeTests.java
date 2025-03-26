@@ -137,9 +137,10 @@ public class ServerFacadeTests {
         LoginResult login = new Gson().fromJson(service.login(
                 "sylphrena", "lookatthiscoolcrab"), LoginResult.class);
         String auth = login.getAuthToken();
-        service.create("Bridge 4", auth);
+        HttpResponse<String> game = service.create("Bridge 4", auth);
+        int gameID =  new Gson().fromJson(game.body(), GameData.class).getGameID();
         service.list(auth);
-        HttpResponse<String> actual = service.join(1, "WHITE", auth);
+        HttpResponse<String> actual = service.join(gameID, "WHITE", auth);
         System.out.println(actual);
         Assertions.assertTrue(actual.statusCode() == 200);
     }

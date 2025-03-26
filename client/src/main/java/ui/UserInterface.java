@@ -91,11 +91,12 @@ public class UserInterface {
     private void join(){
         System.out.print("GameID: ");
         int id = Integer.parseInt(scanner.nextLine());
-        System.out.println(id);
+        GameData game = games.get(id);
+        System.out.println(game);
         System.out.print("Choose WHITE or BLACK: ");
         String color = scanner.nextLine().toUpperCase();
 
-        HttpResponse<String> response = client.join(id, color, auth);
+        HttpResponse<String> response = client.join(game.getGameID(), color, auth);
 
         if (response.statusCode() == 200){
             System.out.println("Joined game as "+ color);
