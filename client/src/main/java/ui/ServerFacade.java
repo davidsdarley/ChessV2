@@ -33,7 +33,19 @@ public class ServerFacade {
             return false;
         }
     }
-
+    public HttpResponse<String> logout(String authToken){
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(site+"/session"))
+                .header("authorization", authToken)
+                .DELETE()
+                .build();
+        try{
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            return response;
+        }
+        catch (IOException | InterruptedException e) {
+            throw new RuntimeException("Error! We're so sorry your logout request has failed") ;
+        }
+    }
     public String login(String username, String password){
         Gson gson = new Gson();
         LoginRequest login = new LoginRequest(username, password);

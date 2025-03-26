@@ -94,6 +94,8 @@ public class UserInterface {
         System.out.println(id);
         System.out.print("Choose WHITE or BLACK: ");
         String color = scanner.nextLine().toUpperCase();
+
+
         HttpResponse<String> response = client.join(id, color, auth);
 
         if (response.statusCode() == 200){
@@ -143,6 +145,17 @@ public class UserInterface {
             System.out.println("Invalid ID. Type List to get game IDs");
         }
     }
+    private void logout(){
+        HttpResponse<String> response = client.logout(auth);
+
+        if (response.statusCode() == 200){
+            System.out.println("Logged out");
+            state = "LOGGED_OUT";
+            auth = null;
+        }
+        else{
+            System.out.println(response.body());
+        }    }
     private void performOperation(String input){
         if (input.equals("QUIT")){
             state = input;
@@ -188,7 +201,7 @@ public class UserInterface {
                 observe();
             }
             else if (input.equals("LOGOUT")){
-
+                logout();
             }
             else{
                 System.out.println("Invalid input. Type Help to see available commands");
