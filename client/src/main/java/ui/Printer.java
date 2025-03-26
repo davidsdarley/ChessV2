@@ -22,15 +22,14 @@ public class Printer {
 
     }
     public void printBoard(ChessGame game){
+        if (game == null){
+            game = new ChessGame();
+        }
         System.out.println();
         printWhiteBoard(game);
         System.out.println();
     }
     public void printWhiteBoard(ChessGame game){
-        if (game == null){
-            game = new ChessGame();
-        }
-
         String squareColor = "WHITE";
         String[] letters = {"   "," a ", " b ", " c ", " d ", " e ", " f " , " g ", " h ", "   "};
         String[] numbers = {"   ", " 8 ", " 7 ", " 6 ", " 5 ", " 4 " ," 3 ", " 2 ", " 1 ", "   "};
@@ -69,13 +68,9 @@ public class Printer {
     }
 
     public void printBlackBoard(ChessGame game){
-        if (game == null){
-            game = new ChessGame();
-        }
-
         String squareColor = "WHITE";
-        String[] letters = {"   "," a ", " b ", " c ", " d ", " e ", " f " , " g ", " h ", "   "};
-        String[] numbers = {"   ", " 1 ", " 2 ", " 3 ", " 4 ", " 5 " ," 6 ", " 7 ", " 8 ", "   "};
+        String[] letters = {"   "," h ", " g ", " f ", " e ", " d ", " c " , " b ", " a ", "   "};
+        String[] numbers = {"   ", " 8 ", " 7 ", " 6 ", " 5 ", " 4 " ," 3 ", " 2 ", " 1 ", "   "};
         for (int i = 0; i <=9; i += 1){
             printSquare(letters[i]);
         }
@@ -84,7 +79,7 @@ public class Printer {
         System.out.println();
         for (int row = 8; row > 0; row -=1){
             printSquare(numbers[row]);
-            for (int col = 1; col < 9; col +=1){
+            for (int col = 8; col > 0; col -=1){
                 ChessPiece piece = game.getBoard().getPiece(new ChessPosition(row, col));
                 printSquare(piece, squareColor);
                 if (squareColor.equals("WHITE")){

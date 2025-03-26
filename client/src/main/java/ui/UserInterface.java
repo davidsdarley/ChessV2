@@ -172,6 +172,9 @@ public class UserInterface {
             System.out.print("Choose WHITE or BLACK: ");
             String color = scanner.nextLine().toUpperCase();
             join(game.getGameID(), color);
+            //Change when gameplay implemented to get the ChessGame from GameData
+            printer.printBoard(null);
+            state = "PLAYING";
         }
         else{
             System.out.println("Invalid ID. Type List to get game IDs");
@@ -244,14 +247,24 @@ public class UserInterface {
                 System.out.println("Invalid input. Type Help to see available commands");
             }
         }
-
+        else if(state == "PLAYING"){
+            if(input.equals("BACK")){
+                state = "LOGGED_IN";
+            }
+            else if(input.equals("HELP")) {
+                if (input.equals("HELP")) {
+                    System.out.println("   back");
+                    System.out.println("   quit");
+                }
+            }
+        }
 
         else{
             System.out.println("Invalid input. Type Help to see available commands");
         }
     }
 
-    public static void main(String[] args) {
+    public static void main( String[] args) {
     UserInterface ui = new UserInterface(new Server());
     ui.run();
     }
