@@ -1,11 +1,13 @@
 package ui;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import server.Server;
 import server.carriers.*;
 
+import java.lang.reflect.Type;
 import java.net.http.HttpResponse;
-import java.util.Scanner;
+import java.util.*;
 
 public class UserInterface {
     Server server;
@@ -13,6 +15,7 @@ public class UserInterface {
     ServerFacade client;
     String auth;
     String state;
+    Map<Integer, GameData> games;
     public UserInterface(Server server) {
         //either connect to the server or make a new one
         this.server = server;
@@ -107,8 +110,24 @@ public class UserInterface {
         }
     }
     private void list(){
+        Gson gson = new Gson();
         HttpResponse<String> response = client.list(auth);
+
+        Type type = new TypeToken<HashMap<String, ArrayList<GameData>>>() {}.getType();
+
         if (response.statusCode() == 200){
+            HashMap<String, ArrayList<GameData>> data = gson.fromJson(response.body(), type);
+            ArrayList<GameData> gameList = data.get("games");
+            HashMap<Integer, GameData> newGames = new HashMap<>();
+            int counter = 1;
+            for(GameData game: gameList){
+                newGames.put(counter, game);
+                System.out.println(counter + ": "+game);
+                counter +=1;
+            }
+            games = newGames;
+        }
+        else{
             System.out.println(response.body());
         }
     }
