@@ -20,6 +20,8 @@ public class RegisterRequest {
         }
         return true;
     }
+    public String getPassword(){return password;}
+    public String getEmail(){return email;}
     @Override
     public String toString(){
         String str = "username: ";

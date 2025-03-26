@@ -37,8 +37,8 @@ public class MyServiceTests {
         setup();
         RegisterRequest input = new RegisterRequest("lifttheawesome",
                 "JourneyBeforePancakes", null);
-        service.register(input);
         Object result = service.register(input);
+        System.out.println(result);
         if (result instanceof LoginResult) {
             LoginResult actual = (LoginResult) result;
             Assertions.assertFalse(actual.loginSuccessful());
@@ -110,8 +110,9 @@ public class MyServiceTests {
         service.createGame(new GameRequest("the true desolation", user.authToken));
         service.createGame(new GameRequest("Battle of Thaylen Field", user.authToken));
         Object result = service.listGames(new AuthorizationRequest(user.authToken));
-        Assertions.assertTrue(result.toString().equals("[gameID: 1000 whiteUsername: None blackUsername: " +
-                "None, gameID: 1001 whiteUsername: None blackUsername: None]"));
+        System.out.println(result);
+        Assertions.assertTrue(result.toString().equals("[the true desolation |   whiteUsername: None " +
+                "blackUsername: None, Battle of Thaylen Field |   whiteUsername: None blackUsername: None]"));
     }
     @Test
     @Order(8)

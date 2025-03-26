@@ -19,7 +19,11 @@ public class ChessService {
         }
     }
     public Object register(RegisterRequest registration){
-
+        if (registration.getUsername() == null ||
+                registration.getPassword() == null ||
+                registration.getEmail() == null){
+            return false;
+        }
         try{
             UserData user = data.getUser(registration.getUsername());
             if (user == null){

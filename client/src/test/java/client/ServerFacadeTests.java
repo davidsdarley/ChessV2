@@ -3,7 +3,7 @@ package client;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.*;
 import server.Server;
-import ui.carriers.*;
+import carriers.*;
 import ui.ServerFacade;
 
 import java.net.http.HttpResponse;
