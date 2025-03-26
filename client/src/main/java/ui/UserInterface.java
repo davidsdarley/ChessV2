@@ -50,7 +50,6 @@ public class UserInterface {
         else{
             System.out.println("Registration Successful!");
             LoginResult login = new Gson().fromJson(response, LoginResult.class);
-            System.out.println(response);
             auth = login.getAuthToken();
             state = "LOGGED_IN";
         }
@@ -160,47 +159,69 @@ public class UserInterface {
     private void observe(){
         int id;
         System.out.print("Enter a game number: ");
-        id = Integer.parseInt(scanner.nextLine());
-        if (games.size() >= id){
-            GameData game = games.get(id);
-            System.out.println(game);
-            //Change when gameplay implemented to get the ChessGame from GameData
-            printer.printBoard(null);
-            state = "OBSERVING";
+        String input = scanner.nextLine();
+        try{
+            id = Integer.parseInt(input);
+            if (id < 1){
+                System.out.println("Invalid ID. Please enter a positive number");
+            }
+            else if (games.size() >= id){
+                GameData game = games.get(id);
+                System.out.println(game);
+                //Change when gameplay implemented to get the ChessGame from GameData
+                printer.printBoard(null);
+                state = "OBSERVING";
+            }
+            else{
+                System.out.println("Invalid ID. Type List to get game IDs");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid ID. Please enter a number");
         }
-        else{
-            System.out.println("Invalid ID. Type List to get game IDs");
-        }
+
     }
     private void play(){
         int id;
         System.out.print("Enter a game number: ");
-        id = Integer.parseInt(scanner.nextLine());
-        if (games.size() >= id){
-            GameData game = games.get(id);
-            System.out.print("Choose WHITE or BLACK: ");
-            String color = scanner.nextLine().toUpperCase();
-            if(join(game.getGameID(), color)){
-                //Change when gameplay implemented to get the ChessGame from GameData
-                printer.printBoard(null, color);
-                state = "PLAYING";
+        String input = scanner.nextLine();
+        try {
+            id = Integer.parseInt(input);
+            if (id < 1){
+                System.out.println("Invalid ID. Please enter a positive number");
+            }
+            else if (games.size() >= id) {
+                GameData game = games.get(id);
+                System.out.print("Choose WHITE or BLACK: ");
+                String color = scanner.nextLine().toUpperCase();
+                if (join(game.getGameID(), color)) {
+                    //Change when gameplay implemented to get the ChessGame from GameData
+                    printer.printBoard(null, color);
+                    state = "PLAYING";
+                }
+            } else {
+                System.out.println("Invalid ID. Type List to get game IDs");
             }
         }
-        else{
-            System.out.println("Invalid ID. Type List to get game IDs");
+        catch(NumberFormatException e){
+            System.out.println("Invalid ID. Please enter a number");
         }
     }
-    private void logout(){
-        HttpResponse<String> response = client.logout(auth);
-
-        if (response.statusCode() == 200){
-            System.out.println("Logged out");
-            state = "LOGGED_OUT";
-            auth = null;
+    private void logout() {
+        if (auth == null) {
+            System.out.print("");
         }
-        else{
-            System.out.println(response.body());
-        }    }
+        else {
+            HttpResponse<String> response = client.logout(auth);
+
+            if (response.statusCode() == 200) {
+                System.out.println("Logged out");
+                state = "LOGGED_OUT";
+                auth = null;
+            } else {
+                System.out.println(response.body());
+            }
+        }
+    }
     private void performOperation(String input){
         if (input.equals("QUIT")){
             logout();
