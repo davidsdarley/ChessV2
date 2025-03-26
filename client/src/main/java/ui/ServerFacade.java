@@ -33,6 +33,7 @@ public class ServerFacade {
             return false;
         }
     }
+
     public String login(String username, String password){
         Gson gson = new Gson();
         LoginRequest login = new LoginRequest(username, password);
@@ -129,6 +130,17 @@ public class ServerFacade {
         }
         catch (IOException | InterruptedException e) {
             throw new RuntimeException("Error! We're so sorry your list games request has failed") ;
+        }
+    }
+    public void reset(){
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(site+"/db"))
+                .DELETE()
+                .build();
+        try{
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        }
+        catch (IOException | InterruptedException e) {
+            throw new RuntimeException("Error! We're so sorry your clear request has failed") ;
         }
     }
 }

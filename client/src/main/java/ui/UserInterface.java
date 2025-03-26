@@ -131,6 +131,18 @@ public class UserInterface {
             System.out.println(response.body());
         }
     }
+    private void observe(){
+        int id;
+        System.out.print("Enter a game number: ");
+        id = Integer.parseInt(scanner.nextLine());
+        if (games.size() >= id){
+            GameData game = games.get(id);
+            System.out.println(game);
+        }
+        else{
+            System.out.println("Invalid ID. Type List to get game IDs");
+        }
+    }
     private void performOperation(String input){
         if (input.equals("QUIT")){
             state = input;
@@ -173,7 +185,7 @@ public class UserInterface {
                 list();
             }
             else if (input.equals("OBSERVE")){
-
+                observe();
             }
             else if (input.equals("LOGOUT")){
 

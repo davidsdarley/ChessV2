@@ -21,7 +21,7 @@ public class GameData {
     }
     @Override
     public String toString(){
-        String str = "gameID: "+ gameID+" whiteUsername: ";
+        String str = gameName+" |   whiteUsername: ";
         if (whiteUsername != null){
             str += whiteUsername ;
         }
