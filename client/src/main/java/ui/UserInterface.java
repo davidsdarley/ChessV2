@@ -2,7 +2,9 @@ package ui;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import server.carriers.*;
+import server.carriers.GameData;
+import server.carriers.LoginResult;
+//import server.carriers.*;
 
 import java.lang.reflect.Type;
 import java.net.http.HttpResponse;
