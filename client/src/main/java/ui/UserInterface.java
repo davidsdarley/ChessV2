@@ -19,6 +19,7 @@ public class UserInterface {
         scanner = new Scanner(System.in);
         client = new ServerFacade();
         printer = new Printer();
+        games = new HashMap<>();
     }
     public void run(){
         System.out.println("Welcome to Chess! Type Help to get started");
@@ -86,7 +87,7 @@ public class UserInterface {
             System.out.println(response.body());
         }
     }
-    private void join(){
+    private boolean join(){
         System.out.print("GameID: ");
         int id = Integer.parseInt(scanner.nextLine());
         GameData game = games.get(id);
@@ -98,22 +99,27 @@ public class UserInterface {
 
         if (response.statusCode() == 200){
             System.out.println("Joined game as "+ color);
+            return true;
         }
         else if(response.statusCode() == 400){
             System.out.println("Join failed. Bad request");
+            return false;
         }
         else if(response.statusCode() == 500) {
             System.out.println("Join failed. Internal error, we apologize for the inconvenience");
+            return false;
         }
         else{
             System.out.println(("Join failed. Unauthorized"));
+            return false;
         }
     }
-    private void join(int id, String color){
+    private boolean join(int id, String color){
         HttpResponse<String> response = client.join(id, color, auth);
 
         if (response.statusCode() == 200){
             System.out.println("Joined game as "+ color);
+            return true;
         }
         else if(response.statusCode() == 400){
             System.out.println("Join failed. Bad request");
@@ -121,9 +127,13 @@ public class UserInterface {
         else if(response.statusCode() == 500) {
             System.out.println("Join failed. Internal error, we apologize for the inconvenience");
         }
+        else if(response.statusCode() == 403){
+            System.out.println("Join failed. Color already taken");
+        }
         else{
             System.out.println(("Join failed. Unauthorized"));
         }
+        return false;
     }
     private void list(){
         Gson gson = new Gson();
@@ -170,10 +180,11 @@ public class UserInterface {
             GameData game = games.get(id);
             System.out.print("Choose WHITE or BLACK: ");
             String color = scanner.nextLine().toUpperCase();
-            join(game.getGameID(), color);
-            //Change when gameplay implemented to get the ChessGame from GameData
-            printer.printBoard(null, color);
-            state = "PLAYING";
+            if(join(game.getGameID(), color)){
+                //Change when gameplay implemented to get the ChessGame from GameData
+                printer.printBoard(null, color);
+                state = "PLAYING";
+            }
         }
         else{
             System.out.println("Invalid ID. Type List to get game IDs");

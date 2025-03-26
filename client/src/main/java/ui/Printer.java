@@ -11,8 +11,10 @@ public class Printer {
 
     public void printBoard(ChessGame game, String color){
         System.out.println();
-
-        if (color.toUpperCase() == "BLACK"){
+        if (game == null){
+            game = new ChessGame();
+        }
+        if (color.toUpperCase().equals("BLACK")){
             printBlackBoard(game);
         }
         else{
@@ -42,14 +44,7 @@ public class Printer {
         for (int row = 1; row < 9; row +=1){
             printSquare(numbers[row]);
             for (int col = 1; col < 9; col +=1){
-                ChessPiece piece = game.getBoard().getPiece(new ChessPosition(row, col));
-                printSquare(piece, squareColor);
-                if (squareColor.equals("WHITE")){
-                    squareColor = "BLACK";
-                }
-                else{
-                    squareColor = "WHITE";
-                }
+                squareColor = processSquare(row, col, game, squareColor);
             }
             printSquare(numbers[row]);
             printSquare(null, "NONE");
@@ -66,7 +61,16 @@ public class Printer {
         }
         printSquare(null, "NONE");
     }
-
+    private String processSquare(int row, int col, ChessGame game, String squareColor){
+        ChessPiece piece = game.getBoard().getPiece(new ChessPosition(row, col));
+        printSquare(piece, squareColor);
+        if (squareColor.equals("WHITE")){
+            return "BLACK";
+        }
+        else{
+            return "WHITE";
+        }
+    }
     public void printBlackBoard(ChessGame game){
         String squareColor = "WHITE";
         String[] letters = {"   "," h ", " g ", " f ", " e ", " d ", " c " , " b ", " a ", "   "};
@@ -80,14 +84,7 @@ public class Printer {
         for (int row = 8; row > 0; row -=1){
             printSquare(numbers[row]);
             for (int col = 8; col > 0; col -=1){
-                ChessPiece piece = game.getBoard().getPiece(new ChessPosition(row, col));
-                printSquare(piece, squareColor);
-                if (squareColor.equals("WHITE")){
-                    squareColor = "BLACK";
-                }
-                else{
-                    squareColor = "WHITE";
-                }
+                squareColor =  processSquare(row, col, game, squareColor);
             }
             printSquare(numbers[row]);
             printSquare(null, "NONE");
