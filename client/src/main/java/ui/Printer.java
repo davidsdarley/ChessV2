@@ -23,6 +23,53 @@ public class Printer {
         System.out.println();
 
     }
+    public String getPrintablePiece(ChessPiece piece){
+        String item;
+        if (piece == null){
+            item = EMPTY;
+        }
+        else if (piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+            if (piece.getPieceType() == ChessPiece.PieceType.PAWN){
+                item = WHITE_PAWN;
+            }
+            else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT){
+                item = WHITE_KNIGHT;
+            }
+            else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP){
+                item = WHITE_BISHOP;
+            }
+            else if (piece.getPieceType() == ChessPiece.PieceType.ROOK){
+                item = WHITE_ROOK;
+            }
+            else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN){
+                item = WHITE_QUEEN;
+            }
+            else{
+                item = WHITE_KING;
+            }
+        }
+        else{
+            if (piece.getPieceType() == ChessPiece.PieceType.PAWN){
+                item = BLACK_PAWN;
+            }
+            else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT){
+                item = BLACK_KNIGHT;
+            }
+            else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP){
+                item = BLACK_BISHOP;
+            }
+            else if (piece.getPieceType() == ChessPiece.PieceType.ROOK){
+                item = BLACK_ROOK;
+            }
+            else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN){
+                item = BLACK_QUEEN;
+            }
+            else{
+                item = BLACK_KING;
+            }
+        }
+        return item;
+    }
     public void printBoard(ChessGame game){
         if (game == null){
             game = new ChessGame();
@@ -104,50 +151,7 @@ public class Printer {
 
     public void printSquare(ChessPiece piece, String color){
         String item;
-        if (piece == null){
-            item = EMPTY;
-        }
-        else if (piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-            if (piece.getPieceType() == ChessPiece.PieceType.PAWN){
-                item = WHITE_PAWN;
-            }
-            else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT){
-                item = WHITE_KNIGHT;
-            }
-            else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP){
-                item = WHITE_BISHOP;
-            }
-            else if (piece.getPieceType() == ChessPiece.PieceType.ROOK){
-                item = WHITE_ROOK;
-            }
-            else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN){
-                item = WHITE_QUEEN;
-            }
-            else{
-                item = WHITE_KING;
-            }
-        }
-        else{
-            if (piece.getPieceType() == ChessPiece.PieceType.PAWN){
-                item = BLACK_PAWN;
-            }
-            else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT){
-                item = BLACK_KNIGHT;
-            }
-            else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP){
-                item = BLACK_BISHOP;
-            }
-            else if (piece.getPieceType() == ChessPiece.PieceType.ROOK){
-                item = BLACK_ROOK;
-            }
-            else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN){
-                item = BLACK_QUEEN;
-            }
-            else{
-                item = BLACK_KING;
-            }
-        }
-
+        item = getPrintablePiece(piece);
         if (color.toUpperCase() == "BLACK"){
             print(SET_BG_COLOR_BLACK);
         }
