@@ -188,6 +188,7 @@ public class UserInterface {
         }    }
     private void performOperation(String input){
         if (input.equals("QUIT")){
+            logout();
             state = input;
         }
         else if(state == "LOGGED_OUT"){
