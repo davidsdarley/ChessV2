@@ -257,7 +257,7 @@ public class UserInterface {
                 System.out.println("Invalid input. Type Help to see available commands");
             }
         }
-        else if(state == "PLAYING"){
+        else if(state.equals("PLAYING") || state.equals("OBSERVING") ){
             if(input.equals("BACK")){
                 state = "LOGGED_IN";
             }
@@ -268,18 +268,6 @@ public class UserInterface {
                 }
             }
         }
-        else if(state == "OBSERVING"){
-            if(input.equals("BACK")){
-                state = "LOGGED_IN";
-            }
-            else if(input.equals("HELP")) {
-                if (input.equals("HELP")) {
-                    System.out.println("   back");
-                    System.out.println("   quit");
-                }
-            }
-        }
-
         else{
             System.out.println("Invalid input. Type Help to see available commands");
         }
