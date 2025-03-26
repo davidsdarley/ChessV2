@@ -148,15 +148,16 @@ public class ServerFacade {
             throw new RuntimeException("Error! We're so sorry your list games request has failed") ;
         }
     }
-    public void reset(){
+    public boolean reset(){
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(site+"/db"))
                 .DELETE()
                 .build();
         try{
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            client.send(request, HttpResponse.BodyHandlers.ofString());
+            return true;
         }
         catch (IOException | InterruptedException e) {
-            throw new RuntimeException("Error! We're so sorry your clear request has failed") ;
+            return false;
         }
     }
 }

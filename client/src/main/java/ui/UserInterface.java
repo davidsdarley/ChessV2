@@ -95,7 +95,6 @@ public class UserInterface {
         System.out.print("Choose WHITE or BLACK: ");
         String color = scanner.nextLine().toUpperCase();
 
-
         HttpResponse<String> response = client.join(id, color, auth);
 
         if (response.statusCode() == 200){

@@ -108,73 +108,83 @@ public class ServerFacadeTests {
     @DisplayName("ListPositive")
     public void successList(){
         setup();
-        LoginResult user = service.login(new LoginRequest("sylphrena", "lookatthiscoolcrab"));
-        service.createGame(new GameRequest("the true desolation", user.authToken));
-        service.createGame(new GameRequest("Battle of Thaylen Field", user.authToken));
-        Object result = service.listGames(new AuthorizationRequest(user.authToken));
-        Assertions.assertTrue(result.toString().equals("[gameID: 1000 whiteUsername: None blackUsername: " +
-                "None, gameID: 1001 whiteUsername: None blackUsername: None]"));
+        LoginResult login = new Gson().fromJson(service.login(
+                "sylphrena", "lookatthiscoolcrab"), LoginResult.class);
+        String auth = login.getAuthToken();
+        service.create("the true desolation", auth);
+        service.create("Battle of Thaylen Field", auth);
+        HttpResponse<String> result = service.list(auth);
+        Assertions.assertTrue(result.statusCode() == 200);
     }
     @Test
     @Order(8)
     @DisplayName("ListNegative")
     public void failList(){
         setup();
-        service.createGame(new GameRequest("the true desolation", "unauthorized fools"));
-        service.createGame(new GameRequest("Battle of Thaylen Field", "unauthorized fools"));
-        Object result = service.listGames(new AuthorizationRequest("unauthorized fools"));
-        Assertions.assertFalse(result.toString().equals("[gameID: 1000 whiteUsername: None " +
-                "blackUsername: None, gameID: 1001 whiteUsername: None blackUsername: None]"));
+        LoginResult login = new Gson().fromJson(service.login(
+                "sylphrena", "lookatthiscoolcrab"), LoginResult.class);
+        String auth = login.getAuthToken();
+        service.create("the true desolation", auth);
+        service.create("Battle of Thaylen Field", auth);
+        HttpResponse<String> result = service.list("unauthorized fools");
+        Assertions.assertFalse(result.statusCode() == 200);
     }
     @Test
     @Order(9)
     @DisplayName("JoinPositive")
     public void successJoin(){
         setup();
-        LoginResult syl = service.login(new LoginRequest("sylphrena", "lookatthiscoolcrab"));
-        GameData game = (GameData) service.createGame(new GameRequest("Bridge 4", syl.authToken));
-        JoinResult actual =  service.joinGame(new JoinRequest(game.getGameID(),"WHITE", syl.getAuthToken()));
-        Assertions.assertTrue(actual.getResult());
+        LoginResult login = new Gson().fromJson(service.login(
+                "sylphrena", "lookatthiscoolcrab"), LoginResult.class);
+        String auth = login.getAuthToken();
+        service.create("Bridge 4", auth);
+        service.list(auth);
+        HttpResponse<String> actual = service.join(1, "WHITE", auth);
+        System.out.println(actual);
+        Assertions.assertTrue(actual.statusCode() == 200);
     }
-
     @Test
     @Order(10)
     @DisplayName("JoinNegative")
     public void failJoin(){
         setup();
-        LoginResult syl = service.login(new LoginRequest("sylphrena", "lookatthiscoolcrab"));
-        LoginResult lift = (LoginResult) service.register(new RegisterRequest("lifttheawesome",
-                "JourneyBeforePancakes", "lift&wyndle@radiant.org"));
-        GameData game = (GameData) service.createGame(new GameRequest("Bridge 4", syl.authToken));
-        service.joinGame(new JoinRequest(game.getGameID(),"WHITE", syl.getAuthToken()));
-        JoinResult actual =  service.joinGame(new JoinRequest(game.getGameID(),"WHITE", lift.getAuthToken()));
+        LoginResult syl = new Gson().fromJson(service.login(
+                "sylphrena", "lookatthiscoolcrab"), LoginResult.class);
+        LoginResult lift = new Gson().fromJson(service.register("lifttheawesome",
+                "JourneyBeforePancakes", "lift&wyndle@radiant.org"), LoginResult.class);
 
-        Assertions.assertFalse(actual.getResult());
+        service.create("Bridge 4", syl.getAuthToken());
+        service.list(syl.getAuthToken());
+        service.join(1, "WHITE", syl.getAuthToken());
+        HttpResponse<String> actual = service.join(1, "WHITE", lift.getAuthToken());
+
+        Assertions.assertFalse(actual.statusCode() == 200);
     }
     @Test
     @Order(11)
     @DisplayName("clearDB")
     public void clearTest(){
         setup();
-        Assertions.assertTrue(service.clearDatabase());
+        Assertions.assertTrue(service.reset());
     }
     @Test
     @Order(12)
     @DisplayName("LogoutPositive")
     public void successLogout() {
         setup();
-        LoginResult login = service.login(new LoginRequest("sylphrena", "lookatthiscoolcrab"));
-        LogoutResult actual = service.logout(new LogoutRequest(login.getAuthToken()));
-        Assertions.assertTrue(actual.getResult());
+        LoginResult login = new Gson().fromJson(service.login(
+                "sylphrena", "lookatthiscoolcrab"), LoginResult.class);
+        String auth = login.getAuthToken();
+        HttpResponse<String> result = service.logout(auth);
+        Assertions.assertTrue(result.statusCode() == 200);
     }
-
     @Test
     @Order(13)
     @DisplayName("LogoutNegative")
     public void failLogout(){
         setup();
-        LogoutResult actual = service.logout(new LogoutRequest("fakeAuthToken"));
-        Assertions.assertFalse(actual.getResult());
+
+        Assertions.assertFalse(service.logout("Moash").statusCode() == 200);
     }
 
 }
