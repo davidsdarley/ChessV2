@@ -15,12 +15,14 @@ public class UserInterface {
     ServerFacade client;
     String auth;
     String state;
+    Printer printer;
     Map<Integer, GameData> games;
     public UserInterface(Server server) {
         //either connect to the server or make a new one
         this.server = server;
         scanner = new Scanner(System.in);
         client = new ServerFacade();
+        printer = new Printer();
     }
     public void run(){
         System.out.println("Welcome to Chess! Type Help to get started");
