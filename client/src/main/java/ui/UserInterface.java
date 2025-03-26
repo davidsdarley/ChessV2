@@ -65,7 +65,7 @@ public class UserInterface {
         String response = client.login(username, password);
 
         if (response.equals("Unauthorized") || response.equals("Error! We're so sorry your login has failed")){
-            System.out.println("Error! We're so sorry your registration has failed");
+            System.out.println(response);
         }
         else{
             LoginResult login = new Gson().fromJson(response, LoginResult.class);
