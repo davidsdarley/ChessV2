@@ -111,6 +111,22 @@ public class UserInterface {
             System.out.println(("Join failed. Unauthorized"));
         }
     }
+    private void join(int id, String color){
+        HttpResponse<String> response = client.join(id, color, auth);
+
+        if (response.statusCode() == 200){
+            System.out.println("Joined game as "+ color);
+        }
+        else if(response.statusCode() == 400){
+            System.out.println("Join failed. Bad request");
+        }
+        else if(response.statusCode() == 500) {
+            System.out.println("Join failed. Internal error, we apologize for the inconvenience");
+        }
+        else{
+            System.out.println(("Join failed. Unauthorized"));
+        }
+    }
     private void list(){
         Gson gson = new Gson();
         HttpResponse<String> response = client.list(auth);
@@ -140,6 +156,20 @@ public class UserInterface {
         if (games.size() >= id){
             GameData game = games.get(id);
             System.out.println(game);
+        }
+        else{
+            System.out.println("Invalid ID. Type List to get game IDs");
+        }
+    }
+    private void play(){
+        int id;
+        System.out.print("Enter a game number: ");
+        id = Integer.parseInt(scanner.nextLine());
+        if (games.size() >= id){
+            GameData game = games.get(id);
+            System.out.print("Choose WHITE or BLACK: ");
+            String color = scanner.nextLine().toUpperCase();
+            join(game.getGameID(), color);
         }
         else{
             System.out.println("Invalid ID. Type List to get game IDs");
@@ -182,7 +212,8 @@ public class UserInterface {
             if(input.equals("HELP")){
                 System.out.println("create <NAME>");
                 System.out.println("list");
-                System.out.println("join <ID> [WHITE/BLACK}");
+                System.out.println("join <gameID> [WHITE/BLACK}");
+                System.out.println("play <ID> [WHITE/BLACK]");
                 System.out.println("observe <ID>");
                 System.out.println("logout");
                 System.out.println("quit");
@@ -202,6 +233,9 @@ public class UserInterface {
             }
             else if (input.equals("LOGOUT")){
                 logout();
+            }
+            else if (input.equals("PLAY")){
+                play();
             }
             else{
                 System.out.println("Invalid input. Type Help to see available commands");
