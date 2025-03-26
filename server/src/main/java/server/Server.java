@@ -16,6 +16,9 @@ public class Server {
     public Server(){
         this.service = new ChessService();
     }
+    public void setCommit(boolean set){
+        service.setCommit(set);
+    }
     public static void main(String[] args) {
         Server chessServer = new Server();
         int port = chessServer.run(8080);

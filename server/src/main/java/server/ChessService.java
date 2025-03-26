@@ -118,6 +118,8 @@ public class ChessService {
         messageMap.put("message", fullMessage);
         return messageMap;
     }
-
+    public void setCommit(boolean set){
+        data.setCommit(set);
+    }
 
 }

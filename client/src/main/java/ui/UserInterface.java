@@ -10,16 +10,14 @@ import java.net.http.HttpResponse;
 import java.util.*;
 
 public class UserInterface {
-    Server server;
     Scanner scanner;
     ServerFacade client;
     String auth;
     String state;
     Printer printer;
     Map<Integer, GameData> games;
-    public UserInterface(Server server) {
+    public UserInterface() {
         //either connect to the server or make a new one
-        this.server = server;
         scanner = new Scanner(System.in);
         client = new ServerFacade();
         printer = new Printer();
@@ -158,6 +156,9 @@ public class UserInterface {
         if (games.size() >= id){
             GameData game = games.get(id);
             System.out.println(game);
+            //Change when gameplay implemented to get the ChessGame from GameData
+            printer.printBoard(null);
+            state = "OBSERVING";
         }
         else{
             System.out.println("Invalid ID. Type List to get game IDs");
@@ -173,7 +174,7 @@ public class UserInterface {
             String color = scanner.nextLine().toUpperCase();
             join(game.getGameID(), color);
             //Change when gameplay implemented to get the ChessGame from GameData
-            printer.printBoard(null);
+            printer.printBoard(null, color);
             state = "PLAYING";
         }
         else{
@@ -258,6 +259,17 @@ public class UserInterface {
                 }
             }
         }
+        else if(state == "OBSERVING"){
+            if(input.equals("BACK")){
+                state = "LOGGED_IN";
+            }
+            else if(input.equals("HELP")) {
+                if (input.equals("HELP")) {
+                    System.out.println("   back");
+                    System.out.println("   quit");
+                }
+            }
+        }
 
         else{
             System.out.println("Invalid input. Type Help to see available commands");
@@ -265,7 +277,7 @@ public class UserInterface {
     }
 
     public static void main( String[] args) {
-    UserInterface ui = new UserInterface(new Server());
+    UserInterface ui = new UserInterface();
     ui.run();
     }
 }
