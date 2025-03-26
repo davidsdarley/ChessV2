@@ -93,21 +93,25 @@ public class Printer {
             for (int col = 1; col < 9; col +=1){
                 squareColor = processSquare(row, col, game, squareColor);
             }
-            printSquare(numbers[row]);
-            printSquare(null, "NONE");
-            System.out.println();
-            if (squareColor.equals("WHITE")){
-                squareColor = "BLACK";
-            }
-            else{
-                squareColor = "WHITE";
-            }
+            squareColor = finishRow(squareColor, numbers[row]);
         }
         for (int i = 0; i <=9; i += 1){
             printSquare(letters[i]);
         }
         printSquare(null, "NONE");
     }
+    private String finishRow(String squareColor, String number){
+        printSquare(number);
+        printSquare(null, "NONE");
+        System.out.println();
+        if (squareColor.equals("WHITE")){
+            return "BLACK";
+        }
+        else{
+            return "WHITE";
+        }
+    }
+
     private String processSquare(int row, int col, ChessGame game, String squareColor){
         ChessPiece piece = game.getBoard().getPiece(new ChessPosition(row, col));
         printSquare(piece, squareColor);
@@ -133,15 +137,7 @@ public class Printer {
             for (int col = 8; col > 0; col -=1){
                 squareColor =  processSquare(row, col, game, squareColor);
             }
-            printSquare(numbers[row]);
-            printSquare(null, "NONE");
-            System.out.println();
-            if (squareColor.equals("WHITE")){
-                squareColor = "BLACK";
-            }
-            else{
-                squareColor = "WHITE";
-            }
+            squareColor = finishRow(squareColor, numbers[row]);
         }
         for (int i = 0; i <=9; i += 1){
             printSquare(letters[i]);
