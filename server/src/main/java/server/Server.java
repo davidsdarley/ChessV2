@@ -19,6 +19,9 @@ public class Server {
     public void setCommit(boolean set){
         service.setCommit(set);
     }
+    public void rollback(){
+        service.rollback();
+    }
     public static void main(String[] args) {
         Server chessServer = new Server();
         int port = chessServer.run(8080);

@@ -12,13 +12,17 @@ import com.google.gson.Gson;
 public class ServerFacade {
     HttpClient client;
     String site;
-    public ServerFacade(String site){
+    public ServerFacade(String site, int port){
         client = HttpClient.newHttpClient();
-        this.site = site;
+        this.site = site + port;
     }
     public ServerFacade(){
         client = HttpClient.newHttpClient();
         this.site = "http://localhost:8080";
+    }
+    public ServerFacade(int port){
+        client = HttpClient.newHttpClient();
+        this. site = "http://localhost:"+port;
     }
     public Object hello(){ //testing purposes
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(site+"/hello"))

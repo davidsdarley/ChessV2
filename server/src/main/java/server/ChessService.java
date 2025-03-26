@@ -3,6 +3,7 @@ import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import server.carriers.*;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -121,5 +122,11 @@ public class ChessService {
     public void setCommit(boolean set){
         data.setCommit(set);
     }
-
+    public void rollback(){
+        try{
+            data.rollback();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
