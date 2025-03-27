@@ -1,11 +1,13 @@
 package carriers;
 
+import chess.ChessGame;
 
 public class GameData {
     int gameID;
     String gameName = "hi";
     String whiteUsername;
     String blackUsername;
+    ChessGame game;
 
     public GameData(String name, int gameID){
         if (name != null){
@@ -14,6 +16,7 @@ public class GameData {
         this.whiteUsername = null;
         this.blackUsername = null;
         this.gameName = name;
+        game = new ChessGame();
     }
     }
     public int getGameID(){

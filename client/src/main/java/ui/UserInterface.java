@@ -72,7 +72,6 @@ public class UserInterface {
             state = "LOGGED_IN";
         }
     }
-
     private void create(){
         System.out.print("Game name: ");
         String name = scanner.nextLine();
@@ -80,7 +79,7 @@ public class UserInterface {
 
         if (response.statusCode() == 200){
             GameData game = new Gson().fromJson(response.body(), GameData.class);
-            System.out.println("Game " + name + " has been created. GameID is " + game.getGameID());
+            System.out.println("Game " + name + " has been created.");
         }
         else{
             System.out.println(response.body());
@@ -99,6 +98,10 @@ public class UserInterface {
         if (response.statusCode() == 200){
             System.out.println("Joined game as "+ color);
             return true;
+        }
+        else if(response.statusCode() == 403){
+            System.out.println("Join failed. Already taken");
+            return false;
         }
         else if(response.statusCode() == 400){
             System.out.println("Join failed. Bad request");
