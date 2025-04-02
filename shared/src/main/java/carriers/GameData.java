@@ -18,6 +18,10 @@ public class GameData {
         this.gameName = name;
         game = new ChessGame();
     }
+
+    }
+    public ChessGame getGame(){
+        return game;
     }
     public int getGameID(){
         return this.gameID;

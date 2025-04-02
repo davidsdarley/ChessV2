@@ -41,6 +41,8 @@ public class Server {
         Spark.put("/game", Server::handleJoinGame);
         Spark.delete("/db", Server::handleDatabaseDoomsday);
 
+        //Spark.webSocket("ws/", webSocketHandler);
+
         Spark.awaitInitialization();
         return Spark.port();
     }

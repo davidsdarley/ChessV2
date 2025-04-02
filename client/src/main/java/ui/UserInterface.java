@@ -1,5 +1,6 @@
 package ui;
 
+import chess.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import carriers.*;
@@ -296,6 +297,20 @@ public class UserInterface {
             System.out.println("Invalid input. Type Help to see available commands");
         }
     }
+    public void print(ChessGame game, String color){
+        printer.printBoard(game, color);
+    }
+
+    //Plans: Make this a WebSocket Endpoint. It connects to SeverFacade, which is the server? I dunno we'll see.
+        // After adding the tags to the beginning of this file, add an onMessage option, which checks if we are
+        // Receiving, then if so prints the message.
+    // Alternatively, I could make this thing call another class when in Playing or Observing states. This class
+    // could do the printing, and be waiting for information from the ServerFacade. It works as a WSClient Endpoint,
+    // so it can run multiple threads and print as it recieves info. It sends and receives information, and when they
+    // type BACK, it quits itself and comes back here.
+    //
+    // I'm going to use that second option. This program will instead need a new variable Receiver to hold the new
+    // object.
 
     public static void main( String[] args) {
     UserInterface ui = new UserInterface();

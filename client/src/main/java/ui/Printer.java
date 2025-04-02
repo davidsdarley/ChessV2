@@ -111,7 +111,6 @@ public class Printer {
             return "WHITE";
         }
     }
-
     private String processSquare(int row, int col, ChessGame game, String squareColor){
         ChessPiece piece = game.getBoard().getPiece(new ChessPosition(row, col));
         printSquare(piece, squareColor);
@@ -144,7 +143,6 @@ public class Printer {
         }
         printSquare(null, "NONE");
     }
-
     public void printSquare(ChessPiece piece, String color){
         String item;
         item = getPrintablePiece(piece);
