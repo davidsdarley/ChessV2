@@ -10,6 +10,8 @@ import java.util.Map;
 
 public class Server {
     private static ChessService service;
+    private static WebSocketHandler webSocketHandler;
+
     public Server(ChessService service){
         this.service = service;
     }
@@ -41,7 +43,7 @@ public class Server {
         Spark.put("/game", Server::handleJoinGame);
         Spark.delete("/db", Server::handleDatabaseDoomsday);
 
-        //Spark.webSocket("ws/", webSocketHandler);
+        Spark.webSocket("ws/", webSocketHandler);
 
         Spark.awaitInitialization();
         return Spark.port();
