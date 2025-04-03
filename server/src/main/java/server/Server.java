@@ -1,6 +1,7 @@
 package server;
 
 import carriers.*;
+import server.webSocket.WebSocketHandler;
 import spark.*;
 import com.google.gson.Gson;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class Server {
     }
     public static void main(String[] args) {
         Server chessServer = new Server();
-        int port = chessServer.run(8080);
+        int port = chessServer.run(8081);
         System.out.println(port);
     }
         public int run(int desiredPort) {
@@ -36,6 +37,8 @@ public class Server {
 
         Spark.staticFiles.location("web");
         // Register your endpoints and handle exceptions here.
+        Spark.webSocket("/ws", webSocketHandler);
+
         Spark.get("/hello", Server::handleHello);
         Spark.post("/user", Server::handleRegister);
         Spark.post("/session", Server::handleLogin);
@@ -44,8 +47,6 @@ public class Server {
         Spark.post("/game",Server::handleCreateGame);
         Spark.put("/game", Server::handleJoinGame);
         Spark.delete("/db", Server::handleDatabaseDoomsday);
-
-        Spark.webSocket("ws/", webSocketHandler);
 
         Spark.awaitInitialization();
         return Spark.port();
