@@ -17,6 +17,9 @@ public class WebSocketSessions {
 
     public void addSessionToGame(int gameID, Session session){
         Set<Session> currentSet = getSessionsForGame(gameID);
+        if (currentSet == null){
+            currentSet = new HashSet<>();
+        }
         currentSet.add(session);
         sessions.put(gameID, currentSet);
     }

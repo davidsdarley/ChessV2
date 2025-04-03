@@ -15,11 +15,11 @@ public class Server {
 
     public Server(ChessService service){
         this.service = service;
-        webSocketHandler = new WebSocketHandler();
+        webSocketHandler = new WebSocketHandler(service.getDB());
     }
     public Server(){
         this.service = new ChessService();
-        webSocketHandler = new WebSocketHandler();
+        webSocketHandler = new WebSocketHandler(service.getDB());
     }
     public void setCommit(boolean set){
         service.setCommit(set);

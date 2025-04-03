@@ -1,8 +1,10 @@
 package server;
 import carriers.*;
+import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 
+import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -132,5 +134,9 @@ public class ChessService {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    DatabaseManager getDB(){
+        return data;
     }
 }

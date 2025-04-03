@@ -1,7 +1,10 @@
 package server.webSocket;
 
+import carriers.*;
 import chess.*;
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.*;
 
@@ -12,11 +15,32 @@ import java.util.Set;
 @WebSocket
 public class WebSocketHandler {
     WebSocketSessions sessions;
+    DatabaseManager db;
 
-    public WebSocketHandler(){
+    public WebSocketHandler(DatabaseManager db){
         sessions = new WebSocketSessions();
+        this.db = db;
     }
 
+    private String handleConnect(Command command, Session session){
+        System.out.println("CONNECT");
+        GameData game;
+        try{
+            //verify the authtoken
+            if (db.getAuth(command.authToken) == null){
+                return "Failed to connect - Unauthorized";
+            }
+            //Find the game
+            game = db.getGame(command.gameID);
+            if (game == null){
+                return "Failed to connect - Game does not exist";
+            }
+            } catch (DataAccessException e) {
+            return "Error - " + e.getMessage();
+        }
+        sessions.addSessionToGame(command.gameID, session);
+        return new Gson().toJson(game);
+    }
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
@@ -25,22 +49,31 @@ public class WebSocketHandler {
 
         String reply = "";
         if (command.getCommand().equals("CONNECT")){
-            System.out.println("CONNECT");
-            reply = "CONNECT";
+            reply = handleConnect(command, session);
+
         }
         else if (command.getCommand().equals("MAKE_MOVE")){
             ChessMove move = command.getChessMove();
-            System.out.println(move);
-            System.out.println(move.getPromotionPiece());
+            // Get the game.
+            // Check the validity of the move.
+            // Change the game.
+            // Send the updated game to everyone and store it in databases
             reply = "MOVE";
         }
         else if (command.getCommand().equals("RESIGN")){
             System.out.println("RESIGN");
+            // Tell the other people you resign.
+            // Delete the game
             reply = "RESIGN";
         }
         else if(command.getCommand().equals("LEAVE")){
             System.out.println("LEAVE");
+            // remove the session from the game.
+            //
             reply = "LEAVE";
+        }
+        else{
+            reply = "Illegal command.";
         }
 
 
@@ -66,6 +99,9 @@ public class WebSocketHandler {
     }
     public void broadcastMessage(String message, int gameID){
         Set<Session> receivers = sessions.getSessionsForGame(gameID);
+        broadcastMessage(message, receivers);
+    }
+    public void broadcastMessage(String message, Set<Session> receivers){
         for (Session session: receivers){
             send(message, session);
         }
