@@ -1,12 +1,17 @@
 package server.webSocket;
 
 import chess.*;
+import com.google.gson.Gson;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Command {
     public String commandType;
     public String authToken;
     public int gameID;
-    ChessMove move;
+    ChessMoveConstructor move;
+    ChessMove chessMove;
 
     public Command(String commandType){
         this.commandType = commandType;
@@ -14,6 +19,14 @@ public class Command {
     }
     public String getCommand(){
         return commandType;
+    }
+
+    public ChessMove getChessMove() {
+        if (chessMove == null && move != null){
+            chessMove = move.getMove();
+        }
+        //return chessMove;
+        return chessMove;
     }
 
     @Override

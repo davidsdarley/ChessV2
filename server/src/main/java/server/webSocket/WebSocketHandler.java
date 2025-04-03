@@ -1,5 +1,6 @@
 package server.webSocket;
 
+import chess.*;
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.*;
@@ -19,7 +20,6 @@ public class WebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
-        System.out.println(message);
 
         Command command = new Gson().fromJson(message, Command.class);
 
@@ -29,7 +29,9 @@ public class WebSocketHandler {
             reply = "CONNECT";
         }
         else if (command.getCommand().equals("MAKE_MOVE")){
-            System.out.println("MOVE");
+            ChessMove move = command.getChessMove();
+            System.out.println(move);
+            System.out.println(move.getPromotionPiece());
             reply = "MOVE";
         }
         else if (command.getCommand().equals("RESIGN")){

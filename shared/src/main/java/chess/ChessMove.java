@@ -15,6 +15,7 @@ public class ChessMove {
         start = startPosition;
         end = endPosition;
         piece = promotionPiece;
+
     }
 
     /**
