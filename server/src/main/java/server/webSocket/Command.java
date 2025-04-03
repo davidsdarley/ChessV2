@@ -15,4 +15,9 @@ public class Command {
     public String getCommand(){
         return commandType;
     }
+
+    @Override
+    public String toString(){
+        return "commandType: "+commandType+ "\nauthToken: "+authToken + "\ngameID: "+gameID+ "\nmove: "+move;
+    }
 }

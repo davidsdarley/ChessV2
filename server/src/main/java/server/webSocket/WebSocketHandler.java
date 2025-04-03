@@ -20,11 +20,33 @@ public class WebSocketHandler {
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
         System.out.println(message);
+
+        Command command = new Gson().fromJson(message, Command.class);
+
+        String reply = "";
+        if (command.getCommand().equals("CONNECT")){
+            System.out.println("CONNECT");
+            reply = "CONNECT";
+        }
+        else if (command.getCommand().equals("MAKE_MOVE")){
+            System.out.println("MOVE");
+            reply = "MOVE";
+        }
+        else if (command.getCommand().equals("RESIGN")){
+            System.out.println("RESIGN");
+            reply = "RESIGN";
+        }
+        else if(command.getCommand().equals("LEAVE")){
+            System.out.println("LEAVE");
+            reply = "LEAVE";
+        }
+
+
         //determine message type and call appropriate response
             //makeMove      service.makeMove
             //leaveGame     sendMessage
             //resignGame    broadcastMessage
-        String reply = new Gson().toJson("WebSocket response: " + message);
+        reply = new Gson().toJson("WebSocket response: " + reply);
         session.getRemote().sendString(reply);
     }
     @OnWebSocketClose
