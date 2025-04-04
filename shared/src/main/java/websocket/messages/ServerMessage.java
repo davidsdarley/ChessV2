@@ -1,5 +1,8 @@
 package websocket.messages;
 
+import carriers.*;
+import chess.*;
+
 import java.util.Objects;
 
 /**
@@ -15,6 +18,21 @@ public class ServerMessage {
         LOAD_GAME,
         ERROR,
         NOTIFICATION
+    }
+    GameData game;
+    String message;
+
+    public void setGame(GameData game){
+        this.game = game;
+    }
+    public GameData getGameData(){
+        return this.game;
+    }
+    public void setMessage(String message){
+        this.message = message;
+    }
+    public String getMessage(){
+        return message;
     }
 
     public ServerMessage(ServerMessageType type) {

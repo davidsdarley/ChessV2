@@ -7,6 +7,7 @@ import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.*;
+import websocket.messages.*;
 
 import java.io.IOException;
 import java.util.Set;
@@ -22,24 +23,34 @@ public class WebSocketHandler {
         this.db = db;
     }
 
-    private String handleConnect(Command command, Session session){
+    private ServerMessage handleConnect(Command command, Session session){
         System.out.println("CONNECT");
         GameData game;
+        ServerMessage reply;
         try{
             //verify the authtoken
             if (db.getAuth(command.authToken) == null){
-                return "Failed to connect - Unauthorized";
+                reply = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+                reply.setMessage("Failed to connect - Unauthorized");
+                return reply;
             }
             //Find the game
             game = db.getGame(command.gameID);
             if (game == null){
-                return "Failed to connect - Game does not exist";
+                reply = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+                reply.setMessage("Failed to connect - Game does not exist");
+                return reply;
             }
-            } catch (DataAccessException e) {
-            return "Error - " + e.getMessage();
+        }
+        catch (DataAccessException e) {
+            reply = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+            reply.setMessage("Failed to connect - "+e.getMessage());
+            return reply;
         }
         sessions.addSessionToGame(command.gameID, session);
-        return new Gson().toJson(game);
+        reply = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+        reply.setGame(game);
+        return reply;
     }
 
     @OnWebSocketMessage
@@ -47,7 +58,7 @@ public class WebSocketHandler {
 
         Command command = new Gson().fromJson(message, Command.class);
 
-        String reply = "";
+        ServerMessage reply;
         if (command.getCommand().equals("CONNECT")){
             reply = handleConnect(command, session);
 
@@ -58,31 +69,33 @@ public class WebSocketHandler {
             // Check the validity of the move.
             // Change the game.
             // Send the updated game to everyone and store it in databases
-            reply = "MOVE";
+            reply = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            reply.setMessage("MOVE");
         }
         else if (command.getCommand().equals("RESIGN")){
             System.out.println("RESIGN");
             // Tell the other people you resign.
             // Delete the game
-            reply = "RESIGN";
+            reply = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            reply.setMessage("RESIGN");
         }
         else if(command.getCommand().equals("LEAVE")){
             System.out.println("LEAVE");
             // remove the session from the game.
             //
-            reply = "LEAVE";
-        }
+            reply = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            reply.setMessage("LEAVE");        }
         else{
-            reply = "Illegal command.";
-        }
+            reply = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+            reply.setMessage("ILLEGAL COMMAND");        }
 
 
         //determine message type and call appropriate response
             //makeMove      service.makeMove
             //leaveGame     sendMessage
             //resignGame    broadcastMessage
-        reply = new Gson().toJson("WebSocket response: " + reply);
-        session.getRemote().sendString(reply);
+        System.out.println(reply);
+        session.getRemote().sendString(new Gson().toJson(reply));
     }
     @OnWebSocketClose
     public void onClose(Session session, int statusCode, String reason){
