@@ -42,7 +42,6 @@ public class Receiver extends Endpoint{
         this.session.addMessageHandler(new MessageHandler.Whole<String>() {
             public void onMessage(String message) {     //expects a ServerMessage, in the form of a JSON
                 ServerMessage serverMessage =  new Gson().fromJson(message, ServerMessage.class);
-                System.out.println("\nDEBUG: "+serverMessage+ "\n");
 
                 handleMessage(serverMessage);
             }
@@ -85,11 +84,6 @@ public class Receiver extends Endpoint{
             System.out.println("OBSERVATION FAILED");
         }
     }
-    public void leaveGame(UserGameCommand command){
-
-    }
-
-
     public void sendCommand(UserGameCommand command){
         try{
             send(new Gson().toJson(command));

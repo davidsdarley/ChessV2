@@ -169,12 +169,12 @@ public class DatabaseManager implements AutoCloseable{
             return false;
         }
     }
-    public boolean delete(GameData game){
+    public boolean delete(int gameID){
         var conn = getConn();
         var query = "DELETE FROM gameData WHERE gameID = ?";
 
         try (PreparedStatement command = conn.prepareStatement(query)){
-            command.setInt(1, game.getGameID());
+            command.setInt(1, gameID);
 
             int result = command.executeUpdate();
             return result > 0;

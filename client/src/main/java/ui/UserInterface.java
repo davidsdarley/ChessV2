@@ -56,6 +56,21 @@ public class UserInterface {
             System.out.println("Failed to close connection");
         }
     }
+
+    private void resign(){
+        try{
+            UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.RESIGN, auth, activeGame);
+            command.setMessage(user + " has resigned. Game is finished.");
+            receiver.sendCommand(command);
+            receiver.stop();
+            activeGame = 0;
+            activeColor = null;
+            state = "LOGGED_IN";
+        } catch (IOException e) {
+            System.out.println("Failed to close connection");
+        }
+    }
+
     private void register(){
         System.out.print("Please enter username: ");
         String username = scanner.nextLine();
@@ -285,7 +300,7 @@ public class UserInterface {
             logout();
             state = input;
         }
-        else if(state == "LOGGED_OUT"){
+        else if(state.equals("LOGGED_OUT")){
             if (input.equals("HELP")){
                 System.out.println("   register <USERNAME> <PASSWORD> <EMAIL>");
                 System.out.println("   login <USERNAME> <PASSWORD>");
@@ -302,7 +317,7 @@ public class UserInterface {
                 System.out.println("Invalid input. Type Help to see available commands");
             }
         }
-        else if(state == "LOGGED_IN"){
+        else if(state.equals("LOGGED_IN")){
             if(input.equals("HELP")){
                 System.out.println("create <NAME>");
                 System.out.println("list");
@@ -345,7 +360,11 @@ public class UserInterface {
                 if (input.equals("HELP")) {
                     System.out.println("   back");
                     System.out.println("   quit");
+                    System.out.println("   resign");
                 }
+            }
+            else if(input.equals("RESIGN")){
+                resign();
             }
         }
         else if(state.equals("OBSERVING") ){ //passive message searching

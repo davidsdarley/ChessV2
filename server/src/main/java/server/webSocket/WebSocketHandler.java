@@ -79,9 +79,12 @@ public class WebSocketHandler {
             reply.setMessage("MOVE");
         }
         else if (command.getCommandType().equals(UserGameCommand.CommandType.RESIGN)){
-            System.out.println("RESIGN");
+            sessions.removeSessionFromGame(command.getGameID(), session);
             // Tell the other people you resign.
+            broadcastMessage(new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, command.getMessage())
+                    ,command.getGameID());
             // Delete the game
+            db.delete(command.getGameID());
             reply = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
             reply.setMessage("RESIGN");
         }
