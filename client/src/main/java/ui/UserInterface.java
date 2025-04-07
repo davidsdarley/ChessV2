@@ -361,10 +361,20 @@ public class UserInterface {
                     System.out.println("   back");
                     System.out.println("   quit");
                     System.out.println("   resign");
+                    System.out.println("   redraw");
+                    System.out.println("   highlight legal moves");
+                    System.out.println("   make move");
                 }
             }
             else if(input.equals("RESIGN")){
-                resign();
+                System.out.println("Are you sure you want to resign?  YES | NO");
+                input = scanner.nextLine().toUpperCase();
+                if (input.equals("YES")){
+                    resign();
+                }
+                else{
+                    System.out.println("Confirmation failed. Game continuing.");
+                }
             }
         }
         else if(state.equals("OBSERVING") ){ //passive message searching
