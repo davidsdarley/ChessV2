@@ -47,6 +47,11 @@ public class WebSocketHandler {
             reply.setMessage("Failed to connect - "+e.getMessage());
             return reply;
         }
+        //notify others that someone is observing
+        ServerMessage message = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                "___ has joined as an observer!");
+        broadcastMessage(message, command.gameID);
+        //send back the board
         sessions.addSessionToGame(command.gameID, session);
         reply = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
         reply.setGame(game);
@@ -110,24 +115,25 @@ public class WebSocketHandler {
     public void onError(Throwable throwable){
         System.out.println("Error! "+throwable.getMessage());
     }
-    public void broadcastMessage(String message, int gameID){
+    public void broadcastMessage(ServerMessage message, int gameID){
         Set<Session> receivers = sessions.getSessionsForGame(gameID);
         broadcastMessage(message, receivers);
     }
-    public void broadcastMessage(String message, Set<Session> receivers){
+    public void broadcastMessage(ServerMessage message, Set<Session> receivers){
         for (Session session: receivers){
             send(message, session);
         }
     }
 
-    public void sendMessage(String message, Session session) {
+    public void sendMessage(ServerMessage message, Session session) {
         send(message, session);
     }
 
-    public void send(String message, Session session) {
+    public void send(ServerMessage message, Session session) {
         if (session.isOpen()) {
             try {
-                session.getRemote().sendString(message);
+
+                session.getRemote().sendString(new Gson().toJson(message));
             }
             catch (IOException e) {
                 //maybe do something here

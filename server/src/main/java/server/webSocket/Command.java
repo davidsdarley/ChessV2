@@ -15,7 +15,11 @@ public class Command {
 
     public Command(String commandType){
         this.commandType = commandType;
-
+    }
+    public Command(String commandType, String authToken, int gameID){
+        this.commandType = commandType;
+        this.authToken = authToken;
+        this.gameID = gameID;
     }
     public String getCommand(){
         return commandType;

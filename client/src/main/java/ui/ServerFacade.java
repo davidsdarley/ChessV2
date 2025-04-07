@@ -18,7 +18,7 @@ public class ServerFacade {
     }
     public ServerFacade(){
         client = HttpClient.newHttpClient();
-        this.site = "http://localhost:8080";
+        this.site = "http://localhost:8081";
     }
     public ServerFacade(int port){
         client = HttpClient.newHttpClient();
@@ -62,7 +62,6 @@ public class ServerFacade {
     public String register(String username, String password, String email){
         Gson gson = new Gson();
         RegisterRequest register = new RegisterRequest(username, password, email);
-
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(site+"/user"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(register)))
@@ -84,6 +83,7 @@ public class ServerFacade {
         }
 
         catch (IOException | InterruptedException e) {
+            System.out.println(e.getMessage());
             return "Error! We're so sorry your registration has failed";
         }
     }

@@ -38,6 +38,10 @@ public class ServerMessage {
     public ServerMessage(ServerMessageType type) {
         this.serverMessageType = type;
     }
+    public ServerMessage(ServerMessageType type, String message) {
+        this.message = message;
+        this.serverMessageType = type;
+    }
 
     public ServerMessageType getServerMessageType() {
         return this.serverMessageType;
@@ -58,5 +62,10 @@ public class ServerMessage {
     @Override
     public int hashCode() {
         return Objects.hash(getServerMessageType());
+    }
+
+    @Override
+    public String toString(){
+        return "Type: " + serverMessageType + "\nMessage: "+ message;
     }
 }

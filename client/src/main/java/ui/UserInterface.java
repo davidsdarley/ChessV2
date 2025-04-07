@@ -4,6 +4,9 @@ import chess.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import carriers.*;
+import server.webSocket.Command;
+
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.http.HttpResponse;
 import java.util.*;
@@ -15,6 +18,7 @@ public class UserInterface {
     String state;
     Printer printer;
     Map<Integer, GameData> games;
+    Receiver receiver;
     public UserInterface() {
         //either connect to the server or make a new one
         scanner = new Scanner(System.in);
@@ -42,17 +46,19 @@ public class UserInterface {
 
         String response = client.register(username, password, email);
 
-        if (response.equals("")){
+        if (response.equals("") || response.equals("Error! We're so sorry your registration has failed")){
             System.out.println("Error! We're so sorry your registration has failed");
         }
         else if(response.equals("bad request")|| response.equals("already taken")){
             System.out.println(response);
         }
         else{
-            System.out.println("Registration Successful!");
+//            System.out.println(response);
             LoginResult login = new Gson().fromJson(response, LoginResult.class);
             auth = login.getAuthToken();
             state = "LOGGED_IN";
+            System.out.println("Registration Successful!");
+
         }
     }
     private void login(){
@@ -160,7 +166,7 @@ public class UserInterface {
             System.out.println(response.body());
         }
     }
-    private void observe(){
+    private void observe() throws Exception {
         int id;
         System.out.print("Enter a game number: ");
         String input = scanner.nextLine();
@@ -175,6 +181,9 @@ public class UserInterface {
                 //Change when gameplay implemented to get the ChessGame from GameData
                 printer.printBoard(null);
                 state = "OBSERVING";
+
+                receiver.observe(new Command("CONNECT", auth, game.getGameID()));
+                receiver = new Receiver(this, "WHITE");
             }
             else{
                 System.out.println("Invalid ID. Type List to get game IDs");
@@ -248,7 +257,6 @@ public class UserInterface {
                 System.out.println("Invalid input. Type Help to see available commands");
             }
         }
-
         else if(state == "LOGGED_IN"){
             if(input.equals("HELP")){
                 System.out.println("create <NAME>");
@@ -270,7 +278,12 @@ public class UserInterface {
                 list();
             }
             else if (input.equals("OBSERVE")){
+                try{
                 observe();
+                }
+                catch (Exception e) {
+                    System.out.println("Call to OBSERVE failed");
+                }
             }
             else if (input.equals("LOGOUT")){
                 logout();
@@ -282,9 +295,17 @@ public class UserInterface {
                 System.out.println("Invalid input. Type Help to see available commands");
             }
         }
-        else if(state.equals("PLAYING") || state.equals("OBSERVING") ){
+        else if(state.equals("PLAYING")){
+        }
+        else if(state.equals("OBSERVING") ){ //passive message searching
             if(input.equals("BACK")){
+                try{
+                receiver.stop();
                 state = "LOGGED_IN";
+
+                } catch (IOException e) {
+                    System.out.println("Failed to close connection");
+                }
             }
             else if(input.equals("HELP")) {
                 if (input.equals("HELP")) {
