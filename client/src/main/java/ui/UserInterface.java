@@ -38,6 +38,20 @@ public class UserInterface {
             performOperation(input);
         }
     }
+    private void leave(){
+
+        try{
+            UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, auth, activeGame);
+            command.setMessage(user + " has left the game.");
+            receiver.sendCommand(command);
+            receiver.stop();
+            activeGame = 0;
+            state = "LOGGED_IN";
+
+        } catch (IOException e) {
+            System.out.println("Failed to close connection");
+        }
+    }
     private void register(){
         System.out.print("Please enter username: ");
         String username = scanner.nextLine();
@@ -183,8 +197,7 @@ public class UserInterface {
                 GameData game = games.get(id);
                 activeGame= game.getGameID();
                 System.out.println(game);
-                //Change when gameplay implemented to get the ChessGame from GameData
-                //printer.printBoard(game.getGame());
+
                 receiver = new Receiver(this, "WHITE");
                 UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT,
                         auth, activeGame);
@@ -218,8 +231,20 @@ public class UserInterface {
                 String color = scanner.nextLine().toUpperCase();
                 if (join(game.getGameID(), color)) {
                     //Change when gameplay implemented to get the ChessGame from GameData
-                    printer.printBoard(null, color);
+                    this.activeGame = game.getGameID();
+                    //printer.printBoard(game.getGame(), color);
+                    try{
+                    receiver = new Receiver(this, "WHITE");
+                    UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT,
+                            auth, activeGame);
+                    command.setMessage(user + " has joined as "+color+"!");
+                    receiver.sendCommand(command);
+
                     state = "PLAYING";
+                    }
+                    catch (Exception e){
+                        System.out.println("Join game failed: " + e.getMessage());
+                    }
                 }
             } else {
                 System.out.println("Invalid ID. Type List to get game IDs");
@@ -248,15 +273,18 @@ public class UserInterface {
     private void performOperation(String input){
         if (input.equals("QUIT")){
             //close any sessions you may be in
-            try{
-                UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, auth, activeGame);
-                command.setMessage(user + " has left the game.");
-                receiver.sendCommand(command);
-                receiver.stop();
+            if (state.equals("OBSERVING")) {
+                try {
+                    UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, auth, activeGame);
+                    command.setMessage(user + " has left the game.");
+                    receiver.sendCommand(command);
+                    receiver.stop();
 
-            } catch (IOException e) {
-                System.out.println("Failed to close connection");
+                } catch (IOException e) {
+                    System.out.println("Failed to close connection");
+                }
             }
+            else if (state.equals("PLAYING"))
             //logout
             logout();
             state = input;
@@ -282,7 +310,6 @@ public class UserInterface {
             if(input.equals("HELP")){
                 System.out.println("create <NAME>");
                 System.out.println("list");
-                System.out.println("join <gameID> [WHITE/BLACK}");
                 System.out.println("play <ID> [WHITE/BLACK]");
                 System.out.println("observe <ID>");
                 System.out.println("logout");
@@ -292,9 +319,7 @@ public class UserInterface {
             else if (input.equals("CREATE")){
                 create();
             }
-            else if (input.equals("JOIN")){
-                join();
-            }
+            //else if (input.equals("JOIN")){join();}
             else if (input.equals("LIST")){
                 list();
             }
@@ -317,20 +342,20 @@ public class UserInterface {
             }
         }
         else if(state.equals("PLAYING")){
+            if(input.equals("BACK")){
+
+                leave();
+            }
+            else if(input.equals("HELP")) {
+                if (input.equals("HELP")) {
+                    System.out.println("   back");
+                    System.out.println("   quit");
+                }
+            }
         }
         else if(state.equals("OBSERVING") ){ //passive message searching
             if(input.equals("BACK")){
-                try{
-                    UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, auth, activeGame);
-                    command.setMessage(user + " has left the game.");
-                    receiver.sendCommand(command);
-                    receiver.stop();
-                    activeGame = 0;
-                    state = "LOGGED_IN";
-
-                } catch (IOException e) {
-                    System.out.println("Failed to close connection");
-                }
+                leave();
             }
             else if(input.equals("HELP")) {
                 if (input.equals("HELP")) {

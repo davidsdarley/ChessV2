@@ -84,6 +84,12 @@ public class GameData {
         }
         return false;
     }
+    public void deleteWhite(){
+        whiteUsername = null;
+    }
+    public void deleteBlack(){
+        blackUsername = null;
+    }
     public String getName(){
         return gameName;
     }

@@ -169,6 +169,38 @@ public class DatabaseManager implements AutoCloseable{
             return false;
         }
     }
+    public boolean delete(GameData game){
+        var conn = getConn();
+        var query = "DELETE FROM gameData WHERE gameID = ?";
+
+        try (PreparedStatement command = conn.prepareStatement(query)){
+            command.setInt(1, game.getGameID());
+
+            int result = command.executeUpdate();
+            return result > 0;
+        }
+        catch(SQLException e){
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+    public boolean removeUser(JoinRequest join){
+        GameData game = getGame(join.getGameID());
+        if (join.getColor() == null || !( join.getColor().equals("WHITE") || join.getColor().equals("BLACK") ) ){
+            return false;
+        }
+        if (game != null){
+            if(join.getColor().equals("WHITE")){
+                game.deleteWhite();
+            }
+            else if(join.getColor().equals("BLACK")){
+                game.deleteBlack();
+            }
+            return updateGame(game);
+        }
+        return false;
+    }
+
     public UserData getUser(String username) throws DataAccessException{
         var conn = getConn();
         var query = "SELECT json FROM userData WHERE username = ?";
@@ -333,8 +365,6 @@ public class DatabaseManager implements AutoCloseable{
             }
 
             else if(join.getColor().equals("BLACK") && game.setBlackUsername(username)){
-                System.out.println("FLAG1");
-
                 if(updateGame(game)){
                     return new JoinResult(true, 200);
                 }

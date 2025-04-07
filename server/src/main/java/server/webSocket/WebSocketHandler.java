@@ -92,7 +92,10 @@ public class WebSocketHandler {
             broadcastMessage(new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, command.getMessage())
                     ,command.getGameID());
             reply = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-            reply.setMessage("LEAVE");        }
+            reply.setMessage("LEAVE");
+            //remove the user from the game if they aren't an observer
+            db.
+        }
         else{
             reply = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             reply.setMessage("ILLEGAL COMMAND");        }
