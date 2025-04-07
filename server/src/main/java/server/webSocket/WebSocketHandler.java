@@ -23,11 +23,11 @@ public class WebSocketHandler {
         sessions = new WebSocketSessions();
         this.db = db;
     }
-
     private ServerMessage handleConnect(UserGameCommand command, Session session){
         System.out.println("CONNECT");
         GameData game;
         ServerMessage reply;
+
         try{
             //verify the authtoken
             if (db.getAuth(command.getAuthToken()) == null){
@@ -48,15 +48,19 @@ public class WebSocketHandler {
             reply.setMessage("Failed to connect - "+e.getMessage());
             return reply;
         }
-        //notify others that someone is observing
-        ServerMessage message = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
-                command.getMessage());
-        broadcastMessage(message, command.getGameID());
-        //send back the board
-        sessions.addSessionToGame(command.getGameID(), session);
+
+        if (command.getCommandType().equals(UserGameCommand.CommandType.CONNECT)) {
+            //notify others
+            ServerMessage message = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                    command.getMessage());
+            broadcastMessage(message, command.getGameID());
+            //send back the board
+            sessions.addSessionToGame(command.getGameID(), session);
+        }
         reply = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
         reply.setGame(game);
         return reply;
+
     }
 
     @OnWebSocketMessage
@@ -65,9 +69,10 @@ public class WebSocketHandler {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
 
         ServerMessage reply;
-        if (command.getCommandType().equals(UserGameCommand.CommandType.CONNECT)){
+        if ( (command.getCommandType().equals(UserGameCommand.CommandType.CONNECT))
+        || (command.getCommandType().equals(UserGameCommand.CommandType.GET)) ){
+
             reply = handleConnect(command, session);
-            send(reply, session);
         }
         else if (command.getCommandType().equals(UserGameCommand.CommandType.MAKE_MOVE)){
             ChessMove move = command.getChessMove();
@@ -104,17 +109,14 @@ public class WebSocketHandler {
             db.removeUser(command.getLeaveRequest());
             }
         }
+
         else{
             reply = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             reply.setMessage("ILLEGAL COMMAND");        }
 
-
-        //determine message type and call appropriate response
-            //makeMove      service.makeMove
-            //leaveGame     sendMessage
-            //resignGame    broadcastMessage
         System.out.println(reply);
-        session.getRemote().sendString(new Gson().toJson(reply));
+        send(reply, session);
+        //session.getRemote().sendString(new Gson().toJson(reply));
     }
     @OnWebSocketClose
     public void onClose(Session session, int statusCode, String reason){
@@ -151,6 +153,7 @@ public class WebSocketHandler {
             }
             catch (IOException e) {
                 //maybe do something here
+                System.out.println("IOException: "+ e.getMessage());
             }
         }
     }

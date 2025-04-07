@@ -75,6 +75,9 @@ public class Receiver extends Endpoint{
         //catch and handle the error
         System.out.println("Error: "+serverMessage.getMessage());
     }
+    public void getBoard(UserGameCommand command){
+
+    }
 
     public void observe(UserGameCommand command){
         try{

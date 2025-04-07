@@ -366,6 +366,10 @@ public class UserInterface {
                     System.out.println("   make move");
                 }
             }
+            else if(input.equals("REDRAW")){
+                UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.GET, auth, activeGame);
+                receiver.sendCommand(command);
+            }
             else if(input.equals("RESIGN")){
                 System.out.println("Are you sure you want to resign?  YES | NO");
                 input = scanner.nextLine().toUpperCase();
