@@ -42,35 +42,40 @@ public class Receiver extends Endpoint{
         this.session.addMessageHandler(new MessageHandler.Whole<String>() {
             public void onMessage(String message) {     //expects a ServerMessage, in the form of a JSON
                 ServerMessage serverMessage =  new Gson().fromJson(message, ServerMessage.class);
-                System.out.println("\n"+serverMessage);
+                System.out.println("\nDEBUG: "+serverMessage+ "\n");
 
                 //handle message
-                if (serverMessage.getServerMessageType().equals(ServerMessage.ServerMessageType.LOAD_GAME)){
-                    System.out.println("DEBUG: LOAD_GAME message received.");
-                    handleLoadGame(serverMessage);
-                }
-                else if(serverMessage.getServerMessageType().equals(ServerMessage.ServerMessageType.NOTIFICATION)){
-                    System.out.println("DEBUG: NOTIFICATION message received.");
-                    handleNotification(serverMessage);
-                }
-                else if(serverMessage.getServerMessageType().equals(ServerMessage.ServerMessageType.ERROR)){
-                    System.out.println("DEBUG: ERROR message received.");
-                    handleError(serverMessage);
-                }
+                handleMessage(serverMessage);
+
             }
         });
+    }
+    private void handleMessage(ServerMessage serverMessage){
+        if (serverMessage.getServerMessageType().equals(ServerMessage.ServerMessageType.LOAD_GAME)){
+            System.out.println("DEBUG: LOAD_GAME message received.");
+            handleLoadGame(serverMessage);
+        }
+        else if(serverMessage.getServerMessageType().equals(ServerMessage.ServerMessageType.NOTIFICATION)){
+            System.out.println("DEBUG: NOTIFICATION message received.");
+            handleNotification(serverMessage);
+        }
+        else if(serverMessage.getServerMessageType().equals(ServerMessage.ServerMessageType.ERROR)){
+            System.out.println("DEBUG: ERROR message received.");
+            handleError(serverMessage);
+        }
     }
 
     private void handleLoadGame(ServerMessage serverMessage){
         //print the new board
         user.printer.printBoard(serverMessage.getGameData().getGame());
-
     }
     private void handleNotification(ServerMessage serverMessage){
         //print the notification
+        System.out.println(serverMessage.getMessage());
     }
     private void handleError(ServerMessage serverMessage){
         //catch and handle the error
+        System.out.println("Error: "+serverMessage.getMessage());
     }
 
     public void observe(UserGameCommand command){
