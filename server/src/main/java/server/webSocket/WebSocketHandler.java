@@ -86,9 +86,11 @@ public class WebSocketHandler {
             reply.setMessage("RESIGN");
         }
         else if(command.getCommandType().equals(UserGameCommand.CommandType.LEAVE)){
-            System.out.println("LEAVE");
-            // remove the session from the game.
-            //
+            // remove the session from the game
+            sessions.removeSessionFromGame(command.getGameID(), session);
+            //tell everyone about it.
+            broadcastMessage(new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, command.getMessage())
+                    ,command.getGameID());
             reply = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
             reply.setMessage("LEAVE");        }
         else{

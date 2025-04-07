@@ -12,6 +12,7 @@ import java.net.http.HttpResponse;
 import java.util.*;
 
 public class UserInterface {
+    int activeGame;
     Scanner scanner;
     ServerFacade client;
     String auth;
@@ -180,12 +181,13 @@ public class UserInterface {
             }
             else if (games.size() >= id){
                 GameData game = games.get(id);
+                activeGame= game.getGameID();
                 System.out.println(game);
                 //Change when gameplay implemented to get the ChessGame from GameData
                 //printer.printBoard(game.getGame());
                 receiver = new Receiver(this, "WHITE");
                 UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT,
-                        auth, game.getGameID());
+                        auth, activeGame);
                 command.setMessage(user + " has joined as an observer!");
                 receiver.observe(command);
 
@@ -245,6 +247,17 @@ public class UserInterface {
     }
     private void performOperation(String input){
         if (input.equals("QUIT")){
+            //close any sessions you may be in
+            try{
+                UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, auth, activeGame);
+                command.setMessage(user + " has left the game.");
+                receiver.sendCommand(command);
+                receiver.stop();
+
+            } catch (IOException e) {
+                System.out.println("Failed to close connection");
+            }
+            //logout
             logout();
             state = input;
         }
@@ -308,8 +321,12 @@ public class UserInterface {
         else if(state.equals("OBSERVING") ){ //passive message searching
             if(input.equals("BACK")){
                 try{
-                receiver.stop();
-                state = "LOGGED_IN";
+                    UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, auth, activeGame);
+                    command.setMessage(user + " has left the game.");
+                    receiver.sendCommand(command);
+                    receiver.stop();
+                    activeGame = 0;
+                    state = "LOGGED_IN";
 
                 } catch (IOException e) {
                     System.out.println("Failed to close connection");

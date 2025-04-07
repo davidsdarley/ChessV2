@@ -63,6 +63,7 @@ public class Receiver extends Endpoint{
             System.out.println("DEBUG: ERROR message received.");
             handleError(serverMessage);
         }
+        System.out.print(user.state+" >>> ");
     }
 
     private void handleLoadGame(ServerMessage serverMessage){
@@ -86,7 +87,14 @@ public class Receiver extends Endpoint{
             System.out.println("OBSERVATION FAILED");
         }
     }
-
+    public void sendCommand(UserGameCommand command){
+        try{
+            send(new Gson().toJson(command));
+        }
+        catch (Exception e) {
+            System.out.println("MESSAGE FAILED TO SEND");
+        }
+    }
 
     public void send(String msg) throws Exception {
         this.session.getBasicRemote().sendText(msg);
@@ -94,6 +102,5 @@ public class Receiver extends Endpoint{
 
     public void stop() throws IOException {
         session.close();
-        System.out.println("STOPPED");
     }
 }
