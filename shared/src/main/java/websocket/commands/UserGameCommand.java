@@ -1,5 +1,6 @@
 package websocket.commands;
 
+import carriers.JoinRequest;
 import chess.ChessMove;
 
 import java.util.Objects;
@@ -21,6 +22,7 @@ public class UserGameCommand {
     ChessMoveConstructor move;
     ChessMove chessMove;
     String message;
+    JoinRequest leaveRequest;
 
     public UserGameCommand(CommandType commandType, String authToken, Integer gameID) {
         this.commandType = commandType;
@@ -47,6 +49,7 @@ public class UserGameCommand {
         return gameID;
     }
 
+    //my additions
     public ChessMove getChessMove() {
         if (chessMove == null && move != null){
             chessMove = move.getMove();
@@ -59,6 +62,12 @@ public class UserGameCommand {
     }
     public String getMessage(){
         return message;
+    }
+    public void setLeaveRequest(JoinRequest leaveRequest) {
+        this.leaveRequest = leaveRequest;
+    }
+    public JoinRequest getLeaveRequest(){
+        return leaveRequest;
     }
 
     @Override

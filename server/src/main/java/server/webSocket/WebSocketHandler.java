@@ -94,7 +94,12 @@ public class WebSocketHandler {
             reply = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
             reply.setMessage("LEAVE");
             //remove the user from the game if they aren't an observer
-            db.
+            if (command.getLeaveRequest() == null){
+
+            }
+            else{
+            db.removeUser(command.getLeaveRequest());
+            }
         }
         else{
             reply = new ServerMessage(ServerMessage.ServerMessageType.ERROR);

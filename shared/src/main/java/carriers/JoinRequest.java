@@ -9,9 +9,9 @@ public class JoinRequest {
         this.playerColor = color;
         this.gameID = id;
     }
-    public JoinRequest(int id, String color, String authToken){
+    public JoinRequest(int gameID, String color, String authToken){
         this.playerColor = color;
-        this.gameID = id;
+        this.gameID = gameID;
         this.authToken = authToken;
     }
     public void setAuthToken(String auth){

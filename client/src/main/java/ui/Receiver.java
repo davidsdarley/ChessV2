@@ -85,6 +85,10 @@ public class Receiver extends Endpoint{
             System.out.println("OBSERVATION FAILED");
         }
     }
+    public void leaveGame(UserGameCommand command){
+
+    }
+
 
     public void sendCommand(UserGameCommand command){
         try{

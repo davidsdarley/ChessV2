@@ -13,6 +13,7 @@ import java.util.*;
 
 public class UserInterface {
     int activeGame;
+    String activeColor;
     Scanner scanner;
     ServerFacade client;
     String auth;
@@ -39,15 +40,18 @@ public class UserInterface {
         }
     }
     private void leave(){
-
         try{
             UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, auth, activeGame);
             command.setMessage(user + " has left the game.");
+            if(state.equals("PLAYING")){
+                command.setLeaveRequest(new JoinRequest(activeGame, activeColor, auth));
+            }
             receiver.sendCommand(command);
             receiver.stop();
             activeGame = 0;
+            activeColor = null;
             state = "LOGGED_IN";
-
+            System.out.println("Left game");
         } catch (IOException e) {
             System.out.println("Failed to close connection");
         }
@@ -232,6 +236,7 @@ public class UserInterface {
                 if (join(game.getGameID(), color)) {
                     //Change when gameplay implemented to get the ChessGame from GameData
                     this.activeGame = game.getGameID();
+                    this.activeColor = color;
                     //printer.printBoard(game.getGame(), color);
                     try{
                     receiver = new Receiver(this, "WHITE");
@@ -273,18 +278,9 @@ public class UserInterface {
     private void performOperation(String input){
         if (input.equals("QUIT")){
             //close any sessions you may be in
-            if (state.equals("OBSERVING")) {
-                try {
-                    UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, auth, activeGame);
-                    command.setMessage(user + " has left the game.");
-                    receiver.sendCommand(command);
-                    receiver.stop();
-
-                } catch (IOException e) {
-                    System.out.println("Failed to close connection");
-                }
+            if (state.equals("OBSERVING") || state.equals("PLAYING")) {
+                leave();
             }
-            else if (state.equals("PLAYING"))
             //logout
             logout();
             state = input;
@@ -343,7 +339,6 @@ public class UserInterface {
         }
         else if(state.equals("PLAYING")){
             if(input.equals("BACK")){
-
                 leave();
             }
             else if(input.equals("HELP")) {
