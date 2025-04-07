@@ -37,4 +37,5 @@ public class Command {
     public String toString(){
         return "commandType: "+commandType+ "\nauthToken: "+authToken + "\ngameID: "+gameID+ "\nmove: "+move;
     }
+
 }

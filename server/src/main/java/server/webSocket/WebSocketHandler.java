@@ -7,6 +7,7 @@ import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.*;
+import websocket.commands.UserGameCommand;
 import websocket.messages.*;
 
 import java.io.IOException;
@@ -23,19 +24,19 @@ public class WebSocketHandler {
         this.db = db;
     }
 
-    private ServerMessage handleConnect(Command command, Session session){
+    private ServerMessage handleConnect(UserGameCommand command, Session session){
         System.out.println("CONNECT");
         GameData game;
         ServerMessage reply;
         try{
             //verify the authtoken
-            if (db.getAuth(command.authToken) == null){
+            if (db.getAuth(command.getAuthToken()) == null){
                 reply = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
                 reply.setMessage("Failed to connect - Unauthorized");
                 return reply;
             }
             //Find the game
-            game = db.getGame(command.gameID);
+            game = db.getGame(command.getGameID());
             if (game == null){
                 reply = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
                 reply.setMessage("Failed to connect - Game does not exist");
@@ -50,9 +51,9 @@ public class WebSocketHandler {
         //notify others that someone is observing
         ServerMessage message = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
                 "___ has joined as an observer!");
-        broadcastMessage(message, command.gameID);
+        broadcastMessage(message, command.getGameID());
         //send back the board
-        sessions.addSessionToGame(command.gameID, session);
+        sessions.addSessionToGame(command.getGameID(), session);
         reply = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
         reply.setGame(game);
         return reply;
@@ -61,14 +62,14 @@ public class WebSocketHandler {
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
 
-        Command command = new Gson().fromJson(message, Command.class);
+        UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
 
         ServerMessage reply;
-        if (command.getCommand().equals("CONNECT")){
+        if (command.getCommandType().equals(UserGameCommand.CommandType.CONNECT)){
             reply = handleConnect(command, session);
 
         }
-        else if (command.getCommand().equals("MAKE_MOVE")){
+        else if (command.getCommandType().equals(UserGameCommand.CommandType.MAKE_MOVE)){
             ChessMove move = command.getChessMove();
             // Get the game.
             // Check the validity of the move.
@@ -77,14 +78,14 @@ public class WebSocketHandler {
             reply = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
             reply.setMessage("MOVE");
         }
-        else if (command.getCommand().equals("RESIGN")){
+        else if (command.getCommandType().equals(UserGameCommand.CommandType.RESIGN)){
             System.out.println("RESIGN");
             // Tell the other people you resign.
             // Delete the game
             reply = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
             reply.setMessage("RESIGN");
         }
-        else if(command.getCommand().equals("LEAVE")){
+        else if(command.getCommandType().equals(UserGameCommand.CommandType.LEAVE)){
             System.out.println("LEAVE");
             // remove the session from the game.
             //

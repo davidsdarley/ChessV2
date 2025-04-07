@@ -15,6 +15,7 @@ public class UserInterface {
     Scanner scanner;
     ServerFacade client;
     String auth;
+    String user;
     String state;
     Printer printer;
     Map<Integer, GameData> games;
@@ -56,6 +57,7 @@ public class UserInterface {
 //            System.out.println(response);
             LoginResult login = new Gson().fromJson(response, LoginResult.class);
             auth = login.getAuthToken();
+            user = login.getUsername();
             state = "LOGGED_IN";
             System.out.println("Registration Successful!");
 
@@ -75,6 +77,7 @@ public class UserInterface {
         else{
             LoginResult login = new Gson().fromJson(response, LoginResult.class);
             auth = login.getAuthToken();
+            user = login.getUsername();
             System.out.println("Logged in as "+username);
             state = "LOGGED_IN";
         }
