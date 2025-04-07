@@ -50,7 +50,7 @@ public class WebSocketHandler {
         }
         //notify others that someone is observing
         ServerMessage message = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION,
-                "___ has joined as an observer!");
+                command.getMessage());
         broadcastMessage(message, command.getGameID());
         //send back the board
         sessions.addSessionToGame(command.getGameID(), session);
@@ -67,7 +67,7 @@ public class WebSocketHandler {
         ServerMessage reply;
         if (command.getCommandType().equals(UserGameCommand.CommandType.CONNECT)){
             reply = handleConnect(command, session);
-
+            send(reply, session);
         }
         else if (command.getCommandType().equals(UserGameCommand.CommandType.MAKE_MOVE)){
             ChessMove move = command.getChessMove();

@@ -9,7 +9,7 @@ import carriers.*;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import server.Server;
-import server.webSocket.Command;
+import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
 
@@ -63,7 +63,7 @@ public class Receiver extends Endpoint{
 
     private void handleLoadGame(ServerMessage serverMessage){
         //print the new board
-
+        user.printer.printBoard(serverMessage.getGameData().getGame());
 
     }
     private void handleNotification(ServerMessage serverMessage){
@@ -73,10 +73,9 @@ public class Receiver extends Endpoint{
         //catch and handle the error
     }
 
-    public void observe(Command command){
+    public void observe(UserGameCommand command){
         try{
             send(new Gson().toJson(command));
-
         }
         catch (Exception e) {
             System.out.println("OBSERVATION FAILED");

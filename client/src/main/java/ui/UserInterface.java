@@ -4,7 +4,7 @@ import chess.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import carriers.*;
-import server.webSocket.Command;
+import websocket.commands.UserGameCommand;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -182,11 +182,16 @@ public class UserInterface {
                 GameData game = games.get(id);
                 System.out.println(game);
                 //Change when gameplay implemented to get the ChessGame from GameData
-                printer.printBoard(null);
+                //printer.printBoard(game.getGame());
+                receiver = new Receiver(this, "WHITE");
+                UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT,
+                        auth, game.getGameID());
+                command.setMessage(user + " has joined as an observer!");
+                receiver.observe(command);
+
+
                 state = "OBSERVING";
 
-                receiver.observe(new Command("CONNECT", auth, game.getGameID()));
-                receiver = new Receiver(this, "WHITE");
             }
             else{
                 System.out.println("Invalid ID. Type List to get game IDs");

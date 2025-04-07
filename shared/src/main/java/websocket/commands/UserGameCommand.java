@@ -20,6 +20,7 @@ public class UserGameCommand {
     //my additions
     ChessMoveConstructor move;
     ChessMove chessMove;
+    String message;
 
     public UserGameCommand(CommandType commandType, String authToken, Integer gameID) {
         this.commandType = commandType;
@@ -52,6 +53,12 @@ public class UserGameCommand {
         }
         //return chessMove;
         return chessMove;
+    }
+    public void setMessage(String message){
+        this.message = message;
+    }
+    public String getMessage(){
+        return message;
     }
 
     @Override
