@@ -1,4 +1,4 @@
-package server.webSocket;
+package server.websocket;
 
 import carriers.*;
 import chess.*;
@@ -19,7 +19,7 @@ import java.util.Set;
 public class WebSocketHandler {
     WebSocketSessions sessions;
     DatabaseManager db;
-    private boolean DEBUG = true;
+    private boolean deBug = true;
 
     public WebSocketHandler(DatabaseManager db){
         sessions = new WebSocketSessions();
@@ -296,7 +296,7 @@ public class WebSocketHandler {
     }
 
     public void debug(String message){
-        if (DEBUG){
+        if (deBug){
             System.out.println("DEBUG: "+message);
         }
     }

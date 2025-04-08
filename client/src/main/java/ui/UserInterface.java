@@ -12,7 +12,7 @@ import java.net.http.HttpResponse;
 import java.util.*;
 
 public class UserInterface {
-    boolean DEBUG = true;
+    boolean deBug = true;
     int activeGame;
     String activeColor;
     Scanner scanner;
@@ -422,41 +422,7 @@ public class UserInterface {
         }
 
         else if(state.equals("PLAYING")){
-            if(input.equals("BACK")){
-                leave();
-            }
-            else if(input.equals("HELP")) {
-                System.out.println("   back");
-                System.out.println("   quit");
-                System.out.println("   resign");
-                System.out.println("   redraw");
-                System.out.println("   highlight legal moves");
-                System.out.println("   make move");
-            }
-            else if(input.equals("REDRAW")){
-                UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.GET, auth, activeGame);
-                debug("sending from redraw");
-                receiver.sendCommand(command);
-            }
-            else if(input.equals("HIGHLIGHT LEGAL MOVES")){
-                handleHighlight();
-            }
-            else if(input.equals("RESIGN")){
-                System.out.println("Are you sure you want to resign?  YES | NO");
-                input = scanner.nextLine().toUpperCase();
-                if (input.equals("YES")){
-                    resign();
-                }
-                else{
-                    System.out.println("Confirmation failed. Game continuing.");
-                }
-            }
-            else if(input.equals("MAKE MOVE")){
-                handleMakeMove();
-            }
-            else{
-                System.out.println("Invalid input. Type Help to see available commands");
-            }
+            handlePlaying(input);
         }
         else if(state.equals("OBSERVING") ){ //passive message searching
             if(input.equals("BACK")){
@@ -474,6 +440,45 @@ public class UserInterface {
         }
     }
 
+    private void handlePlaying(String input){
+
+        if(input.equals("BACK")){
+            leave();
+        }
+        else if(input.equals("HELP")) {
+            System.out.println("   back");
+            System.out.println("   quit");
+            System.out.println("   resign");
+            System.out.println("   redraw");
+            System.out.println("   highlight legal moves");
+            System.out.println("   make move");
+        }
+        else if(input.equals("REDRAW")){
+            UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.GET, auth, activeGame);
+            debug("sending from redraw");
+            receiver.sendCommand(command);
+        }
+        else if(input.equals("HIGHLIGHT LEGAL MOVES")){
+            handleHighlight();
+        }
+        else if(input.equals("RESIGN")){
+            System.out.println("Are you sure you want to resign?  YES | NO");
+            input = scanner.nextLine().toUpperCase();
+            if (input.equals("YES")){
+                resign();
+            }
+            else{
+                System.out.println("Confirmation failed. Game continuing.");
+            }
+        }
+        else if(input.equals("MAKE MOVE")){
+            handleMakeMove();
+        }
+        else{
+            System.out.println("Invalid input. Type Help to see available commands");
+        }
+    }
+
     public static void main( String[] args) {
     UserInterface ui = new UserInterface();
     ui.run();
@@ -481,7 +486,7 @@ public class UserInterface {
 
 
     public void debug(String message){
-        if (DEBUG){
+        if (deBug){
             System.out.println("DEBUG: " + message);
         }
     }

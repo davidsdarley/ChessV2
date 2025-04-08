@@ -1,7 +1,7 @@
 package server;
 
 import carriers.*;
-import server.webSocket.WebSocketHandler;
+import server.websocket.WebSocketHandler;
 import spark.*;
 import com.google.gson.Gson;
 import java.util.ArrayList;
