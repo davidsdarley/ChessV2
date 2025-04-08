@@ -12,6 +12,7 @@ import java.net.http.HttpResponse;
 import java.util.*;
 
 public class UserInterface {
+    boolean DEBUG = true;
     int activeGame;
     String activeColor;
     Scanner scanner;
@@ -305,6 +306,7 @@ public class UserInterface {
             try {
                 System.out.print("\nPlease enter piece row number (1-8): ");
                 int row = scanner.nextInt();
+                String scrubber = scanner.nextLine();
                 if (row > 0 && row < 9) {
                     return new ChessPosition(row, col);
 
@@ -336,16 +338,19 @@ public class UserInterface {
         if (receiver.turn){
             //get starting and ending squares
             ChessPosition start = getPositionInput();
-            if (start != null){
+            if (start == null){
                 return false;
             }
             ChessPosition end = getPositionInput();
-            if (end != null){
+            if (end == null){
                 return false;
             }
-            //see if it's legal
-
-            //send it away
+            //send it away and try to make the move.
+            ChessMove move = new ChessMove(start, end, null);
+            debug("move made");
+            receiver.makeMove(move);
+            debug("move sent");
+            return true;
         }
         else{
             System.out.println("Not your turn!");
@@ -449,6 +454,9 @@ public class UserInterface {
             else if(input.equals("MAKE MOVE")){
                 handleMakeMove();
             }
+            else{
+                System.out.println("Invalid input. Type Help to see available commands");
+            }
         }
         else if(state.equals("OBSERVING") ){ //passive message searching
             if(input.equals("BACK")){
@@ -469,5 +477,12 @@ public class UserInterface {
     public static void main( String[] args) {
     UserInterface ui = new UserInterface();
     ui.run();
+    }
+
+
+    public void debug(String message){
+        if (DEBUG){
+            System.out.println("DEBUG: " + message);
+        }
     }
 }

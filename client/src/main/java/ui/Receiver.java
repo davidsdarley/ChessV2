@@ -4,8 +4,7 @@ import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
 
-import chess.ChessGame;
-import chess.ChessPosition;
+import chess.*;
 import com.google.gson.Gson;
 
 import carriers.*;
@@ -48,7 +47,13 @@ public class Receiver extends Endpoint{
         command.setPosition(position);
         sendCommand(command);
     }
+    public void makeMove(ChessMove move){
+        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE,
+                user.auth, user.activeGame);
+        command.setChessMove(move);
 
+        sendCommand(command);
+    }
     private void handleMessage(ServerMessage serverMessage){
         if (serverMessage.getServerMessageType().equals(ServerMessage.ServerMessageType.LOAD_GAME)){
             System.out.println("DEBUG: LOAD_GAME message received.");

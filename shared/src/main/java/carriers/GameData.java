@@ -93,4 +93,8 @@ public class GameData {
     public String getName(){
         return gameName;
     }
+
+    public void setGame(ChessGame game) {
+        this.game = game;
+    }
 }

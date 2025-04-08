@@ -60,6 +60,11 @@ public class UserGameCommand {
         //return chessMove;
         return chessMove;
     }
+
+    public void setChessMove(ChessMove chessMove) {
+        this.chessMove = chessMove;
+    }
+
     public void setPosition(ChessPosition position){
         this.position = position;
     }

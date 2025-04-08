@@ -335,7 +335,7 @@ public class DatabaseManager implements AutoCloseable{
         }
         return true;
     }
-    private boolean updateGame(GameData game){
+    public boolean updateGame(GameData game){
         var conn = getConn();
         var query = "UPDATE gameData SET json = ? WHERE gameID = ?";
 
