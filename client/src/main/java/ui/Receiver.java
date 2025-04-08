@@ -7,6 +7,8 @@ import java.net.URI;
 import chess.ChessPosition;
 import com.google.gson.Gson;
 
+import carriers.*;
+
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
@@ -48,8 +50,8 @@ public class Receiver extends Endpoint{
 
     public void highlight(ChessPosition position, int gameID){
         //send a message to the server for a highlight request.
-        UserGameCommand command = new UserGameCommand();
-
+        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.GET, user.auth, gameID);
+        command.setPosition(position);
         sendCommand(command);
     }
 
@@ -74,11 +76,15 @@ public class Receiver extends Endpoint{
     }
 
     private void handleLoadGame(ServerMessage serverMessage){
-        if (!(serverMessage.getPosition().equals(null)) ){
-            user.printer.printHighlights(serverMessage);
+        System.out.println("DEBUG: loadgame right now");
+        GameData game = serverMessage.getGameData();
+        if (serverMessage.getPosition() == null){
+            System.out.println("normal print");
+            user.printer.printBoard(game.getGame(), user.activeColor);
         }
         else {
-            user.printer.printBoard(serverMessage.getGameData().getGame(), user.activeColor);
+            System.out.println("highlight print");
+            user.printer.printHighlights(serverMessage, user.activeColor);
         }
     }
     private void handleNotification(ServerMessage serverMessage){

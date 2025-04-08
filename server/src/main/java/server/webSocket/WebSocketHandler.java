@@ -23,10 +23,8 @@ public class WebSocketHandler {
         sessions = new WebSocketSessions();
         this.db = db;
     }
-    public
 
     private ServerMessage handleConnect(UserGameCommand command, Session session){
-        System.out.println("CONNECT");
         GameData game;
         ServerMessage reply;
 
@@ -61,6 +59,11 @@ public class WebSocketHandler {
         }
         reply = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
         reply.setGame(game);
+
+        if (command.getCommandType().equals(UserGameCommand.CommandType.GET)){
+            reply.setPosition(command.getPosition());
+        }
+
         return reply;
 
     }

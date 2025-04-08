@@ -29,6 +29,7 @@ public class UserGameCommand {
         this.commandType = commandType;
         this.authToken = authToken;
         this.gameID = gameID;
+        //my additions
     }
 
     public enum CommandType {
@@ -58,6 +59,12 @@ public class UserGameCommand {
         }
         //return chessMove;
         return chessMove;
+    }
+    public void setPosition(ChessPosition position){
+        this.position = position;
+    }
+    public ChessPosition getPosition(){
+        return position;
     }
     public void setMessage(String message){
         this.message = message;
