@@ -76,14 +76,11 @@ public class Receiver extends Endpoint{
     }
 
     private void handleLoadGame(ServerMessage serverMessage){
-        System.out.println("DEBUG: loadgame right now");
         GameData game = serverMessage.getGameData();
         if (serverMessage.getPosition() == null){
-            System.out.println("normal print");
             user.printer.printBoard(game.getGame(), user.activeColor);
         }
         else {
-            System.out.println("highlight print");
             user.printer.printHighlights(serverMessage, user.activeColor);
         }
     }

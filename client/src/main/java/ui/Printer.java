@@ -135,26 +135,44 @@ public class Printer {
     }
     private String processSquare(ChessPosition position, ChessGame game, String squareColor,
                                  ArrayList<ChessMove> highlighted){
-
+        boolean origin = false;
         boolean highlight = false;
-        if (highlighted != null){
-            for(int i = 0; i < highlighted.size(); i++){
+        if (highlighted != null) {
+            for (int i = 0; i < highlighted.size(); i++) {
                 ChessMove move = highlighted.get(i);
-                if (move.getEndPosition().equals(position)){
+                if (move.getEndPosition().equals(position)) {
                     highlight = true;
+                    break;
+                }
+                if (move.getStartPosition().equals(position)) {
+                    origin = true;
                     break;
                 }
             }
         }
-
         ChessPiece piece = game.getBoard().getPiece(position);
-        printSquare(piece, squareColor, highlight);
+
+
+        if (origin){
+            printYellowSquare(piece);
+        }
+        else {
+            printSquare(piece, squareColor, highlight);
+        }
+
+
         if (squareColor.equals("WHITE")){
             return "BLACK";
         }
         else{
             return "WHITE";
         }
+    }
+
+    private void printYellowSquare(ChessPiece piece){
+        String item = getPrintablePiece(piece);
+        print(SET_BG_COLOR_YELLOW);
+        print(item);
     }
     public void printBlackBoard(ChessGame game, Collection<ChessMove> highlighted){
         String squareColor = "WHITE";
@@ -169,7 +187,7 @@ public class Printer {
         for (int row = 8; row > 0; row -=1){
             printSquare(numbers[row]);
             for (int col = 8; col > 0; col -=1){
-                ChessPosition position = new ChessPosition(row, col);
+                ChessPosition position = new ChessPosition(9-row, col);
                 squareColor =  processSquare(position, game, squareColor, (ArrayList<ChessMove>) highlighted);
             }
             squareColor = finishRow(squareColor, numbers[row]);
