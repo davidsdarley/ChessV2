@@ -4,6 +4,7 @@ import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
 
+import chess.ChessGame;
 import chess.ChessPosition;
 import com.google.gson.Gson;
 
@@ -17,19 +18,12 @@ public class Receiver extends Endpoint{
     private UserInterface user;
     public Session session;
     private String color;
+    public boolean turn;
 
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
 
     }
-
-//    public static void main(String[] args) throws Exception {
-//        UserInterface ui = new UserInterface();
-//        var ws = new Receiver(ui, "WHITE");
-//        Scanner scanner = new Scanner(System.in);
-//
-//    }
-
 
     public Receiver(UserInterface ui, String color) throws Exception {
         URI uri = new URI("ws://localhost:8081/ws");
@@ -77,6 +71,14 @@ public class Receiver extends Endpoint{
 
     private void handleLoadGame(ServerMessage serverMessage){
         GameData game = serverMessage.getGameData();
+        if ( game.getGame().getTeamTurn().equals(ChessGame.TeamColor.WHITE)&&user.activeColor.equals("WHITE")
+        || (game.getGame().getTeamTurn().equals(ChessGame.TeamColor.BLACK)&&user.activeColor.equals("BLACK")) ){
+            turn = true;
+        }
+        else{
+            turn = false;
+        }
+
         if (serverMessage.getPosition() == null){
             if (user.activeColor == null){
                 user.printer.printBoard(game.getGame());
@@ -92,6 +94,9 @@ public class Receiver extends Endpoint{
     private void handleNotification(ServerMessage serverMessage){
         //print the notification
         System.out.println(serverMessage.getMessage());
+        if (serverMessage.getMessage().equals("Your turn!")){
+            turn = true;
+        }
     }
     private void handleError(ServerMessage serverMessage){
         //catch and handle the error

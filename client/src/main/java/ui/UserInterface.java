@@ -289,18 +289,8 @@ public class UserInterface {
         }
     }
 
-    private void handleHighlight(){
-        //Allows the user to input the piece for which they want to highlight legal moves. The selected piece’s
-        // current square and all squares it can legally move to are highlighted. This is a local operation and
-        // has no effect on remote users’ screens.
 
-
-
-        String plan = "so, first we get the piece. then, we call highlight in receiver" +
-                "reciever then takes the control, gets the game and passes it to the printer to display it" +
-                "";
-
-
+    private ChessPosition getPositionInput(){
         System.out.print("\nPlease enter piece column letter (a-h): ");
         String[] options = {"a", "b", "c", "d", "e", "f", "g", "h"};
         String columnLetter = scanner.nextLine().toLowerCase();
@@ -316,20 +306,51 @@ public class UserInterface {
                 System.out.print("\nPlease enter piece row number (1-8): ");
                 int row = scanner.nextInt();
                 if (row > 0 && row < 9) {
-                    ChessPosition position = new ChessPosition(row, col);
-                    receiver.highlight(position, activeGame);
+                    return new ChessPosition(row, col);
 
                 } else {
                     System.out.println("Invalid row. Please enter a number 1-8");
+                    return null;
                 }
 
             } catch (NumberFormatException e) {
                 System.out.println("Invalid row. Please enter a number");
+                return null;
             }
         }
         else {
             System.out.println("Invalid row. Please enter a-h");
+            return null;
         }
+    }
+
+    private void handleHighlight(){
+        ChessPosition position = getPositionInput();
+        if(position != null) {
+            receiver.highlight(position, activeGame);
+        }
+
+    }
+    private boolean handleMakeMove(){
+        //see if it's your turn
+        if (receiver.turn){
+            //get starting and ending squares
+            ChessPosition start = getPositionInput();
+            if (start != null){
+                return false;
+            }
+            ChessPosition end = getPositionInput();
+            if (end != null){
+                return false;
+            }
+            //see if it's legal
+
+            //send it away
+        }
+        else{
+            System.out.println("Not your turn!");
+        }
+        return false;
     }
     private void performOperation(String input){
         if (input.equals("QUIT")){
@@ -341,6 +362,7 @@ public class UserInterface {
             logout();
             state = input;
         }
+
         else if(state.equals("LOGGED_OUT")){
             if (input.equals("HELP")){
                 System.out.println("   register <USERNAME> <PASSWORD> <EMAIL>");
@@ -358,6 +380,7 @@ public class UserInterface {
                 System.out.println("Invalid input. Type Help to see available commands");
             }
         }
+
         else if(state.equals("LOGGED_IN")){
             if(input.equals("HELP")){
                 System.out.println("create <NAME>");
@@ -393,19 +416,18 @@ public class UserInterface {
                 System.out.println("Invalid input. Type Help to see available commands");
             }
         }
+
         else if(state.equals("PLAYING")){
             if(input.equals("BACK")){
                 leave();
             }
             else if(input.equals("HELP")) {
-                if (input.equals("HELP")) {
-                    System.out.println("   back");
-                    System.out.println("   quit");
-                    System.out.println("   resign");
-                    System.out.println("   redraw");
-                    System.out.println("   highlight legal moves");
-                    System.out.println("   make move");
-                }
+                System.out.println("   back");
+                System.out.println("   quit");
+                System.out.println("   resign");
+                System.out.println("   redraw");
+                System.out.println("   highlight legal moves");
+                System.out.println("   make move");
             }
             else if(input.equals("REDRAW")){
                 UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.GET, auth, activeGame);
@@ -424,6 +446,9 @@ public class UserInterface {
                     System.out.println("Confirmation failed. Game continuing.");
                 }
             }
+            else if(input.equals("MAKE MOVE")){
+                handleMakeMove();
+            }
         }
         else if(state.equals("OBSERVING") ){ //passive message searching
             if(input.equals("BACK")){
@@ -440,20 +465,6 @@ public class UserInterface {
             System.out.println("Invalid input. Type Help to see available commands");
         }
     }
-    public void print(ChessGame game, String color){
-        printer.printBoard(game, color);
-    }
-
-    //Plans: Make this a WebSocket Endpoint. It connects to SeverFacade, which is the server? I dunno we'll see.
-        // After adding the tags to the beginning of this file, add an onMessage option, which checks if we are
-        // Receiving, then if so prints the message.
-    // Alternatively, I could make this thing call another class when in Playing or Observing states. This class
-    // could do the printing, and be waiting for information from the ServerFacade. It works as a WSClient Endpoint,
-    // so it can run multiple threads and print as it recieves info. It sends and receives information, and when they
-    // type BACK, it quits itself and comes back here.
-    //
-    // I'm going to use that second option. This program will instead need a new variable Receiver to hold the new
-    // object.
 
     public static void main( String[] args) {
     UserInterface ui = new UserInterface();
