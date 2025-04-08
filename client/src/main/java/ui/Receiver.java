@@ -56,19 +56,19 @@ public class Receiver extends Endpoint{
     }
     private void handleMessage(ServerMessage serverMessage){
         if (serverMessage.getServerMessageType().equals(ServerMessage.ServerMessageType.LOAD_GAME)){
-            System.out.println("DEBUG: LOAD_GAME message received.");
+            user.debug("LOAD_GAME message received.");
             handleLoadGame(serverMessage);
         }
         else if(serverMessage.getServerMessageType().equals(ServerMessage.ServerMessageType.NOTIFICATION)){
-            System.out.println("DEBUG: NOTIFICATION message received.");
+            user.debug("DEBUG: NOTIFICATION message received.");
             handleNotification(serverMessage);
         }
         else if(serverMessage.getServerMessageType().equals(ServerMessage.ServerMessageType.ERROR)){
-            System.out.println("DEBUG: ERROR message received.");
+            user.debug("DEBUG: ERROR message received.");
             handleError(serverMessage);
         }
         else if(serverMessage.getServerMessageType().equals(ServerMessage.ServerMessageType.ERROR)){
-            System.out.println("DEBUG: HIGHLIGHT message received.");
+            user.debug("DEBUG: HIGHLIGHT message received.");
             handleError(serverMessage);
         }
         System.out.print(user.state+" >>> ");
@@ -76,15 +76,23 @@ public class Receiver extends Endpoint{
 
     private void handleLoadGame(ServerMessage serverMessage){
         GameData game = serverMessage.getGameData();
-        if ( game.getGame().getTeamTurn().equals(ChessGame.TeamColor.WHITE)&&user.activeColor.equals("WHITE")
-        || (game.getGame().getTeamTurn().equals(ChessGame.TeamColor.BLACK)&&user.activeColor.equals("BLACK")) ){
+        user.debug("FLAG");
+        if ( game.getGame().getTeamTurn().equals(ChessGame.TeamColor.WHITE) && color.equals("WHITE")
+        || (game.getGame().getTeamTurn().equals(ChessGame.TeamColor.BLACK) && color.equals("BLACK")) ){
             turn = true;
         }
         else{
             turn = false;
         }
 
-        if (serverMessage.getPosition() == null){
+        if (user.state.equals("OBSERVING")){
+            user.debug("observation starting");
+            user.printer.printBoard(game.getGame());
+        }
+        else if (serverMessage.getPosition() != null){
+            user.printer.printHighlights(serverMessage, user.activeColor);
+        }
+        else {
             if (user.activeColor == null){
                 user.printer.printBoard(game.getGame());
             }
@@ -92,9 +100,7 @@ public class Receiver extends Endpoint{
                 user.printer.printBoard(game.getGame(), user.activeColor);
             }
         }
-        else {
-            user.printer.printHighlights(serverMessage, user.activeColor);
-        }
+
     }
     private void handleNotification(ServerMessage serverMessage){
         //print the notification
