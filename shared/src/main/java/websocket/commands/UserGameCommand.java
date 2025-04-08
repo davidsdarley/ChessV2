@@ -19,8 +19,8 @@ public class UserGameCommand {
 
     private final Integer gameID;
     //my additions
-    ChessMoveConstructor move;
-    ChessMove chessMove;
+    ChessMoveConstructor chessMove;
+    ChessMove move;
     String message;
     JoinRequest leaveRequest;
     ChessPosition position;
@@ -53,16 +53,17 @@ public class UserGameCommand {
     }
 
     //my additions
-    public ChessMove getChessMove() {
-        if (chessMove == null && move != null){
-            chessMove = move.getMove();
+
+    public ChessMove getMove() {
+        if (chessMove != null && move == null){
+            move = chessMove.getMove();
         }
         //return chessMove;
-        return chessMove;
+        return move;
     }
 
-    public void setChessMove(ChessMove chessMove) {
-        this.chessMove = chessMove;
+    public void setMove(ChessMove chessMove) {
+        this.move = chessMove;
     }
 
     public void setPosition(ChessPosition position){

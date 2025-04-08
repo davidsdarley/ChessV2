@@ -22,6 +22,7 @@ public class ServerMessage {
     GameData game;
     String message;
     ChessPosition position;
+    String errorMessage;
 
     public void setPosition(ChessPosition position){
         this.position = position;
@@ -40,6 +41,13 @@ public class ServerMessage {
     }
     public String getMessage(){
         return message;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+    public String getErrorMessage(){
+        return errorMessage;
     }
 
     public ServerMessage(ServerMessageType type) {

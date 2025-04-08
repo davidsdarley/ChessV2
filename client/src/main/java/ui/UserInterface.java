@@ -18,7 +18,7 @@ public class UserInterface {
     Scanner scanner;
     ServerFacade client;
     String auth;
-    String user;
+    String userName;
     String state;
     Printer printer;
     Map<Integer, GameData> games;
@@ -43,7 +43,7 @@ public class UserInterface {
     private void leave(){
         try{
             UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, auth, activeGame);
-            command.setMessage(user + " has left the game.");
+            command.setMessage(userName + " has left the game.");
             if(state.equals("PLAYING")){
                 command.setLeaveRequest(new JoinRequest(activeGame, activeColor, auth));
             }
@@ -60,7 +60,7 @@ public class UserInterface {
     private void resign(){
         try{
             UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.RESIGN, auth, activeGame);
-            command.setMessage(user + " has resigned. Game is finished.");
+            command.setMessage(userName + " has resigned. Game is finished.");
             receiver.sendCommand(command);
             receiver.stop();
             activeGame = 0;
@@ -90,7 +90,7 @@ public class UserInterface {
 //            System.out.println(response);
             LoginResult login = new Gson().fromJson(response, LoginResult.class);
             auth = login.getAuthToken();
-            user = login.getUsername();
+            userName = login.getUsername();
             state = "LOGGED_IN";
             System.out.println("Registration Successful!");
 
@@ -110,7 +110,7 @@ public class UserInterface {
         else{
             LoginResult login = new Gson().fromJson(response, LoginResult.class);
             auth = login.getAuthToken();
-            user = login.getUsername();
+            userName = login.getUsername();
             System.out.println("Logged in as "+username);
             state = "LOGGED_IN";
         }
@@ -219,7 +219,7 @@ public class UserInterface {
                 receiver = new Receiver(this, "WHITE");
                 UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT,
                         auth, activeGame);
-                command.setMessage(user + " has joined as an observer!");
+                command.setMessage(userName + " has joined as an observer!");
                 receiver.observe(command);
 
 
@@ -256,7 +256,8 @@ public class UserInterface {
                     receiver = new Receiver(this, "WHITE");
                     UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT,
                             auth, activeGame);
-                    command.setMessage(user + " has joined as "+color+"!");
+                    command.setMessage(userName + " has joined as "+color+"!");
+                    debug("SENDING FROM play()");
                     receiver.sendCommand(command);
 
                     state = "PLAYING";
@@ -347,9 +348,7 @@ public class UserInterface {
             }
             //send it away and try to make the move.
             ChessMove move = new ChessMove(start, end, null);
-            debug("move made");
             receiver.makeMove(move);
-            debug("move sent");
             return true;
         }
         else{
@@ -436,6 +435,7 @@ public class UserInterface {
             }
             else if(input.equals("REDRAW")){
                 UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.GET, auth, activeGame);
+                debug("sending from redraw");
                 receiver.sendCommand(command);
             }
             else if(input.equals("HIGHLIGHT LEGAL MOVES")){

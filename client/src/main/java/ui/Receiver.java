@@ -35,6 +35,9 @@ public class Receiver extends Endpoint{
         this.session.addMessageHandler(new MessageHandler.Whole<String>() {
             public void onMessage(String message) {     //expects a ServerMessage, in the form of a JSON
                 ServerMessage serverMessage =  new Gson().fromJson(message, ServerMessage.class);
+                user.debug("MESSAGE RECEIEVED"+serverMessage.getServerMessageType());
+                user.debug(message);
+
 
                 handleMessage(serverMessage);
             }
@@ -45,16 +48,20 @@ public class Receiver extends Endpoint{
         //send a message to the server for a highlight request.
         UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.GET, user.auth, gameID);
         command.setPosition(position);
+        command.setMessage("highlight legal moves");
         sendCommand(command);
     }
     public void makeMove(ChessMove move){
         UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE,
                 user.auth, user.activeGame);
-        command.setChessMove(move);
+        command.setMove(move);
+        command.setMessage(user.userName+" moved "+move);
 
         sendCommand(command);
     }
     private void handleMessage(ServerMessage serverMessage){
+        user.debug("Message received!");
+
         if (serverMessage.getServerMessageType().equals(ServerMessage.ServerMessageType.LOAD_GAME)){
             user.debug("LOAD_GAME message received.");
             handleLoadGame(serverMessage);
@@ -68,7 +75,7 @@ public class Receiver extends Endpoint{
             handleError(serverMessage);
         }
         else if(serverMessage.getServerMessageType().equals(ServerMessage.ServerMessageType.ERROR)){
-            user.debug("DEBUG: HIGHLIGHT message received.");
+            //user.debug("DEBUG: HIGHLIGHT message received.");
             handleError(serverMessage);
         }
         System.out.print(user.state+" >>> ");
@@ -76,17 +83,20 @@ public class Receiver extends Endpoint{
 
     private void handleLoadGame(ServerMessage serverMessage){
         GameData game = serverMessage.getGameData();
-        user.debug("FLAG");
-        if ( game.getGame().getTeamTurn().equals(ChessGame.TeamColor.WHITE) && color.equals("WHITE")
-        || (game.getGame().getTeamTurn().equals(ChessGame.TeamColor.BLACK) && color.equals("BLACK")) ){
+        if (user.state.equals("OBSERVING")){
+            user.activeColor = "WHITE";
+        }
+        else if ( game.getGame().getTeamTurn().equals(ChessGame.TeamColor.WHITE) && user.activeColor.equals("WHITE")
+        || (game.getGame().getTeamTurn().equals(ChessGame.TeamColor.BLACK) && user.activeColor.equals("BLACK")) ){
             turn = true;
+            System.out.println("Your turn");
         }
         else{
             turn = false;
+            System.out.println("Opponent's turn");
         }
 
         if (user.state.equals("OBSERVING")){
-            user.debug("observation starting");
             user.printer.printBoard(game.getGame());
         }
         else if (serverMessage.getPosition() != null){
@@ -104,18 +114,21 @@ public class Receiver extends Endpoint{
     }
     private void handleNotification(ServerMessage serverMessage){
         //print the notification
+        System.out.println();
         System.out.println(serverMessage.getMessage());
         if (serverMessage.getMessage().equals("Your turn!")){
             turn = true;
         }
     }
     private void handleError(ServerMessage serverMessage){
+        user.debug("ERROR!");
         //catch and handle the error
         System.out.println("Error: "+serverMessage.getMessage());
     }
 
     public void observe(UserGameCommand command){
         try{
+            command.setMessage(user.userName+ " has joined as an observer!");
             send(new Gson().toJson(command));
         }
         catch (Exception e) {
@@ -125,6 +138,7 @@ public class Receiver extends Endpoint{
     public void sendCommand(UserGameCommand command){
         try{
             send(new Gson().toJson(command));
+            user.debug("SENT FROM sendCommand()");
         }
         catch (Exception e) {
             System.out.println("MESSAGE FAILED TO SEND");
@@ -132,6 +146,7 @@ public class Receiver extends Endpoint{
     }
 
     public void send(String msg) throws Exception {
+        user.debug("SENT FROM send()");
         this.session.getBasicRemote().sendText(msg);
     }
 
