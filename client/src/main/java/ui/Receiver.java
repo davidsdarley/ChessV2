@@ -78,7 +78,12 @@ public class Receiver extends Endpoint{
     private void handleLoadGame(ServerMessage serverMessage){
         GameData game = serverMessage.getGameData();
         if (serverMessage.getPosition() == null){
-            user.printer.printBoard(game.getGame(), user.activeColor);
+            if (user.activeColor == null){
+                user.printer.printBoard(game.getGame());
+            }
+            else{
+                user.printer.printBoard(game.getGame(), user.activeColor);
+            }
         }
         else {
             user.printer.printHighlights(serverMessage, user.activeColor);

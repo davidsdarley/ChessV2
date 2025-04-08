@@ -141,14 +141,17 @@ public class Printer {
         if (highlighted != null) {
             for (int i = 0; i < highlighted.size(); i++) {
                 ChessMove move = highlighted.get(i);
-                if (move.getEndPosition().equals(position)) {
-                    highlight = true;
-                    break;
-                }
+
                 if (move.getStartPosition().equals(position)) {
                     origin = true;
                     break;
                 }
+
+                if (move.getEndPosition().equals(position)) {
+                    highlight = true;
+                    break;
+                }
+
             }
         }
         ChessPiece piece = game.getBoard().getPiece(position);
@@ -254,7 +257,7 @@ public class Printer {
             return false;
         }
         Collection<ChessMove> moves = game.validMoves(position);
-
+        moves.add(new ChessMove(position, position, null));
         printBoard(serverMessage.getGameData().getGame(), color, moves);
 
         //check if the spot has a valid piece
