@@ -56,7 +56,6 @@ public class UserInterface {
             System.out.println("Failed to close connection");
         }
     }
-
     private void resign(){
         try{
             UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.RESIGN, auth, activeGame);
@@ -70,7 +69,6 @@ public class UserInterface {
             System.out.println("Failed to close connection");
         }
     }
-
     private void register(){
         System.out.print("Please enter username: ");
         String username = scanner.nextLine();
@@ -290,6 +288,29 @@ public class UserInterface {
             }
         }
     }
+
+    private void handleHighlight(){
+        //Allows the user to input the piece for which they want to highlight legal moves. The selected piece’s
+        // current square and all squares it can legally move to are highlighted. This is a local operation and
+        // has no effect on remote users’ screens.
+
+
+
+        String plan = "so, first we get the piece. then, we call highlight in receiver" +
+                "reciever then takes the control, gets the game and passes it to the printer to display it" +
+                "";
+
+
+        System.out.print("\nPlease enter piece column letter (a-h): ");
+        String col = scanner.nextLine();
+        System.out.print("\nPlease enter piece row number (1-8): ");
+        String row = scanner.nextLine();
+        //get the input
+        ChessPosition pos = null;
+
+        receiver.highlight(pos, activeGame);
+
+    }
     private void performOperation(String input){
         if (input.equals("QUIT")){
             //close any sessions you may be in
@@ -369,6 +390,9 @@ public class UserInterface {
             else if(input.equals("REDRAW")){
                 UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.GET, auth, activeGame);
                 receiver.sendCommand(command);
+            }
+            else if(input.equals("HIGHLIGHT LEGAL MOVES")){
+                handleHighlight();
             }
             else if(input.equals("RESIGN")){
                 System.out.println("Are you sure you want to resign?  YES | NO");

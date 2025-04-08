@@ -1,7 +1,7 @@
 package websocket.commands;
 
 import carriers.JoinRequest;
-import chess.ChessMove;
+import chess.*;
 
 import java.util.Objects;
 
@@ -23,6 +23,7 @@ public class UserGameCommand {
     ChessMove chessMove;
     String message;
     JoinRequest leaveRequest;
+    ChessPosition position;
 
     public UserGameCommand(CommandType commandType, String authToken, Integer gameID) {
         this.commandType = commandType;

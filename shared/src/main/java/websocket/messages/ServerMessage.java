@@ -13,15 +13,22 @@ import java.util.Objects;
  */
 public class ServerMessage {
     ServerMessageType serverMessageType;
-
     public enum ServerMessageType {
         LOAD_GAME,
         ERROR,
-        NOTIFICATION
+        NOTIFICATION,
+        //my additions
     }
     GameData game;
     String message;
+    ChessPosition position;
 
+    public void setPosition(ChessPosition position){
+        this.position = position;
+    }
+    public ChessPosition getPosition(){
+        return position;
+    }
     public void setGame(GameData game){
         this.game = game;
     }

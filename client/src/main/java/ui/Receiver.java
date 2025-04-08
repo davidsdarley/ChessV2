@@ -3,12 +3,10 @@ package ui;
 import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Scanner;
 
-import carriers.*;
-import chess.ChessGame;
+import chess.ChessPosition;
 import com.google.gson.Gson;
-import server.Server;
+
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
@@ -47,6 +45,14 @@ public class Receiver extends Endpoint{
             }
         });
     }
+
+    public void highlight(ChessPosition position, int gameID){
+        //send a message to the server for a highlight request.
+        UserGameCommand command = new UserGameCommand();
+
+        sendCommand(command);
+    }
+
     private void handleMessage(ServerMessage serverMessage){
         if (serverMessage.getServerMessageType().equals(ServerMessage.ServerMessageType.LOAD_GAME)){
             System.out.println("DEBUG: LOAD_GAME message received.");
@@ -60,12 +66,20 @@ public class Receiver extends Endpoint{
             System.out.println("DEBUG: ERROR message received.");
             handleError(serverMessage);
         }
+        else if(serverMessage.getServerMessageType().equals(ServerMessage.ServerMessageType.ERROR)){
+            System.out.println("DEBUG: HIGHLIGHT message received.");
+            handleError(serverMessage);
+        }
         System.out.print(user.state+" >>> ");
     }
 
     private void handleLoadGame(ServerMessage serverMessage){
-        //print the new board
-        user.printer.printBoard(serverMessage.getGameData().getGame());
+        if (!(serverMessage.getPosition().equals(null)) ){
+            user.printer.printHighlights(serverMessage);
+        }
+        else {
+            user.printer.printBoard(serverMessage.getGameData().getGame(), user.activeColor);
+        }
     }
     private void handleNotification(ServerMessage serverMessage){
         //print the notification
@@ -74,9 +88,6 @@ public class Receiver extends Endpoint{
     private void handleError(ServerMessage serverMessage){
         //catch and handle the error
         System.out.println("Error: "+serverMessage.getMessage());
-    }
-    public void getBoard(UserGameCommand command){
-
     }
 
     public void observe(UserGameCommand command){

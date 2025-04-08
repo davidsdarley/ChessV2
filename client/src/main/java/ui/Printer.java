@@ -2,6 +2,8 @@ package ui;
 import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
+import websocket.messages.ServerMessage;
+
 import static ui.EscapeSequences.*;
 
 public class Printer {
@@ -170,5 +172,9 @@ public class Printer {
         ChessGame game = new ChessGame();
         printer.printBoard(game);
         printer.printBoard(game, "BLACK");
+    }
+
+    public void printHighlights(ServerMessage serverMessage) {
+        //do the same as usual, but this time highlight the pertinent squares
     }
 }

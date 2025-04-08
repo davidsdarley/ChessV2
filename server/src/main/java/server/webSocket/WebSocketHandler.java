@@ -23,6 +23,8 @@ public class WebSocketHandler {
         sessions = new WebSocketSessions();
         this.db = db;
     }
+    public
+
     private ServerMessage handleConnect(UserGameCommand command, Session session){
         System.out.println("CONNECT");
         GameData game;
