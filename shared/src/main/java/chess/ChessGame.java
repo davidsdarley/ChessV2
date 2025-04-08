@@ -6,17 +6,25 @@ import java.util.Collection;
 public class ChessGame {
     ChessBoard board;
     TeamColor turn;
+    boolean gameOver;
 
     public ChessGame() {
         board = new ChessBoard();
         board.resetBoard();
         turn = TeamColor.WHITE;
+        gameOver = false;
     }
     public ChessGame(ChessGame other){
         board = new ChessBoard(other.board);
         turn = other.getTeamTurn();
+        gameOver = other.getGameOver();
     }
-
+    public boolean getGameOver(){
+        return gameOver;
+    }
+    public void endGame(){
+        gameOver = true;
+    }
     /**
      * @return Which team's turn it is
      */
@@ -87,6 +95,10 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        if (gameOver){
+            throw new InvalidMoveException("Game Over");
+        }
+
         ChessPosition start = move.getStartPosition();
         if( this.board.board[start.getRow()][start.getColumn()] == null){
             throw new InvalidMoveException("no piece in starting space");
