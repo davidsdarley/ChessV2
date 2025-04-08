@@ -112,7 +112,8 @@ public class Printer {
         for (int row = 1; row < 9; row +=1){
             printSquare(numbers[row]);
             for (int col = 1; col < 9; col +=1){
-                squareColor = processSquare(new ChessPosition(row, col), game, squareColor,
+                ChessPosition position = new ChessPosition(9-row, col);
+                squareColor = processSquare(position, game, squareColor,
                         (ArrayList<ChessMove>) highlighted);
             }
             squareColor = finishRow(squareColor, numbers[row]);
