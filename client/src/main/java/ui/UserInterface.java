@@ -302,14 +302,34 @@ public class UserInterface {
 
 
         System.out.print("\nPlease enter piece column letter (a-h): ");
-        String col = scanner.nextLine();
-        System.out.print("\nPlease enter piece row number (1-8): ");
-        String row = scanner.nextLine();
-        //get the input
-        ChessPosition pos = null;
+        String[] options = {"a", "b", "c", "d", "e", "f", "g", "h"};
+        String columnLetter = scanner.nextLine().toLowerCase();
+        int col = -1;
+        for (int i = 0; i<8; i++){
+            if (columnLetter.equals(options[i])){
+                col = i+1;
+                break;
+            }
+        }
+        if(col != -1) {
+            try {
+                System.out.print("\nPlease enter piece row number (1-8): ");
+                int row = scanner.nextInt();
+                if (row > 0 && row < 9) {
+                    ChessPosition position = new ChessPosition(row, col);
+                    receiver.highlight(position, activeGame);
 
-        receiver.highlight(pos, activeGame);
+                } else {
+                    System.out.println("Invalid row. Please enter a number 1-8");
+                }
 
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid row. Please enter a number");
+            }
+        }
+        else {
+            System.out.println("Invalid row. Please enter a-h");
+        }
     }
     private void performOperation(String input){
         if (input.equals("QUIT")){
