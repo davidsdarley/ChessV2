@@ -145,37 +145,7 @@ public class UserInterface {
             System.out.println(response.body());
         }
     }
-    private boolean join(){
-        System.out.print("GameID: ");
-        int id = Integer.parseInt(scanner.nextLine());
-        GameData game = games.get(id);
-        System.out.println(game);
-        System.out.print("Choose WHITE or BLACK: ");
-        String color = scanner.nextLine().toUpperCase();
 
-        HttpResponse<String> response = client.join(game.getGameID(), color, auth);
-
-        if (response.statusCode() == 200){
-            System.out.println("Joined game as "+ color);
-            return true;
-        }
-        else if(response.statusCode() == 403){
-            System.out.println("Join failed. Already taken");
-            return false;
-        }
-        else if(response.statusCode() == 400){
-            System.out.println("Join failed. Bad request");
-            return false;
-        }
-        else if(response.statusCode() == 500) {
-            System.out.println("Join failed. Internal error, we apologize for the inconvenience");
-            return false;
-        }
-        else{
-            System.out.println(("Join failed. Unauthorized"));
-            return false;
-        }
-    }
     private boolean join(int id, String color){
         HttpResponse<String> response = client.join(id, color, auth);
 
@@ -471,7 +441,6 @@ public class UserInterface {
         }
     }
     private void handlePlaying(String input){
-
         if(input.equals("BACK")){
             leave();
         }

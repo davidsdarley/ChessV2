@@ -180,15 +180,31 @@ public class WebSocketHandler {
             reply = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
 
             String message = username + " moved " + move;
-
+            String white = gameData.getWhiteUsername();
+            String black = gameData.getBlackUsername();
             if (game.isInCheck(game.getTeamTurn())){
-                message+="\nCheckmate!";
+                if(game.getTeamTurn().equals(ChessGame.TeamColor.WHITE)){
+                    message+="\n" + white + " is in Checkmate!";
+                }
+                else{
+                    message+="\n" + black + " is in Checkmate!";
+                }
             }
             else if (game.isInCheck(game.getTeamTurn())){
-                message += "\nCheck!";
+                if(game.getTeamTurn().equals(ChessGame.TeamColor.WHITE)){
+                    message+="\n" + white + " is in Check!";
+                }
+                else{
+                    message+="\n" + black + " is in Check!";
+                }
             }
             else if (game.isInStalemate(game.getTeamTurn())){
-                message += "\nStalemate!";
+                if(game.getTeamTurn().equals(ChessGame.TeamColor.WHITE)){
+                    message+="\n" + white + " is in Stalemake!";
+                }
+                else{
+                    message+="\n" + black + " is in Stalemate!";
+                }
             }
 
 

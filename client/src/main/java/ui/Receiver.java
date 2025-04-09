@@ -102,11 +102,6 @@ public class Receiver extends Endpoint{
             turn = false;
             System.out.println("Opponent's turn");
         }
-
-//        if (user.state.equals("OBSERVING")){
-//            user.printer.printBoard(game.getGame());
-//        }
-//        else
         if (serverMessage.getPosition() != null){
             user.printer.printHighlights(serverMessage, user.activeColor);
         }
@@ -119,8 +114,32 @@ public class Receiver extends Endpoint{
             }
         }
         user.printer.printLine(serverMessage);
+        checkCheck(game);
 
     }
+    private void checkCheck(GameData game){
+        String white = game.getWhiteUsername();
+        String black = game.getBlackUsername();
+        if(game.getGame().isInCheckmate(ChessGame.TeamColor.WHITE)){
+            System.out.println(white + " is in Checkmate!");
+        }
+        else if(game.getGame().isInCheck(ChessGame.TeamColor.WHITE)){
+            System.out.println(white + " is in Check!");
+        }
+        else if(game.getGame().isInStalemate(ChessGame.TeamColor.WHITE)){
+            System.out.println(white + " is in Stalemate.");
+        }
+        else if(game.getGame().isInCheckmate(ChessGame.TeamColor.BLACK)){
+            System.out.println(black + " is in Checkmate!");
+        }
+        else if(game.getGame().isInCheck(ChessGame.TeamColor.BLACK)){
+            System.out.println(black + " is in Check!");
+        }
+        else if(game.getGame().isInStalemate(ChessGame.TeamColor.BLACK)){
+            System.out.println(black + " is in Stalemate.");
+        }
+    }
+
     private void handleNotification(ServerMessage serverMessage){
         //print the notification
         System.out.println();
