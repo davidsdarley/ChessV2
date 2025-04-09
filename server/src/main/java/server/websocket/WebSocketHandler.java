@@ -72,17 +72,12 @@ public class WebSocketHandler {
         reply.setMessage(authData.getUsername()+" has left.");
         broadcastMessage(reply, command.getGameID());
         reply = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-        reply.setMessage("LEAVE");
+        reply.setMessage("LEAVE from Handler");
         //remove the user from the game if they aren't an observer
-        if (command.getLeaveRequest() == null){
+        db.removeUser(command);
 
-        }
-        else{
-            db.removeUser(command.getLeaveRequest());
-        }
         send(reply, session);
     }
-
     private void handleConnect(UserGameCommand command, Session session){
         GameData game;
         ServerMessage reply;
@@ -137,9 +132,10 @@ public class WebSocketHandler {
 
         send(reply, session);
     }
-
     private void handleMakeMove(UserGameCommand command, Session session){
+        GameData gameData = db.getGame(command.getGameID());
         ServerMessage reply;
+        ChessGame game = gameData.getGame();
 
         if (!(verifyAuth(command.getAuthToken()))){
             reply = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
@@ -151,11 +147,27 @@ public class WebSocketHandler {
             return;
         }
 
+
+
+        //check if the move is your piece  :|
+        String username;
+        try {
+            username = db.getAuth(command.getAuthToken()).getUsername();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+        ChessPiece piece = game.getBoard().getPiece(command.getMove().getStartPosition());
+        if ( (username.equals(gameData.getWhiteUsername()) && piece.getTeamColor().equals(ChessGame.TeamColor.BLACK))
+                || (username.equals(gameData.getBlackUsername()) && piece.getTeamColor().equals(ChessGame.TeamColor.WHITE))
+        ){
+            reply = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+            reply.setErrorMessage("Not your piece");
+            send(reply, session);
+            return;
+        }
         //ChessMove move = command.getChessMove();
         ChessMove move = command.getMove();
         // Get the game.
-        GameData gameData = db.getGame(command.getGameID());
-        ChessGame game = gameData.getGame();
         try{
             game.makeMove(move);
             gameData.setGame(game);
@@ -164,7 +176,8 @@ public class WebSocketHandler {
             reply = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
             reply.setGame(gameData);
             reply.setMessage(move.toString());
-            debug("DEBUG: make move reply\n"+ reply);
+            debug("make move reply start:\n"+ reply);
+            debug(" make move reply end");
 
             //reply.setMessage(move.toString() + ": sent from handleMakeMoves");    //DEBUG
             broadcastMessage(reply, gameData.getGameID());
@@ -178,7 +191,6 @@ public class WebSocketHandler {
             send (reply, session);
         }
     }
-
     private void handleResign(UserGameCommand command, Session session){
         GameData gameData = db.getGame(command.getGameID());
         ChessGame game = gameData.getGame();
@@ -190,14 +202,9 @@ public class WebSocketHandler {
         }
         //check if you are allowed to resign
             //is the game already over?
-            if (game.getGameOver() == true){
-
-                ServerMessage reply = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-
-                reply.setMessage("Game is over!");
-                broadcastMessage(reply, command.getGameID(), session);
-                reply = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-                reply.setMessage("Game's over, you can't end it again.");
+            if (game.getGameOver()){
+                ServerMessage reply =  new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+                reply.setErrorMessage("Game's over, you can't end it again.");
                 send(reply, session);
                 return;
             }
@@ -216,7 +223,6 @@ public class WebSocketHandler {
         gameData.setGame(game);
         db.updateGame(gameData);
     }
-
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
         debug("DEBUG: message received in handler!");
@@ -266,19 +272,17 @@ public class WebSocketHandler {
         broadcastMessage(message, receivers);
     }
     public void broadcastMessage(ServerMessage message, int gameID){
-        debug("broadcast1");
         Set<Session> receivers = sessions.getSessionsForGame(gameID);
         broadcastMessage(message, receivers);
     }
     public void broadcastMessage(ServerMessage message, Set<Session> receivers){
-        debug("broadcast2");
         for (Session session: receivers){
             send(message, session);
         }
     }
 
     public void send(ServerMessage message, Session session) {
-        debug("sending");
+        debug("sending "+message.getMessage());
         if (session.isOpen()) {
             try {
 

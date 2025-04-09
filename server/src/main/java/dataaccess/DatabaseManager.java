@@ -3,6 +3,7 @@ package dataaccess;
 import carriers.*;
 import com.google.gson.Gson;
 import org.mindrot.jbcrypt.BCrypt;
+import websocket.commands.UserGameCommand;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,6 +14,14 @@ import java.util.Properties;
 
 
 public class DatabaseManager implements AutoCloseable{
+    static boolean deBug = true;
+
+    public void debug(String message){
+        if (deBug){
+            System.out.println("DEBUG: "+message);
+        }
+    }
+
     //initial setup
     private static final String DATABASE_NAME;
     private static final String USER;
@@ -184,18 +193,36 @@ public class DatabaseManager implements AutoCloseable{
             return false;
         }
     }
-    public boolean removeUser(JoinRequest join){
-        GameData game = getGame(join.getGameID());
-        if (join.getColor() == null || !( join.getColor().equals("WHITE") || join.getColor().equals("BLACK") ) ){
+    public boolean removeUser(UserGameCommand command){
+
+
+        GameData game = getGame(command.getGameID());
+        AuthData authData;
+        try {
+            authData = getAuth(command.getAuthToken());
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+        String color = null;
+        if (authData.getUsername().equals(game.getWhiteUsername())){
+            color = "WHITE";
+        }
+        else if(authData.getUsername().equals(game.getBlackUsername())){
+            color = "BLACK";
+        }
+
+
+        if (color == null || !( color.equals("WHITE") || color.equals("BLACK") ) ){
             return false;
         }
         if (game != null){
-            if(join.getColor().equals("WHITE")){
+            if(color.equals("WHITE")){
                 game.deleteWhite();
             }
-            else if(join.getColor().equals("BLACK")){
+            else if(color.equals("BLACK")){
                 game.deleteBlack();
             }
+            debug("calling updateGame()");
             return updateGame(game);
         }
         return false;
@@ -336,6 +363,7 @@ public class DatabaseManager implements AutoCloseable{
         return true;
     }
     public boolean updateGame(GameData game){
+        debug("updateGame running");
         var conn = getConn();
         var query = "UPDATE gameData SET json = ? WHERE gameID = ?";
 
@@ -352,8 +380,12 @@ public class DatabaseManager implements AutoCloseable{
         }
     }
     public JoinResult update(GameData target, JoinRequest join, String username){
+
+        debug("Update running");
+
         GameData game = getGame(target.getGameID());
         if (join.getColor() == null || !(join.getColor().equals("WHITE") || join.getColor().equals("BLACK")) ){
+
             return new JoinResult(false, 400);
         }
         if (game != null){
