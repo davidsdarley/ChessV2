@@ -249,13 +249,7 @@ public class Printer {
         //do the same as usual, but this time highlight the pertinent squares
         ChessGame game =  serverMessage.getGameData().getGame();
         ChessPosition position = serverMessage.getPosition();
-        ChessPiece piece = game.getBoard().getPiece(position);
-        if (!( (color.toUpperCase().equals("WHITE")) && piece.getTeamColor().equals(ChessGame.TeamColor.WHITE)
-        || (color.toUpperCase().equals("BLACK")) && piece.getTeamColor().equals(ChessGame.TeamColor.BLACK) ) ){
-            System.out.print("Not your piece!");
-            printBoard(game,color);
-            return false;
-        }
+
         Collection<ChessMove> moves = game.validMoves(position);
         moves.add(new ChessMove(position, position, null));
         printBoard(serverMessage.getGameData().getGame(), color, moves);

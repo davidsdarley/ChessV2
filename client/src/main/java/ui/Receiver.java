@@ -73,11 +73,10 @@ public class Receiver extends Endpoint{
             handleNotification(serverMessage);
         }
         else if(serverMessage.getServerMessageType().equals(ServerMessage.ServerMessageType.ERROR)){
-            user.debug("DEBUG: ERROR message received.");
+            user.debug("ERROR message received.");
             handleError(serverMessage);
         }
         else if(serverMessage.getServerMessageType().equals(ServerMessage.ServerMessageType.ERROR)){
-            //user.debug("DEBUG: HIGHLIGHT message received.");
             handleError(serverMessage);
         }
         System.out.print(user.state+" >>> ");
