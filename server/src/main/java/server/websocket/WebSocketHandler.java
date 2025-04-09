@@ -19,7 +19,7 @@ import java.util.Set;
 public class WebSocketHandler {
     WebSocketSessions sessions;
     DatabaseManager db;
-    private boolean deBug = true;
+    private boolean deBug = false;
 
     public WebSocketHandler(DatabaseManager db){
         sessions = new WebSocketSessions();

@@ -12,7 +12,7 @@ import java.net.http.HttpResponse;
 import java.util.*;
 
 public class UserInterface {
-    boolean deBug = true;
+    boolean deBug = false;
     int activeGame;
     String activeColor;
     Scanner scanner;
@@ -39,6 +39,23 @@ public class UserInterface {
             input = scanner.nextLine().toUpperCase();
             performOperation(input);
         }
+    }
+    private ChessPiece.PieceType getPieceType(){
+        System.out.print("Enter promotion piece (if applicable):");
+        String input = scanner.nextLine().toUpperCase();
+        if (input.equals("QUEEN")){
+            return ChessPiece.PieceType.QUEEN;
+        }
+        if (input.equals("ROOK")){
+            return ChessPiece.PieceType.ROOK;
+        }
+        if (input.equals("KNIGHT")){
+            return ChessPiece.PieceType.KNIGHT;
+        }
+        if (input.equals("BISHOP")){
+            return ChessPiece.PieceType.BISHOP;
+        }
+        return null;
     }
     private void leave(){
         try{
@@ -352,8 +369,9 @@ public class UserInterface {
             if (end == null){
                 return false;
             }
+            ChessPiece.PieceType promotion = getPieceType();
             //send it away and try to make the move.
-            ChessMove move = new ChessMove(start, end, null);
+            ChessMove move = new ChessMove(start, end, promotion);
             receiver.makeMove(move);
             return true;
         }
