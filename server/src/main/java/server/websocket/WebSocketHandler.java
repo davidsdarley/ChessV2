@@ -19,12 +19,13 @@ import java.util.Set;
 public class WebSocketHandler {
     WebSocketSessions sessions;
     DatabaseManager db;
-    private boolean deBug = true;
+    private boolean deBug = false;
 
     public WebSocketHandler(DatabaseManager db){
         sessions = new WebSocketSessions();
         this.db = db;
     }
+
     private boolean verifyAuth(String authToken){
         try {
             if (db.getAuth(authToken) == null) {
