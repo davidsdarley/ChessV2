@@ -132,7 +132,7 @@ public class Receiver extends Endpoint{
     private void handleError(ServerMessage serverMessage){
         user.debug("ERROR!");
         //catch and handle the error
-        System.out.println("Error: "+serverMessage.getMessage());
+        System.out.println("Error: "+serverMessage.getErrorMessage());
     }
 
     public void observe(UserGameCommand command){

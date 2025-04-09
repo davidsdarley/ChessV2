@@ -199,7 +199,7 @@ public class WebSocketHandler {
 
         } catch (InvalidMoveException e) {
             reply = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-            reply.setErrorMessage(e.getMessage());
+            reply.setErrorMessage("Illegal move.");
             //reply.setMessage(e.getMessage()+": sent from handleMakeMoves error catcher");     //DEBUG
 
             send (reply, session);
