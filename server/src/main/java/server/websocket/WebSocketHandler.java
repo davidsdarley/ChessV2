@@ -19,7 +19,7 @@ import java.util.Set;
 public class WebSocketHandler {
     WebSocketSessions sessions;
     DatabaseManager db;
-    private boolean deBug = false;
+    private boolean deBug = true;
 
     public WebSocketHandler(DatabaseManager db){
         sessions = new WebSocketSessions();
@@ -174,9 +174,10 @@ public class WebSocketHandler {
 
             reply = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
             reply.setGame(gameData);
-            reply.setMessage(move.toString());
-            debug("make move reply start:\n"+ reply);
-            debug(" make move reply end");
+            reply.setMessage(null);
+            broadcastMessage(reply, command.getGameID());
+
+            reply = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
 
             String message = username + " moved " + move;
 
@@ -191,9 +192,9 @@ public class WebSocketHandler {
             }
 
 
-            reply.setMessage(message);    //DEBUG
+            reply.setMessage(message);
 
-            broadcastMessage(reply, gameData.getGameID());
+            broadcastMessage(reply, gameData.getGameID(), session);
 
 
         } catch (InvalidMoveException e) {
@@ -298,8 +299,9 @@ public class WebSocketHandler {
         debug("sending "+message);
         if (session.isOpen()) {
             try {
-
-                session.getRemote().sendString(new Gson().toJson(message));
+                String reply = new Gson().toJson(message);
+                debug(reply);
+                session.getRemote().sendString(reply);
             }
             catch (IOException e) {
                 //maybe do something here

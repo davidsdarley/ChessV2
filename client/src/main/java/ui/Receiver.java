@@ -85,15 +85,21 @@ public class Receiver extends Endpoint{
 
     private void handleLoadGame(ServerMessage serverMessage){
         GameData game = serverMessage.getGameData();
+        gameOver = game.getGame().getGameOver();
+        user.debug("activeColor: "+user.activeColor);
+        user.debug("gameTurn: "+game.getGame().getTeamTurn());
+
         if (user.state.equals("OBSERVING")){
             user.activeColor = "WHITE";
         }
         else if ( game.getGame().getTeamTurn().equals(ChessGame.TeamColor.WHITE) && user.activeColor.equals("WHITE")
         || (game.getGame().getTeamTurn().equals(ChessGame.TeamColor.BLACK) && user.activeColor.equals("BLACK")) ){
+            user.debug("turn change: my turn");
             turn = true;
             System.out.println("Your turn");
         }
         else{
+            user.debug("turn change: their turn");
             turn = false;
             System.out.println("Opponent's turn");
         }
@@ -113,7 +119,7 @@ public class Receiver extends Endpoint{
             }
         }
         user.printer.printLine(serverMessage);
-        gameOver = game.getGame().getGameOver();
+
     }
     private void handleNotification(ServerMessage serverMessage){
         //print the notification

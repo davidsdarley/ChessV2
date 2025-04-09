@@ -14,7 +14,7 @@ import java.util.Properties;
 
 
 public class DatabaseManager implements AutoCloseable{
-    static boolean deBug = true;
+    static boolean deBug = false;
 
     public void debug(String message){
         if (deBug){

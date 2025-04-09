@@ -12,7 +12,7 @@ import java.net.http.HttpResponse;
 import java.util.*;
 
 public class UserInterface {
-    boolean deBug = false;
+    boolean deBug = true;
     int activeGame;
     String activeColor;
     Scanner scanner;
@@ -326,7 +326,11 @@ public class UserInterface {
             return null;
         }
     }
+    private void getInfo(){
+        System.out.println("gameOver: "+receiver.gameOver);
+        System.out.println("turn: "+receiver.turn);
 
+    }
     private void handleHighlight(){
         ChessPosition position = getPositionInput();
         if(position != null) {
@@ -457,6 +461,9 @@ public class UserInterface {
             System.out.println("   redraw");
             System.out.println("   highlight legal moves");
             System.out.println("   make move");
+        }
+        else if(input.equals("INFO")){
+            getInfo();
         }
         else if(input.equals("REDRAW")){
             UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.GET, auth, activeGame);

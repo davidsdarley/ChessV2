@@ -62,6 +62,7 @@ public class ServerMessage {
         return this.serverMessageType;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -71,6 +72,7 @@ public class ServerMessage {
             return false;
         }
         ServerMessage that = (ServerMessage) o;
+        System.out.println(getServerMessageType().toString() + that.getServerMessageType());
         return getServerMessageType() == that.getServerMessageType();
     }
 
@@ -85,7 +87,7 @@ public class ServerMessage {
                 "\n  Game: "+game+
                 "\n  Message: "+ message+
                 "\n  Position: "+ position+
-                "\n  ErrorMessage: " + errorMessage;
+                "\n  errorMessage: " + errorMessage;
     }
 }
 //GameData game;

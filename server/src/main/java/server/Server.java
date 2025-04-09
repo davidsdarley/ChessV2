@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class Server {
     private static ChessService service;
     private static WebSocketHandler webSocketHandler;
