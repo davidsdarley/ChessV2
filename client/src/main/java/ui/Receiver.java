@@ -114,8 +114,10 @@ public class Receiver extends Endpoint{
             }
         }
         user.printer.printLine(serverMessage);
-        checkCheck(game);
 
+        if(!turn) {
+            checkCheck(game);
+        }
     }
     private void checkCheck(GameData game){
         String white = game.getWhiteUsername();
@@ -123,17 +125,17 @@ public class Receiver extends Endpoint{
         if(game.getGame().isInCheckmate(ChessGame.TeamColor.WHITE)){
             System.out.println(white + " is in Checkmate!");
         }
-        else if(game.getGame().isInCheck(ChessGame.TeamColor.WHITE)){
-            System.out.println(white + " is in Check!");
-        }
-        else if(game.getGame().isInStalemate(ChessGame.TeamColor.WHITE)){
-            System.out.println(white + " is in Stalemate.");
-        }
         else if(game.getGame().isInCheckmate(ChessGame.TeamColor.BLACK)){
             System.out.println(black + " is in Checkmate!");
         }
+        else if(game.getGame().isInCheck(ChessGame.TeamColor.WHITE)){
+            System.out.println(white + " is in Check!");
+        }
         else if(game.getGame().isInCheck(ChessGame.TeamColor.BLACK)){
             System.out.println(black + " is in Check!");
+        }
+        else if(game.getGame().isInStalemate(ChessGame.TeamColor.WHITE)){
+            System.out.println(white + " is in Stalemate.");
         }
         else if(game.getGame().isInStalemate(ChessGame.TeamColor.BLACK)){
             System.out.println(black + " is in Stalemate.");

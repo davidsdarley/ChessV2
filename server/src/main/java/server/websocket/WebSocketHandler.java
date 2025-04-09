@@ -182,7 +182,7 @@ public class WebSocketHandler {
             String message = username + " moved " + move;
             String white = gameData.getWhiteUsername();
             String black = gameData.getBlackUsername();
-            if (game.isInCheck(game.getTeamTurn())){
+            if (game.isInCheckmate(game.getTeamTurn())){
                 if(game.getTeamTurn().equals(ChessGame.TeamColor.WHITE)){
                     message+="\n" + white + " is in Checkmate!";
                 }
