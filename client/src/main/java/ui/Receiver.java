@@ -104,10 +104,11 @@ public class Receiver extends Endpoint{
             System.out.println("Opponent's turn");
         }
 
-        if (user.state.equals("OBSERVING")){
-            user.printer.printBoard(game.getGame());
-        }
-        else if (serverMessage.getPosition() != null){
+//        if (user.state.equals("OBSERVING")){
+//            user.printer.printBoard(game.getGame());
+//        }
+//        else
+        if (serverMessage.getPosition() != null){
             user.printer.printHighlights(serverMessage, user.activeColor);
         }
         else {

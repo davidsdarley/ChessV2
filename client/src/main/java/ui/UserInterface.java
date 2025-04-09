@@ -458,6 +458,13 @@ public class UserInterface {
                     System.out.println("   quit");
                 }
             }
+            else if(input.equals("HIGHLIGHT LEGAL MOVES")){
+                handleHighlight();
+            }
+            else if(input.equals("REDRAW")){
+                UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.GET, auth, activeGame);
+                receiver.sendCommand(command);
+            }
         }
         else{
             System.out.println("Invalid input. Type Help to see available commands");
