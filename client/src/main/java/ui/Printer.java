@@ -263,4 +263,12 @@ public class Printer {
         //check if the spot has a valid piece
         return true;
     }
+    public void printLine(ServerMessage message){
+        if (message.getMessage() != null) {
+            System.out.println(message.getMessage());
+        }
+        else if(message.getErrorMessage() != null){
+            System.out.println(message.getErrorMessage());
+        }
+    }
 }

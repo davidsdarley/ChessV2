@@ -147,8 +147,6 @@ public class WebSocketHandler {
             return;
         }
 
-
-
         //check if the move is your piece  :|
         String username;
         try {
@@ -179,7 +177,21 @@ public class WebSocketHandler {
             debug("make move reply start:\n"+ reply);
             debug(" make move reply end");
 
-            //reply.setMessage(move.toString() + ": sent from handleMakeMoves");    //DEBUG
+            String message = username + " moved " + move;
+
+            if (game.isInCheck(game.getTeamTurn())){
+                message+="\nCheckmate!";
+            }
+            else if (game.isInCheck(game.getTeamTurn())){
+                message += "\nCheck!";
+            }
+            else if (game.isInStalemate(game.getTeamTurn())){
+                message += "\nStalemate!";
+            }
+
+
+            reply.setMessage(message);    //DEBUG
+
             broadcastMessage(reply, gameData.getGameID());
 
 
@@ -282,7 +294,7 @@ public class WebSocketHandler {
     }
 
     public void send(ServerMessage message, Session session) {
-        debug("sending "+message.getMessage());
+        debug("sending "+message);
         if (session.isOpen()) {
             try {
 

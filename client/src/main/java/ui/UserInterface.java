@@ -12,7 +12,7 @@ import java.net.http.HttpResponse;
 import java.util.*;
 
 public class UserInterface {
-    boolean deBug = true;
+    boolean deBug = false;
     int activeGame;
     String activeColor;
     Scanner scanner;
@@ -335,6 +335,11 @@ public class UserInterface {
 
     }
     private boolean handleMakeMove(){
+        //See if the game is over
+        if (receiver.gameOver){
+            System.out.println("Game is over! No more moves can be made.");
+            return false;
+        }
         //see if it's your turn
         if (receiver.turn){
             //get starting and ending squares

@@ -18,6 +18,7 @@ public class Receiver extends Endpoint{
     public Session session;
     private String color;
     public boolean turn;
+    public boolean gameOver;
 
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
@@ -30,6 +31,7 @@ public class Receiver extends Endpoint{
         this.session = container.connectToServer(this, uri);
         user = ui;
         this.color = color;
+        gameOver = false;
 
 
         this.session.addMessageHandler(new MessageHandler.Whole<String>() {
@@ -110,7 +112,8 @@ public class Receiver extends Endpoint{
                 user.printer.printBoard(game.getGame(), user.activeColor);
             }
         }
-
+        user.printer.printLine(serverMessage);
+        gameOver = game.getGame().getGameOver();
     }
     private void handleNotification(ServerMessage serverMessage){
         //print the notification

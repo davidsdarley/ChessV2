@@ -81,6 +81,14 @@ public class ServerMessage {
 
     @Override
     public String toString(){
-        return "Type: " + serverMessageType + "\nMessage: "+ message;
+        return  "\n  Type: " + serverMessageType +
+                "\n  Game: "+game+
+                "\n  Message: "+ message+
+                "\n  Position: "+ position+
+                "\n  ErrorMessage: " + errorMessage;
     }
 }
+//GameData game;
+//String message;
+//ChessPosition position;
+//String errorMessage;
