@@ -90,7 +90,3 @@ public class ServerMessage {
                 "\n  errorMessage: " + errorMessage;
     }
 }
-//GameData game;
-//String message;
-//ChessPosition position;
-//String errorMessage;

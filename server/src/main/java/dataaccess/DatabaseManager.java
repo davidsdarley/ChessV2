@@ -22,7 +22,6 @@ public class DatabaseManager implements AutoCloseable{
         }
     }
 
-    //initial setup
     private static final String DATABASE_NAME;
     private static final String USER;
     private static final String PASSWORD;
@@ -194,7 +193,6 @@ public class DatabaseManager implements AutoCloseable{
         }
     }
     public boolean removeUser(UserGameCommand command){
-
 
         GameData game = getGame(command.getGameID());
         AuthData authData;
@@ -410,8 +408,6 @@ public class DatabaseManager implements AutoCloseable{
         System.out.println(game + " not found");
         return new JoinResult(false, 400);
     }
-
-
 
     //Initial creation and configuration details
     private final String[] createStatements = {

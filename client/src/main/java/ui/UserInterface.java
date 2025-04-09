@@ -290,8 +290,6 @@ public class UserInterface {
             }
         }
     }
-
-
     private ChessPosition getPositionInput(){
         System.out.print("\nPlease enter piece column letter (a-h): ");
         String[] options = {"a", "b", "c", "d", "e", "f", "g", "h"};
@@ -329,7 +327,6 @@ public class UserInterface {
     private void getInfo(){
         System.out.println("gameOver: "+receiver.gameOver);
         System.out.println("turn: "+receiver.turn);
-
     }
     private void handleHighlight(){
         ChessPosition position = getPositionInput();
@@ -448,7 +445,6 @@ public class UserInterface {
             System.out.println("Invalid input. Type Help to see available commands");
         }
     }
-
     private void handlePlaying(String input){
 
         if(input.equals("BACK")){
@@ -490,13 +486,10 @@ public class UserInterface {
             System.out.println("Invalid input. Type Help to see available commands");
         }
     }
-
     public static void main( String[] args) {
     UserInterface ui = new UserInterface();
     ui.run();
     }
-
-
     public void debug(String message){
         if (deBug){
             System.out.println("DEBUG: " + message);
