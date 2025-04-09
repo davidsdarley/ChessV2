@@ -42,6 +42,8 @@ public class ChessPosition {
     }
     @Override
     public String toString(){
-        return row+""+col;
+        String[] options = {"a", "b", "c", "d", "e", "f", "g", "h"};
+
+        return options[col-1]+""+row;
     }
 }

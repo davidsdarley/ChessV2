@@ -481,7 +481,6 @@ public class UserInterface {
         }
         else if(input.equals("REDRAW")){
             UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.GET, auth, activeGame);
-            debug("sending from redraw");
             receiver.sendCommand(command);
         }
         else if(input.equals("HIGHLIGHT LEGAL MOVES")){
