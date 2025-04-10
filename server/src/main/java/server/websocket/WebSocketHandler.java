@@ -25,7 +25,6 @@ public class WebSocketHandler {
         sessions = new WebSocketSessions();
         this.db = db;
     }
-
     private boolean verifyAuth(String authToken){
         try {
             if (db.getAuth(authToken) == null) {
@@ -310,7 +309,6 @@ public class WebSocketHandler {
             send(message, session);
         }
     }
-
     public void send(ServerMessage message, Session session) {
         debug("sending "+message);
         if (session.isOpen()) {
@@ -329,7 +327,6 @@ public class WebSocketHandler {
     public String toString(){
         return "WS is running";
     }
-
     public void debug(String message){
         if (deBug){
             System.out.println("DEBUG: "+message);
